@@ -1,0 +1,16 @@
+.DS_Store
+*.dll
+*.dll.mdb
+*.orig
+*.userprefs
+*.suo
+*.zip
+*.sln
+*.swp
+*.blend?
+build
+obj
+bin
+*.csproj.user
+AssemblyInfo.cs
+AssemblyInfoToolbar.cs
