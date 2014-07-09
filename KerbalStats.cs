@@ -8,6 +8,20 @@ using KSPAPIExtensions;
 using KSP.IO;
 
 namespace KerbalStats {
+	public static class EnumUtil {
+		public static T[] GetValues<T>() {
+			return (T[])Enum.GetValues(typeof(T));
+		}
+	}
+
+	[KSPScenario(ScenarioCreationOptions.AddToAllGames, new GameScenes[] {
+			GameScenes.SPACECENTER,
+			GameScenes.EDITOR,
+			GameScenes.FLIGHT,
+			GameScenes.TRACKSTATION,
+			GameScenes.SPH,
+		})
+	]
 	public class KerbalStats : ScenarioModule
 	{
 		public class KerbalExt
@@ -92,7 +106,6 @@ namespace KerbalStats {
 		}
 
 		List<KerbalExt> Roster;
-		List<KerbalExt> Applicants;
 
 		public static KerbalStats current
 		{
@@ -103,41 +116,43 @@ namespace KerbalStats {
 			}
 		}
 
-		public static void Create (Game game)
+		void build_roster (Game game)
 		{
-			if (!game.scenarios.Any (p => p.moduleName == typeof (KerbalStats).Name)) {
-				//Debug.Log (String.Format ("[KS] Create"));
-				var proto = game.AddProtoScenarioModule (typeof (KerbalStats), GameScenes.SPACECENTER, GameScenes.EDITOR, GameScenes.SPH, GameScenes.TRACKSTATION, GameScenes.FLIGHT);
-				proto.Load (ScenarioRunner.fetch);
+			var KerbalTypes = EnumUtil.GetValues<ProtoCrewMember.KerbalType>();
+			var states = EnumUtil.GetValues<ProtoCrewMember.RosterStatus>();
+			int num_kerbals = 0;
+			var roster = game.CrewRoster;
+
+			// KerbalRoster doesn't provide an iterator for getting all
+			// kerbals at once, so count the kerbals in each type.
+			foreach (var type in KerbalTypes) {
+				foreach (var pcm in roster.Kerbals(type, states)) {
+					num_kerbals++;
+				}
+			}
+			if (num_kerbals == Roster.Count) {
+				// this is a new game and the kerbals have already been added
+				// when the game was created
+				return;
+			}
+			// This roster will now shadow the main roster
+			for (int i = 0; i < num_kerbals; i++) {
+				addKerbal (roster[i]);
 			}
 		}
 
 		public override void OnLoad (ConfigNode config)
 		{
 			var game = HighLogic.CurrentGame;
-			if (game == null) {
-				return;
-			}
+
 			Debug.Log (String.Format ("[KS] OnLoad"));
 			var roster = config.GetNode ("Roster");
 
 			if (roster == null) {
-				foreach (var pcm in game.CrewRoster) {
-					Roster.Add (new KerbalExt (pcm));
-				}
+				build_roster (game);
 			} else {
 				foreach (var kerbal in roster.GetNodes ("KerbalExt")) {
 					Roster.Add (new KerbalExt (kerbal));
-				}
-			}
-			var applicants = config.GetNode ("Applicants");
-			if (applicants == null) {
-				foreach (var pcm in game.CrewRoster.Applicants) {
-					Applicants.Add (new KerbalExt (pcm));
-				}
-			} else {
-				foreach (var kerbal in applicants.GetNodes ("KerbalExt")) {
-					Applicants.Add (new KerbalExt (kerbal));
 				}
 			}
 		}
@@ -150,48 +165,44 @@ namespace KerbalStats {
 			foreach (var kerbal in Roster) {
 				roster.AddNode (kerbal.GetNode ());
 			}
+		}
 
-			ConfigNode applicants = config.AddNode (new ConfigNode ("Applicants"));
-			foreach (var kerbal in Applicants) {
-				applicants.AddNode (kerbal.GetNode ());
-			}
+		void addKerbal (ProtoCrewMember kerbal)
+		{
+			Debug.Log (String.Format ("[KS] {0} {1} {2}", kerbal.name,
+									  kerbal.rosterStatus, kerbal.type));
+			Roster.Add (new KerbalExt (kerbal));
+		}
+
+		void onKerbalAdded (ProtoCrewMember kerbal)
+		{
+			Debug.Log (String.Format ("[KS] onKerbalAdded: {0}", kerbal));
+
+			addKerbal (kerbal);
+		}
+
+		void onKerbalRemoved (ProtoCrewMember kerbal)
+		{
+			Debug.Log (String.Format ("[KS] onKerbalRemoved: {0}", kerbal));
+			var game = HighLogic.CurrentGame;
+			var roster = game.CrewRoster;
+			int index = roster.IndexOf (kerbal);
+			Roster.RemoveAt (index);
 		}
 
 		public override void OnAwake ()
 		{
 			enabled = false;
 			Roster = new List<KerbalExt> ();
-			Applicants = new List<KerbalExt> ();
+			GameEvents.onKerbalAdded.Add (onKerbalAdded);
+			GameEvents.onKerbalRemoved.Add (onKerbalRemoved);
 		}
 
-	}
-
-	// Fun magic to get a custom scenario into a game automatically.
-
-	public class KerbalStatsCreator
-	{
-		public static KerbalStatsCreator me;
-		void onGameStateCreated (Game game)
+		void OnDestroy ()
 		{
-			Debug.Log (String.Format ("[KS] onGameStateCreated"));
-			KerbalStats.Create (game);
-		}
-
-		public KerbalStatsCreator ()
-		{
-			GameEvents.onGameStateCreated.Add (onGameStateCreated);
+			GameEvents.onKerbalAdded.Remove (onKerbalAdded);
+			GameEvents.onKerbalRemoved.Remove (onKerbalRemoved);
 		}
 	}
 
-	[KSPAddon(KSPAddon.Startup.Instantly, false)]
-	public class KerbalStatsCreatorSpawn : MonoBehaviour
-	{
-
-		void Start ()
-		{
-			Debug.Log (String.Format ("[KS] KerbalStatsCreatorSpawn.Start"));
-			KerbalStatsCreator.me = new KerbalStatsCreator ();
-			enabled = false;
-		}
-	}
 }
