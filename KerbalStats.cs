@@ -123,17 +123,17 @@ namespace KerbalStats {
 			int num_kerbals = 0;
 			var roster = game.CrewRoster;
 
+			if (roster == null) {
+				// We somehow got started before the crew roster was setup.
+				return;
+			}
+
 			// KerbalRoster doesn't provide an iterator for getting all
 			// kerbals at once, so count the kerbals in each type.
 			foreach (var type in KerbalTypes) {
 				foreach (var pcm in roster.Kerbals(type, states)) {
 					num_kerbals++;
 				}
-			}
-			if (num_kerbals == Roster.Count) {
-				// this is a new game and the kerbals have already been added
-				// when the game was created
-				return;
 			}
 			// This roster will now shadow the main roster
 			for (int i = 0; i < num_kerbals; i++) {
@@ -176,14 +176,14 @@ namespace KerbalStats {
 
 		void onKerbalAdded (ProtoCrewMember kerbal)
 		{
-			Debug.Log (String.Format ("[KS] onKerbalAdded: {0}", kerbal));
+			Debug.Log (String.Format ("[KS] onKerbalAdded: {0}", kerbal.name));
 
 			addKerbal (kerbal);
 		}
 
 		void onKerbalRemoved (ProtoCrewMember kerbal)
 		{
-			Debug.Log (String.Format ("[KS] onKerbalRemoved: {0}", kerbal));
+			Debug.Log (String.Format ("[KS] onKerbalRemoved: {0}", kerbal.name));
 			var game = HighLogic.CurrentGame;
 			var roster = game.CrewRoster;
 			int index = roster.IndexOf (kerbal);
