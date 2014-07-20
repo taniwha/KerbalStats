@@ -11,45 +11,45 @@ namespace KerbalStats {
 	[KSPAddon (KSPAddon.Startup.EveryScene, false)]
 	public class KSExperience : MonoBehaviour
 	{
-		class SeatTasks
+		class PartSeatTasks
 		{
-			Dictionary <string, string> seats;
-			string default_task;
-
-			public string this [string seat]
+			public class SeatTasks
 			{
-				get {
-					if (seats.ContainsKey (seat)) {
-						return seats[seat];
+				Dictionary <string, string> seats;
+				string default_task;
+
+				public string this [string seat]
+				{
+					get {
+						if (seats.ContainsKey (seat)) {
+							return seats[seat];
+						} else {
+							return default_task;
+						}
+					}
+				}
+
+				public SeatTasks (string defTask)
+				{
+					seats = new Dictionary <string, string> ();
+					default_task = defTask;
+				}
+				public SeatTasks (ConfigNode node)
+				{
+					if (node.HasValue ("default")) {
+						default_task = node.GetValue ("default");
 					} else {
-						return default_task;
+						default_task = "Passenger";
+					}
+					seats = new Dictionary <string, string> ();
+					foreach (ConfigNode.Value seat in node.values) {
+						if (seat.name == "name" || seat.name == "default") {
+							continue;
+						}
+						seats[seat.name] = seat.value;
 					}
 				}
 			}
-
-			public SeatTasks (string defTask)
-			{
-				seats = new Dictionary <string, string> ();
-				default_task = defTask;
-			}
-			public SeatTasks (ConfigNode node)
-			{
-				if (node.HasValue ("default")) {
-					default_task = node.GetValue ("default");
-				} else {
-					default_task = "Passenger";
-				}
-				seats = new Dictionary <string, string> ();
-				foreach (ConfigNode.Value seat in node.values) {
-					if (seat.name == "name" || seat.name == "default") {
-						continue;
-					}
-					seats[seat.name] = seat.value;
-				}
-			}
-		}
-
-		class PartSeatTasks {
 			Dictionary <string, SeatTasks> partSeatTasks;
 			SeatTasks default_seatTask;
 
