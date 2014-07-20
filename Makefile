@@ -10,6 +10,7 @@ TARGETS		:= KerbalStats.dll KerbalStatsToolbar.dll
 
 KS_FILES := \
     AssemblyInfo.cs	\
+	Experience.cs \
 	KerbalStats.cs \
 	VersionReport.cs \
 	$e
