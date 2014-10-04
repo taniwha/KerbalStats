@@ -3,20 +3,14 @@ MANAGED		:= ${KSPDIR}/KSP_Data/Managed
 GAMEDATA	:= ${KSPDIR}/GameData
 KSGAMEDATA  := ${GAMEDATA}/KerbalStats
 PLUGINDIR	:= ${KSGAMEDATA}/Plugins
-TBGAMEDATA  := ${GAMEDATA}/000_Toolbar
 
-TARGETS		:= KerbalStats.dll KerbalStatsToolbar.dll
+TARGETS		:= KerbalStats.dll
 
 KS_FILES := \
     AssemblyInfo.cs	\
 	Experience.cs \
 	KerbalStats.cs \
 	VersionReport.cs \
-	$e
-
-KSTB_FILES := \
-	AssemblyInfoToolbar.cs	\
-	Toolbar.cs				\
 	$e
 
 RESGEN2		:= resgen2
@@ -47,15 +41,8 @@ KerbalStats.dll: ${KS_FILES}
 		-r:Assembly-CSharp,Assembly-CSharp-firstpass,UnityEngine \
 		-out:$@ $^
 
-KerbalStatsToolbar.dll: ${KSTB_FILES} KerbalStats.dll
-	${GMCS} ${GMCSFLAGS} -t:library -lib:${TBGAMEDATA},${MANAGED} \
-		-r:Assembly-CSharp,Assembly-CSharp-firstpass,UnityEngine \
-		-r:Toolbar \
-		-r:KerbalStats \
-		-out:$@ ${KSTB_FILES}
-
 clean:
-	rm -f ${TARGETS} AssemblyInfoToolbar.cs AssemblyInfo.cs
+	rm -f ${TARGETS} AssemblyInfo.cs
 
 install: all
 	mkdir -p ${PLUGINDIR}
