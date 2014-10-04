@@ -4,7 +4,6 @@ GAMEDATA	:= ${KSPDIR}/GameData
 KSGAMEDATA  := ${GAMEDATA}/KerbalStats
 PLUGINDIR	:= ${KSGAMEDATA}/Plugins
 TBGAMEDATA  := ${GAMEDATA}/000_Toolbar
-APIEXTDATA	:= ${PLUGINDIR}
 
 TARGETS		:= KerbalStats.dll KerbalStatsToolbar.dll
 
@@ -44,9 +43,8 @@ info:
 	@echo "    KSP Data:   ${KSPDIR}"
 
 KerbalStats.dll: ${KS_FILES}
-	${GMCS} ${GMCSFLAGS} -t:library -lib:${APIEXTDATA},${MANAGED} \
+	${GMCS} ${GMCSFLAGS} -t:library -lib:${MANAGED} \
 		-r:Assembly-CSharp,Assembly-CSharp-firstpass,UnityEngine \
-		-r:KSPAPIExtensions \
 		-out:$@ $^
 
 KerbalStatsToolbar.dll: ${KSTB_FILES} KerbalStats.dll
