@@ -7,10 +7,11 @@ PLUGINDIR	:= ${KSGAMEDATA}/Plugins
 TARGETS		:= KerbalStats.dll
 
 KS_FILES := \
-    AssemblyInfo.cs	\
-	Experience.cs \
-	KerbalStats.cs \
-	VersionReport.cs \
+    AssemblyInfo.cs		\
+	Experience.cs		\
+	Gender.cs			\
+	KerbalStats.cs		\
+	VersionReport.cs	\
 	$e
 
 RESGEN2		:= resgen2

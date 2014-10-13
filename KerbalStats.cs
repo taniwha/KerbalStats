@@ -7,6 +7,45 @@ using UnityEngine;
 using KSP.IO;
 
 namespace KerbalStats {
+	public interface IKerbalStats
+	{
+		void AddKerbal (ProtoCrewMember kerbal, KerbalExt ext);
+	}
+	public class KerbalExt
+	{
+		ConfigNode node;
+		public ConfigNode GetNode ()
+		{
+			var n = new ConfigNode ();
+			node.CopyTo (n, "KerbalExt");
+			return n;
+		}
+
+		public void SetAttribute (string  attr, string val)
+		{
+			if (node.HasValue (attr)) {
+				node.SetValue (attr, val);
+			} else {
+				node.AddValue (attr, val);
+			}
+		}
+		public string GetAttribute (string  attr)
+		{
+			return node.GetValue (attr);
+		}
+
+		public KerbalExt ()
+		{
+			node = new ConfigNode ();
+		}
+
+		public KerbalExt (ConfigNode kerbal)
+		{
+			node = new ConfigNode ();
+			kerbal.CopyTo (node, "KerbalExt");
+		}
+	}
+
 	public static class EnumUtil {
 		public static T[] GetValues<T>() {
 			return (T[])Enum.GetValues(typeof(T));
@@ -23,84 +62,12 @@ namespace KerbalStats {
 	]
 	public class KerbalStats : ScenarioModule
 	{
-		public class KerbalExt
+		static List<IKerbalStats> modules = new List<IKerbalStats> ();
+
+		public static void AddModule (IKerbalStats mod)
 		{
-			static string[] male_names = {
-				"Adam", "Al", "Alan", "Archibald", "Bill", "Bob", "Buzz",
-				"Carson", "Chad", "Charlie", "Chris", "Chuck", "Dean", "Ed",
-				"Edan", "Edlu", "Frank", "Franklin", "Gus", "Hans", "Jack",
-				"James", "Jebediah", "Jim", "Kirk", "Kurt", "Lars", "Luke",
-				"Mac", "Matt", "Phil", "Randall", "Scott", "Sean", "Steve",
-				"Tom", "Will"
-			};
-			static string[] female_endings = {
-				"gee", "les", "nie", "one", "ree", "rett", "rie", "ski",
-				"sy", "win",
-			};
-			static string[] male_endings = {
-				"zer",
-				"zon",
-				"zor",
-			};
-			ConfigNode node;
-			public ConfigNode GetNode ()
-			{
-				var n = new ConfigNode ();
-				node.CopyTo (n, "KerbalExt");
-				return n;
-			}
-
-			public void SetAttribute (string  attr, string val)
-			{
-				if (node.HasValue (attr)) {
-					node.SetValue (attr, val);
-				} else {
-					node.AddValue (attr, val);
-				}
-			}
-			public string GetAttribute (string  attr)
-			{
-				return node.GetValue (attr);
-			}
-
-			static string PickGender (string name)
-			{
-				int end = name.LastIndexOf (" ");
-				name = name.Substring (0, end);
-				if (male_names.Contains (name)) {
-					Debug.Log (String.Format ("[KS] Male fn: {0}", name));
-					return "M";
-				}
-				foreach (string suf in female_endings) {
-					if (name.EndsWith (suf)) {
-						Debug.Log (String.Format ("[KS] Female e: {0}", name));
-						return "F";
-					}
-				}
-				foreach (string suf in male_endings) {
-					if (name.EndsWith (suf)) {
-						Debug.Log (String.Format ("[KS] Male e: {0}", name));
-						return "M";
-					}
-				}
-				if (UnityEngine.Random.Range (0, 10) < 2) {
-					Debug.Log (String.Format ("[KS] Female r: {0}", name));
-					return "F";
-				}
-				Debug.Log (String.Format ("[KS] Male r: {0}", name));
-				return "M";
-			}
-
-			public KerbalExt (ProtoCrewMember pcm)
-			{
-				node = new ConfigNode ();
-				SetAttribute ("gender", PickGender (pcm.name));
-			}
-
-			public KerbalExt (ConfigNode kerbal)
-			{
-				node = new ConfigNode ();
-				kerbal.CopyTo (node, "KerbalExt");
+			if (!modules.Contains (mod)) {
+				modules.Add (mod);
 			}
 		}
 
@@ -170,7 +137,11 @@ namespace KerbalStats {
 		{
 			Debug.Log (String.Format ("[KS] {0} {1} {2}", kerbal.name,
 									  kerbal.rosterStatus, kerbal.type));
-			Roster.Add (new KerbalExt (kerbal));
+			KerbalExt ext = new KerbalExt ();
+			Roster.Add (ext);
+			for (int i = 0; i < modules.Count; i++) {
+				modules[i].AddKerbal (kerbal, ext);
+			}
 		}
 
 		void onKerbalAdded (ProtoCrewMember kerbal)
