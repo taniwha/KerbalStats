@@ -97,6 +97,14 @@ namespace KerbalStats {
 			}
 		}
 
+		public KerbalExt this[ProtoCrewMember kerbal]
+		{
+			get {
+				var game = HighLogic.CurrentGame;
+				return Roster[game.CrewRoster.IndexOf (kerbal)];
+			}
+		}
+
 		void build_roster (Game game)
 		{
 			var KerbalTypes = EnumUtil.GetValues<ProtoCrewMember.KerbalType>();
