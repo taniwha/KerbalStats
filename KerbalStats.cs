@@ -21,6 +21,21 @@ namespace KerbalStats {
 			return n;
 		}
 
+		public bool HasNode (string name)
+		{
+			return node.HasNode (name);
+		}
+
+		public ConfigNode GetNode (string name)
+		{
+			return node.GetNode (name);
+		}
+
+		public void AddNode (ConfigNode n)
+		{
+			node.AddNode (n);
+		}
+
 		public void SetAttribute (string  attr, string val)
 		{
 			if (node.HasValue (attr)) {
