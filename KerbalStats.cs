@@ -14,7 +14,7 @@ namespace KerbalStats {
 	public class KerbalExt
 	{
 		ConfigNode node;
-		public ConfigNode GetNode ()
+		public ConfigNode CopyNode ()
 		{
 			var n = new ConfigNode ();
 			node.CopyTo (n, "KerbalExt");
@@ -129,7 +129,7 @@ namespace KerbalStats {
 
 			var roster = config.AddNode (new ConfigNode ("Roster"));
 			foreach (var kerbal in Roster) {
-				roster.AddNode (kerbal.GetNode ());
+				roster.AddNode (kerbal.CopyNode ());
 			}
 		}
 
