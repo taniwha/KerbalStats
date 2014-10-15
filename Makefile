@@ -5,6 +5,7 @@ KSGAMEDATA  := ${GAMEDATA}/KerbalStats
 PLUGINDIR	:= ${KSGAMEDATA}/Plugins
 
 TARGETS		:= KerbalStats.dll
+DATA		:= License.txt
 
 KS_FILES := \
     AssemblyInfo.cs		\
@@ -48,5 +49,6 @@ clean:
 install: all
 	mkdir -p ${PLUGINDIR}
 	cp ${TARGETS} ${PLUGINDIR}
+	cp ${DATA} ${KSGAMEDATA}
 
 .PHONY: all clean install
