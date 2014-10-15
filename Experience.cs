@@ -52,11 +52,11 @@ namespace KerbalStats {
 			Dictionary <string, SeatTasks> partSeatTasks;
 			SeatTasks default_seatTask;
 
-			public SeatTasks this [string seat]
+			public SeatTasks this [string part]
 			{
 				get {
-					if (partSeatTasks.ContainsKey (seat)) {
-						return partSeatTasks[seat];
+					if (partSeatTasks.ContainsKey (part)) {
+						return partSeatTasks[part];
 					} else {
 						return default_seatTask;
 					}
@@ -127,27 +127,34 @@ namespace KerbalStats {
 			// it has already been removed. Fortunately the part name is
 			// formatted as "kerbalEVA (name)". The kerbal can then be found
 			// in the part's crew list using the extracted name.
-			string pname = ft.from.name;
-			if (!pname.StartsWith ("kerbalEVA (")) {
+			string kname = ft.from.name;
+			if (!kname.StartsWith ("kerbalEVA (")) {
 				// don't know what to do with it
 				return;
 			}
-			string name = pname.Substring (11, pname.Length - 12);
+			kname = kname.Substring (11, kname.Length - 12);
 			ProtoCrewMember kerbal = null;
 			foreach (var crew in part.protoModuleCrew) {
-				if (crew.name == name) {
+				if (crew.name == kname) {
 					kerbal = crew;
 					break;
 				}
 			}
-			Debug.Log (String.Format ("[KS Exp] {0}: {1} {2}",
-									  "onCrewBoardVessel", kerbal.name,
-									  part.name));
+			// Extract the actual part name from the part. Root nodes include
+			// the vessel name :P
+			string pname = part.name;
+			if (pname.Contains (" (")) {
+				pname = pname.Substring (0, pname.IndexOf (" ("));
+			}
+			// Try to find the seat name
 			string seat = "";
 			if (kerbal.seat != null) {
 				seat = kerbal.seat.transform.name;
 			}
-			SetKerbalActivity (kerbal, partSeatTasks[part.name][seat]);
+			Debug.Log (String.Format ("[KS Exp] {0}: '{1}' '{2}' '{3}' {4} {5}",
+									  "onCrewBoardVessel", kerbal.name,
+									  pname, seat, kerbal.seat, kerbal.seatIdx));
+			SetKerbalActivity (kerbal, partSeatTasks[pname][seat]);
 		}
 
 		void onCrewOnEva (GameEvents.FromToAction<Part, Part> ft)
