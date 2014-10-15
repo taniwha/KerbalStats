@@ -84,9 +84,40 @@ namespace KerbalStats {
 
 		void SetKerbalActivity (ProtoCrewMember kerbal, string task)
 		{
+			KerbalExt ext = KerbalStats.current[kerbal];
 			Debug.Log (String.Format ("[KS Exp] {0}: {1} {2}",
 									  "SetKerbalActivity", kerbal.name,
 									  task));
+			if (!ext.HasNode ("experience")) {
+				ext.AddNode (new ConfigNode ("experience"));
+			}
+			var experience = ext.GetNode ("experience");
+			var current = experience.GetValue ("_current");
+			if (task != current) {
+				double UT = Planetarium.GetUniversalTime ();
+				if (current != null && current != "") {
+					string start = experience.GetValue ("_currentUT");
+					double start_time = double.Parse (start);
+					double duration = UT - start_time;
+					string exp = experience.GetValue (current);
+					double expt = 0;
+					if (exp != null && exp != "") {
+						expt = double.Parse (exp);
+					}
+					expt += duration;
+					exp = expt.ToString ("G17");
+					if (!experience.SetValue (current, exp)) {
+						experience.AddValue (current, exp);
+					}
+				}
+				string taskUT = UT.ToString ("G17");
+				if (!experience.SetValue ("_current", task)) {
+					experience.AddValue ("_current", task);
+				}
+				if (!experience.SetValue ("_currentUT", taskUT)) {
+					experience.AddValue ("_currentUT", taskUT);
+				}
+			}
 		}
 
 		void onCrewBoardVessel (GameEvents.FromToAction<Part, Part> ft)
