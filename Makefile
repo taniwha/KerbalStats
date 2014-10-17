@@ -9,6 +9,7 @@ DATA		:= License.txt seat_tasks.cfg
 
 KS_FILES := \
     AssemblyInfo.cs					\
+	Experience/Experience.cs		\
 	Experience/PartSeatTasks.cs		\
 	Experience/SeatTasks.cs			\
 	Experience/Task.cs				\
