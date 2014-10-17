@@ -6,80 +6,10 @@ using UnityEngine;
 
 using KSP.IO;
 
-namespace KerbalStats {
+namespace KerbalStats.Experience {
 	[KSPAddon (KSPAddon.Startup.EveryScene, false)]
-	public class KSExperience : MonoBehaviour
+	public class KSExperienceTracker : MonoBehaviour
 	{
-		class PartSeatTasks
-		{
-			public class SeatTasks
-			{
-				Dictionary <string, string> seats;
-				string default_task;
-
-				public string this [string seat]
-				{
-					get {
-						if (seats.ContainsKey (seat)) {
-							return seats[seat];
-						} else {
-							return default_task;
-						}
-					}
-				}
-
-				public SeatTasks (string defTask)
-				{
-					seats = new Dictionary <string, string> ();
-					default_task = defTask;
-				}
-				public SeatTasks (ConfigNode node)
-				{
-					if (node.HasValue ("default")) {
-						default_task = node.GetValue ("default");
-					} else {
-						default_task = "Passenger";
-					}
-					seats = new Dictionary <string, string> ();
-					foreach (ConfigNode.Value seat in node.values) {
-						if (seat.name == "name" || seat.name == "default") {
-							continue;
-						}
-						seats[seat.name] = seat.value;
-					}
-				}
-			}
-			Dictionary <string, SeatTasks> partSeatTasks;
-			SeatTasks default_seatTask;
-
-			public SeatTasks this [string part]
-			{
-				get {
-					if (partSeatTasks.ContainsKey (part)) {
-						return partSeatTasks[part];
-					} else {
-						return default_seatTask;
-					}
-				}
-			}
-
-			public PartSeatTasks ()
-			{
-				var dbase = GameDatabase.Instance;
-				default_seatTask = new SeatTasks ("Passenger");
-				partSeatTasks = new Dictionary <string, SeatTasks> ();
-				foreach (var seatMap in dbase.GetConfigNodes ("KSExpSeatMap")) {
-					foreach (var partSeatMap in seatMap.GetNodes ("SeatTasks")) {
-						string name = partSeatMap.GetValue ("name");
-						if (name == null) {
-							continue;
-						}
-						partSeatTasks[name] = new SeatTasks (partSeatMap);
-					}
-				}
-			}
-		}
-
 		static PartSeatTasks partSeatTasks;
 
 		void SetKerbalActivity (ProtoCrewMember kerbal, string task)

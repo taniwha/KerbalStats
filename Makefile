@@ -8,11 +8,13 @@ TARGETS		:= KerbalStats.dll
 DATA		:= License.txt seat_tasks.cfg
 
 KS_FILES := \
-    AssemblyInfo.cs		\
-	Experience.cs		\
-	Gender.cs			\
-	KerbalStats.cs		\
-	VersionReport.cs	\
+    AssemblyInfo.cs					\
+	Experience/PartSeatTasks.cs		\
+	Experience/SeatTasks.cs			\
+	Experience/Tracker.cs			\
+	Gender.cs						\
+	KerbalStats.cs					\
+	VersionReport.cs				\
 	$e
 
 RESGEN2		:= resgen2
