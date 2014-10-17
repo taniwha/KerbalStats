@@ -11,6 +11,7 @@ KS_FILES := \
     AssemblyInfo.cs					\
 	Experience/PartSeatTasks.cs		\
 	Experience/SeatTasks.cs			\
+	Experience/Task.cs				\
 	Experience/Tracker.cs			\
 	Gender.cs						\
 	KerbalStats.cs					\
