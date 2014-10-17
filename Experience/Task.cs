@@ -78,26 +78,26 @@ namespace KerbalStats.Experience {
 			SetSituation (UT, situation);
 		}
 
-		public double Experience ()
+		public double Experience (double UT)
 		{
 			double exp = 0;
 			foreach (var dur in situations.Values) {
 				exp += dur;
 			}
 			if (current != null) {
-				exp += Planetarium.GetUniversalTime () - currentUT;
+				exp += UT - currentUT;
 			}
 			return exp;
 		}
 
-		public double Experience (string sit)
+		public double Experience (double UT, string sit)
 		{
 			double exp = 0;
 			if (situations.ContainsKey (sit)) {
 				exp += situations[sit];
 			}
 			if (current == sit) {
-				exp += Planetarium.GetUniversalTime () - currentUT;
+				exp += UT - currentUT;
 			}
 			return exp;
 		}
