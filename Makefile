@@ -4,19 +4,19 @@ GAMEDATA	:= ${KSPDIR}/GameData
 KSGAMEDATA  := ${GAMEDATA}/KerbalStats
 PLUGINDIR	:= ${KSGAMEDATA}/Plugins
 
-TARGETS		:= KerbalStats.dll
+TARGETS		:= bin/KerbalStats.dll
 DATA		:= License.txt Experience/seat_tasks.cfg
 
 KS_FILES := \
-    AssemblyInfo.cs					\
 	Experience/Experience.cs		\
 	Experience/PartSeatTasks.cs		\
 	Experience/SeatTasks.cs			\
 	Experience/Task.cs				\
 	Experience/Tracker.cs			\
-	Gender.cs						\
+	Gender/Gender.cs				\
 	KerbalStats.cs					\
-	VersionReport.cs				\
+    assembly/AssemblyInfo.cs		\
+	assembly/VersionReport.cs		\
 	$e
 
 RESGEN2		:= resgen2
@@ -30,7 +30,7 @@ all: version ${TARGETS}
 
 .PHONY: version
 version:
-	@./git-version.sh
+	@./tools/git-version.sh
 
 info:
 	@echo "KerbalStats Build Information"
@@ -42,13 +42,15 @@ info:
 	@echo "    zip:        ${ZIP}"
 	@echo "    KSP Data:   ${KSPDIR}"
 
-KerbalStats.dll: ${KS_FILES}
+bin/KerbalStats.dll: ${KS_FILES}
+	@mkdir -p bin
 	${GMCS} ${GMCSFLAGS} -t:library -lib:${MANAGED} \
 		-r:Assembly-CSharp,Assembly-CSharp-firstpass,UnityEngine \
 		-out:$@ $^
 
 clean:
-	rm -f ${TARGETS} AssemblyInfo.cs
+	rm -f ${TARGETS} assembly/AssemblyInfo.cs
+	test -d bin && rmdir bin || true
 
 install: all
 	mkdir -p ${PLUGINDIR}
