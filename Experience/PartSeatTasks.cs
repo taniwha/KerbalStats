@@ -7,7 +7,7 @@ using UnityEngine;
 using KSP.IO;
 
 namespace KerbalStats.Experience {
-	class PartSeatTasks
+	public class PartSeatTasks
 	{
 		Dictionary <string, SeatTasks> partSeatTasks;
 		SeatTasks default_seatTask;

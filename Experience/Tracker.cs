@@ -7,49 +7,96 @@ using UnityEngine;
 using KSP.IO;
 
 namespace KerbalStats.Experience {
-	[KSPAddon (KSPAddon.Startup.EveryScene, false)]
-	public class KSExperienceTracker : MonoBehaviour
+	public class ExperienceTracker : IKSConfigNode
 	{
-		static PartSeatTasks partSeatTasks;
+		Dictionary<string,Experience> kerbal_experience;
+		public static PartSeatTasks partSeatTasks;
 
-		void SetKerbalActivity (ProtoCrewMember kerbal, string task)
+		public static ExperienceTracker instance;
+
+		public ExperienceTracker ()
 		{
-			KerbalExt ext = KerbalStats.current[kerbal];
-			Debug.Log (String.Format ("[KS Exp] {0}: {1} {2}",
-									  "SetKerbalActivity", kerbal.name,
-									  task));
-			if (!ext.HasNode ("experience")) {
-				ext.AddNode (new ConfigNode ("experience"));
+			instance = this;
+			if (partSeatTasks == null) {
+				partSeatTasks = new PartSeatTasks ();
 			}
-			var experience = ext.GetNode ("experience");
-			var current = experience.GetValue ("_current");
-			if (task != current) {
-				double UT = Planetarium.GetUniversalTime ();
-				if (current != null && current != "") {
-					string start = experience.GetValue ("_currentUT");
-					double start_time = double.Parse (start);
-					double duration = UT - start_time;
-					string exp = experience.GetValue (current);
-					double expt = 0;
-					if (exp != null && exp != "") {
-						expt = double.Parse (exp);
-					}
-					expt += duration;
-					exp = expt.ToString ("G17");
-					if (!experience.SetValue (current, exp)) {
-						experience.AddValue (current, exp);
-					}
-				}
-				string taskUT = UT.ToString ("G17");
-				if (!experience.SetValue ("_current", task)) {
-					experience.AddValue ("_current", task);
-				}
-				if (!experience.SetValue ("_currentUT", taskUT)) {
-					experience.AddValue ("_currentUT", taskUT);
-				}
+			kerbal_experience = new Dictionary<string,Experience> ();
+		}
+
+		public void AddKerbal (ProtoCrewMember kerbal, KerbalExt ext)
+		{
+			kerbal_experience[kerbal.name] = new Experience ();
+		}
+
+		public void RemoveKerbal (ProtoCrewMember kerbal, KerbalExt ext)
+		{
+			kerbal_experience.Remove (kerbal.name);
+		}
+
+		public string name
+		{
+			get {
+				return "experience";
 			}
 		}
 
+		public void Load (ProtoCrewMember kerbal, ConfigNode node)
+		{
+			kerbal_experience[kerbal.name] = new Experience ();
+			kerbal_experience[kerbal.name].Load (node);
+		}
+
+		public bool Save (ProtoCrewMember kerbal, ConfigNode node)
+		{
+			if (kerbal_experience.ContainsKey (kerbal.name)) {
+				kerbal_experience[kerbal.name].Save (node);
+				return true;
+			}
+			return false;
+		}
+
+		public void SetSituation (ProtoCrewMember kerbal, double UT, string situation)
+		{
+			if (!kerbal_experience.ContainsKey (kerbal.name)) {
+				AddKerbal (kerbal, null);
+			}
+			var exp = kerbal_experience[kerbal.name];
+			exp.SetSituation (UT, situation);
+		}
+
+		public void BeginTask (ProtoCrewMember kerbal, double UT, string task, string situation)
+		{
+			if (!kerbal_experience.ContainsKey (kerbal.name)) {
+				AddKerbal (kerbal, null);
+			}
+			var exp = kerbal_experience[kerbal.name];
+			exp.BeginTask (UT, task, situation);
+		}
+
+		public void FinishTask (ProtoCrewMember kerbal, double UT, string task)
+		{
+			if (!kerbal_experience.ContainsKey (kerbal.name)) {
+				AddKerbal (kerbal, null);
+			}
+			var exp = kerbal_experience[kerbal.name];
+			exp.FinishTask (UT, task);
+		}
+
+		public void FinishAllTasks (ProtoCrewMember kerbal, double UT)
+		{
+			if (!kerbal_experience.ContainsKey (kerbal.name)) {
+				AddKerbal (kerbal, null);
+			}
+			var exp = kerbal_experience[kerbal.name];
+			foreach (var task in exp.Current) {
+				exp.FinishTask (UT, task);
+			}
+		}
+	}
+
+	[KSPAddon (KSPAddon.Startup.EveryScene, false)]
+	public class KSExperienceTrackerEvents : MonoBehaviour
+	{
 		void onCrewBoardVessel (GameEvents.FromToAction<Part, Part> ft)
 		{
 			Part part = ft.to;
@@ -84,16 +131,24 @@ namespace KerbalStats.Experience {
 			Debug.Log (String.Format ("[KS Exp] {0}: '{1}' '{2}' '{3}' {4} {5}",
 									  "onCrewBoardVessel", kerbal.name,
 									  pname, seat, kerbal.seat, kerbal.seatIdx));
-			SetKerbalActivity (kerbal, partSeatTasks[pname][seat]);
+			double UT = Planetarium.GetUniversalTime ();
+			string task = ExperienceTracker.partSeatTasks[pname][seat];
+			string situation = part.vessel.situation.ToString ();
+			ExperienceTracker.instance.FinishAllTasks (kerbal, UT);
+			ExperienceTracker.instance.BeginTask (kerbal, UT, task, situation);
 		}
 
 		void onCrewOnEva (GameEvents.FromToAction<Part, Part> ft)
 		{
 			Part part = ft.from;
+			Vessel vessel = ft.to.vessel;
 			ProtoCrewMember kerbal = ft.to.protoModuleCrew[0];
 			Debug.Log (String.Format ("[KS Exp] {0}: {1} {2}",
 									  "onCrewOnEva", part, kerbal.name));
-			SetKerbalActivity (kerbal, "EVA");
+			double UT = Planetarium.GetUniversalTime ();
+			string situation = vessel.situation.ToString ();
+			ExperienceTracker.instance.FinishAllTasks (kerbal, UT);
+			ExperienceTracker.instance.BeginTask (kerbal, UT, "EVA", situation);
 		}
 
 		void onKerbalStatusChange (ProtoCrewMember pcm, ProtoCrewMember.RosterStatus old_status, ProtoCrewMember.RosterStatus new_status)
@@ -144,6 +199,18 @@ namespace KerbalStats.Experience {
 
 		void onVesselSituationChange (GameEvents.HostedFromToAction<Vessel, Vessel.Situations> hft)
 		{
+			Vessel vessel = hft.host;
+			var oldsit = hft.from;
+			var newsit = hft.from;
+			Debug.Log (String.Format ("[KS Exp] {0}: {1} {2} {3}",
+									  "onVesselSituationChange",
+									  vessel.vesselName, oldsit, newsit));
+			var crew = vessel.GetVesselCrew ();
+			string situation = newsit.ToString ();
+			double UT = Planetarium.GetUniversalTime ();
+			foreach (var kerbal in crew) {
+				ExperienceTracker.instance.SetSituation (kerbal, UT, situation);
+			}
 		}
 
 		void onVesselSOIChanged (GameEvents.HostedFromToAction<Vessel, CelestialBody> hft)
@@ -168,10 +235,9 @@ namespace KerbalStats.Experience {
 				GameEvents.onVesselRecovered.Add (onVesselRecovered);
 				GameEvents.onVesselSituationChange.Add (onVesselSituationChange);
 				GameEvents.onVesselSOIChanged.Add (onVesselSOIChanged);
-			} else if (scene == GameScenes.MAINMENU) {
-				if (partSeatTasks == null) {
-					partSeatTasks = new PartSeatTasks ();
-				}
+			} else if (scene == GameScenes.MAINMENU
+					   && ExperienceTracker.instance == null) {
+				KerbalStats.AddModule (new ExperienceTracker ());
 			}
 		}
 		void OnDestroy ()

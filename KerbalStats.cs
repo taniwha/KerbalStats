@@ -7,6 +7,13 @@ namespace KerbalStats {
 	public interface IKerbalStats
 	{
 		void AddKerbal (ProtoCrewMember kerbal, KerbalExt ext);
+		void RemoveKerbal (ProtoCrewMember kerbal, KerbalExt ext);
+	}
+	public interface IKSConfigNode:IKerbalStats
+	{
+		string name { get; }
+		void Load (ProtoCrewMember kerbal, ConfigNode node);
+		bool Save (ProtoCrewMember kerbal, ConfigNode node);
 	}
 
 	public static class EnumUtil {
@@ -26,11 +33,16 @@ namespace KerbalStats {
 	public class KerbalStats : ScenarioModule
 	{
 		static List<IKerbalStats> modules = new List<IKerbalStats> ();
+		static Dictionary<string, IKSConfigNode> node_modules = new Dictionary<string, IKSConfigNode> ();
 
 		public static void AddModule (IKerbalStats mod)
 		{
 			if (!modules.Contains (mod)) {
 				modules.Add (mod);
+				if (mod is IKSConfigNode) {
+					var nm = mod as IKSConfigNode;
+					node_modules[nm.name] = nm;
+				}
 			}
 		}
 
@@ -88,19 +100,45 @@ namespace KerbalStats {
 			if (roster == null) {
 				build_roster (game);
 			} else {
-				foreach (var kerbal in roster.GetNodes ("KerbalExt")) {
-					Roster.Add (new KerbalExt (kerbal));
+				var modules = new HashSet<string> (node_modules.Keys);
+				var kerbal_list = roster.GetNodes ("KerbalExt");
+				for (int i = 0; i < kerbal_list.Count(); i++) {
+					var kerbal = kerbal_list[i];
+					ProtoCrewMember pcm = game.CrewRoster[i];
+					var ext = new KerbalExt (kerbal);
+					Roster.Add (ext);
+					foreach (ConfigNode mod in kerbal.nodes) {
+						if (node_modules.ContainsKey (mod.name)) {
+							modules.Remove(mod.name);
+							node_modules[mod.name].Load (pcm, mod);
+						}
+					}
+					foreach (string mn in modules) {
+						node_modules[mn].AddKerbal (pcm, ext);
+					}
 				}
 			}
 		}
 
 		public override void OnSave(ConfigNode config)
 		{
+			var game = HighLogic.CurrentGame;
 			Debug.Log (String.Format ("[KS] OnSave: {0}", config));
 
 			var roster = config.AddNode (new ConfigNode ("Roster"));
-			foreach (var kerbal in Roster) {
-				roster.AddNode (kerbal.CopyNode ());
+			for (int i = 0; i < Roster.Count; i++) {
+				var kerbal = Roster[i];
+				ProtoCrewMember pcm = game.CrewRoster[i];
+				var extnode = kerbal.CopyNode ();
+				roster.AddNode (extnode);
+				ConfigNode node = new ConfigNode ();
+				foreach (var kv in node_modules) {
+					node.name = kv.Key;
+					if (kv.Value.Save (pcm, node)) {
+						extnode.AddNode (node);
+						node = new ConfigNode ();
+					}
+				}
 			}
 		}
 

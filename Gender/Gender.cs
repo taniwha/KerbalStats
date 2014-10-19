@@ -59,6 +59,10 @@ namespace KerbalStats {
 		{
 			ext.SetAttribute ("gender", PickGender (kerbal.name));
 		}
+
+		public void RemoveKerbal (ProtoCrewMember kerbal, KerbalExt ext)
+		{
+		}
 	}
 
 	[KSPAddon (KSPAddon.Startup.MainMenu, true)]

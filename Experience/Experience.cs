@@ -12,6 +12,13 @@ namespace KerbalStats.Experience {
 		Dictionary<string, Task> tasks;
 		HashSet<string> current;
 
+		public string [] Current
+		{
+			get {
+				return current.ToArray ();
+			}
+		}
+
 		public void Load (ConfigNode node)
 		{
 			foreach (ConfigNode task_node in node.nodes) {
