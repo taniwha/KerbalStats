@@ -14,6 +14,7 @@ KS_FILES := \
 	Experience/Task.cs				\
 	Experience/Tracker.cs			\
 	Gender/Gender.cs				\
+	KerbalExt.cs					\
 	KerbalStats.cs					\
     assembly/AssemblyInfo.cs		\
 	assembly/VersionReport.cs		\
