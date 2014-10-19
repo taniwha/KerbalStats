@@ -27,6 +27,8 @@ namespace KerbalStats {
 			"zor",
 		};
 
+		Dictionary <string, string> kerbal_gender;
+
 		static string PickGender (string name)
 		{
 			int end = name.LastIndexOf (" ");
@@ -55,13 +57,41 @@ namespace KerbalStats {
 			return "M";
 		}
 
-		public void AddKerbal (ProtoCrewMember kerbal, KerbalExt ext)
+		public void AddKerbal (ProtoCrewMember kerbal)
 		{
-			ext.SetAttribute ("gender", PickGender (kerbal.name));
+			kerbal_gender[kerbal.name] = PickGender (kerbal.name);
 		}
 
-		public void RemoveKerbal (ProtoCrewMember kerbal, KerbalExt ext)
+		public void RemoveKerbal (ProtoCrewMember kerbal)
 		{
+		}
+
+		public string name
+		{
+			get {
+				return "gender";
+			}
+		}
+
+		public void Load (ProtoCrewMember kerbal, ConfigNode node)
+		{
+			if (node.HasValue ("gneder")) {
+				kerbal_gender[kerbal.name] = node.GetValue ("gender");
+			} else {
+				AddKerbal (kerbal);
+			}
+		}
+
+		public void Save (ProtoCrewMember kerbal, ConfigNode node)
+		{
+			if (kerbal_gender.ContainsKey (kerbal.name)) {
+				node.AddValue ("gender", kerbal_gender[kerbal.name]);
+			}
+		}
+
+		public Gender ()
+		{
+			kerbal_gender = new Dictionary <string, string> ();
 		}
 	}
 

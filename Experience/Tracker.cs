@@ -7,7 +7,7 @@ using UnityEngine;
 using KSP.IO;
 
 namespace KerbalStats.Experience {
-	public class ExperienceTracker : IKSConfigNode
+	public class ExperienceTracker : IKerbalStats
 	{
 		Dictionary<string,Experience> kerbal_experience;
 		public static PartSeatTasks partSeatTasks;
@@ -23,12 +23,12 @@ namespace KerbalStats.Experience {
 			kerbal_experience = new Dictionary<string,Experience> ();
 		}
 
-		public void AddKerbal (ProtoCrewMember kerbal, KerbalExt ext)
+		public void AddKerbal (ProtoCrewMember kerbal)
 		{
 			kerbal_experience[kerbal.name] = new Experience ();
 		}
 
-		public void RemoveKerbal (ProtoCrewMember kerbal, KerbalExt ext)
+		public void RemoveKerbal (ProtoCrewMember kerbal)
 		{
 			kerbal_experience.Remove (kerbal.name);
 		}
@@ -46,19 +46,18 @@ namespace KerbalStats.Experience {
 			kerbal_experience[kerbal.name].Load (node);
 		}
 
-		public bool Save (ProtoCrewMember kerbal, ConfigNode node)
+		public void Save (ProtoCrewMember kerbal, ConfigNode node)
 		{
 			if (kerbal_experience.ContainsKey (kerbal.name)) {
-				kerbal_experience[kerbal.name].Save (node);
-				return true;
+				var exp = new ConfigNode ("experience");
+				kerbal_experience[kerbal.name].Save (exp);
 			}
-			return false;
 		}
 
 		public void SetSituation (ProtoCrewMember kerbal, double UT, string situation)
 		{
 			if (!kerbal_experience.ContainsKey (kerbal.name)) {
-				AddKerbal (kerbal, null);
+				AddKerbal (kerbal);
 			}
 			var exp = kerbal_experience[kerbal.name];
 			exp.SetSituation (UT, situation);
@@ -67,7 +66,7 @@ namespace KerbalStats.Experience {
 		public void BeginTask (ProtoCrewMember kerbal, double UT, string task, string situation)
 		{
 			if (!kerbal_experience.ContainsKey (kerbal.name)) {
-				AddKerbal (kerbal, null);
+				AddKerbal (kerbal);
 			}
 			var exp = kerbal_experience[kerbal.name];
 			exp.BeginTask (UT, task, situation);
@@ -76,7 +75,7 @@ namespace KerbalStats.Experience {
 		public void FinishTask (ProtoCrewMember kerbal, double UT, string task)
 		{
 			if (!kerbal_experience.ContainsKey (kerbal.name)) {
-				AddKerbal (kerbal, null);
+				AddKerbal (kerbal);
 			}
 			var exp = kerbal_experience[kerbal.name];
 			exp.FinishTask (UT, task);
@@ -85,7 +84,7 @@ namespace KerbalStats.Experience {
 		public void FinishAllTasks (ProtoCrewMember kerbal, double UT)
 		{
 			if (!kerbal_experience.ContainsKey (kerbal.name)) {
-				AddKerbal (kerbal, null);
+				AddKerbal (kerbal);
 			}
 			var exp = kerbal_experience[kerbal.name];
 			foreach (var task in exp.Current) {
