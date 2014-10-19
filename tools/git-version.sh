@@ -7,4 +7,4 @@ sed -e "s/@FULL_VERSION@/$full_version/" -e "s/@VERSION@/$version/" assembly/Ass
 
 cmp -s assembly/AssemblyInfo.cs assembly/AssemblyInfo.cs- || mv assembly/AssemblyInfo.cs- assembly/AssemblyInfo.cs
 
-rm -f *.cs-
+rm -f assembly/*.cs-
