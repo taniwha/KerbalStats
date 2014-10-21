@@ -43,13 +43,19 @@ namespace KerbalStats.Experience {
 		public void Load (ProtoCrewMember kerbal, ConfigNode node)
 		{
 			kerbal_experience[kerbal.name] = new Experience ();
-			kerbal_experience[kerbal.name].Load (node);
+			if (node.HasNode ("experience")) {
+				var exp = node.GetNode ("experience");
+				kerbal_experience[kerbal.name].Load (exp);
+			} else {
+				AddKerbal (kerbal);
+			}
 		}
 
 		public void Save (ProtoCrewMember kerbal, ConfigNode node)
 		{
 			if (kerbal_experience.ContainsKey (kerbal.name)) {
 				var exp = new ConfigNode ("experience");
+				node.AddNode (exp);
 				kerbal_experience[kerbal.name].Save (exp);
 			}
 		}
