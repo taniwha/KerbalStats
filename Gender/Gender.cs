@@ -75,7 +75,7 @@ namespace KerbalStats {
 
 		public void Load (ProtoCrewMember kerbal, ConfigNode node)
 		{
-			if (node.HasValue ("gneder")) {
+			if (node.HasValue ("gender")) {
 				kerbal_gender[kerbal.name] = node.GetValue ("gender");
 			} else {
 				AddKerbal (kerbal);
