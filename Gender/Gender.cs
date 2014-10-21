@@ -34,26 +34,26 @@ namespace KerbalStats {
 			int end = name.LastIndexOf (" ");
 			name = name.Substring (0, end);
 			if (male_names.Contains (name)) {
-				Debug.Log (String.Format ("[KS] Male fn: {0}", name));
+				Debug.Log (String.Format ("[KS Gender] Male fn: {0}", name));
 				return "M";
 			}
 			foreach (string suf in female_endings) {
 				if (name.EndsWith (suf)) {
-					Debug.Log (String.Format ("[KS] Female e: {0}", name));
+					Debug.Log (String.Format ("[KS Gender] Female e: {0}", name));
 					return "F";
 				}
 			}
 			foreach (string suf in male_endings) {
 				if (name.EndsWith (suf)) {
-					Debug.Log (String.Format ("[KS] Male e: {0}", name));
+					Debug.Log (String.Format ("[KS Gender] Male e: {0}", name));
 					return "M";
 				}
 			}
 			if (UnityEngine.Random.Range (0, 10) < 2) {
-				Debug.Log (String.Format ("[KS] Female r: {0}", name));
+				Debug.Log (String.Format ("[KS Gender] Female r: {0}", name));
 				return "F";
 			}
-			Debug.Log (String.Format ("[KS] Male r: {0}", name));
+			Debug.Log (String.Format ("[KS Gender] Male r: {0}", name));
 			return "M";
 		}
 
