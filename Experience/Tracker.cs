@@ -43,8 +43,8 @@ namespace KerbalStats.Experience {
 		public void Load (ProtoCrewMember kerbal, ConfigNode node)
 		{
 			kerbal_experience[kerbal.name] = new Experience ();
-			if (node.HasNode ("experience")) {
-				var exp = node.GetNode ("experience");
+			if (node.HasNode (name)) {
+				var exp = node.GetNode (name);
 				kerbal_experience[kerbal.name].Load (exp);
 			} else {
 				AddKerbal (kerbal);
