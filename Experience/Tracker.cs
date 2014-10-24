@@ -242,7 +242,7 @@ namespace KerbalStats.Experience {
 				GameEvents.onVesselSOIChanged.Add (onVesselSOIChanged);
 			} else if (scene == GameScenes.MAINMENU
 					   && ExperienceTracker.instance == null) {
-				KerbalStats.AddModule (new ExperienceTracker ());
+				KerbalExt.AddModule (new ExperienceTracker ());
 			}
 		}
 		void OnDestroy ()

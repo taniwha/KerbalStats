@@ -1,51 +1,59 @@
+using System.Collections.Generic;
+
 namespace KerbalStats {
 	public class KerbalExt
 	{
-		ConfigNode node;
-		public ConfigNode CopyNode ()
-		{
-			var n = new ConfigNode ();
-			node.CopyTo (n, "KerbalExt");
-			return n;
-		}
+		static Dictionary<string, IKerbalStats> modules = new Dictionary<string, IKerbalStats> ();
 
-		public bool HasNode (string name)
+		public static void AddModule (IKerbalStats mod)
 		{
-			return node.HasNode (name);
-		}
-
-		public ConfigNode GetNode (string name)
-		{
-			return node.GetNode (name);
-		}
-
-		public void AddNode (ConfigNode n)
-		{
-			node.AddNode (n);
-		}
-
-		public void SetAttribute (string  attr, string val)
-		{
-			if (node.HasValue (attr)) {
-				node.SetValue (attr, val);
-			} else {
-				node.AddValue (attr, val);
+			if (!modules.ContainsKey (mod.name)) {
+				modules[mod.name] = mod;
 			}
 		}
-		public string GetAttribute (string  attr)
-		{
-			return node.GetValue (attr);
-		}
+
+		ConfigNode node;
 
 		public KerbalExt ()
 		{
 			node = new ConfigNode ();
 		}
 
-		public KerbalExt (ConfigNode kerbal)
+		public void NewKerbal (ProtoCrewMember pcm)
 		{
-			node = new ConfigNode ();
-			kerbal.CopyTo (node, "KerbalExt");
+			foreach (var mod in modules.Values) {
+				mod.AddKerbal (pcm);
+			}
+		}
+
+		public void Load (ProtoCrewMember kerbal, ConfigNode ext)
+		{
+			ext.CopyTo (node, "KerbalExt");
+			foreach (var mod in modules.Values) {
+				mod.Load (kerbal, node);
+			}
+			for (int i = 0; i < node.nodes.Count; ) {
+				if (modules.ContainsKey (node.nodes[i].name)) {
+					node.RemoveNodes (node.nodes[i].name);
+					continue;
+				}
+				i++;
+			}
+			for (int i = 0; i < node.values.Count; ) {
+				if (modules.ContainsKey (node.nodes[i].name)) {
+					node.RemoveValues (node.nodes[i].name);
+					continue;
+				}
+				i++;
+			}
+		}
+
+		public void Save (ProtoCrewMember kerbal, ConfigNode ext)
+		{
+			node.CopyTo (ext, "KerbalExt");
+			foreach (var mod in modules.Values) {
+				mod.Save (kerbal, node);
+			}
 		}
 	}
 }

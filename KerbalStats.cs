@@ -29,15 +29,6 @@ namespace KerbalStats {
 	]
 	public class KerbalStats : ScenarioModule
 	{
-		static Dictionary<string, IKerbalStats> modules = new Dictionary<string, IKerbalStats> ();
-
-		public static void AddModule (IKerbalStats mod)
-		{
-			if (!modules.ContainsKey (mod.name)) {
-				modules[mod.name] = mod;
-			}
-		}
-
 		List<KerbalExt> Roster;
 
 		public static KerbalStats current
@@ -96,11 +87,9 @@ namespace KerbalStats {
 				for (int i = 0; i < kerbal_list.Count(); i++) {
 					var kerbal = kerbal_list[i];
 					ProtoCrewMember pcm = game.CrewRoster[i];
-					var ext = new KerbalExt (kerbal);
+					var ext = new KerbalExt ();
 					Roster.Add (ext);
-					foreach (var mod in modules.Values) {
-						mod.Load (pcm, kerbal);
-					}
+					ext.Load (pcm, kerbal);
 				}
 			}
 		}
@@ -116,9 +105,7 @@ namespace KerbalStats {
 				ProtoCrewMember pcm = game.CrewRoster[i];
 				var node = new ConfigNode ("KerbalExt");
 				roster.AddNode (node);
-				foreach (var mod in modules.Values) {
-					mod.Save (pcm, node);
-				}
+				kerbal.Save (pcm, node);
 			}
 		}
 
@@ -128,9 +115,7 @@ namespace KerbalStats {
 									  kerbal.rosterStatus, kerbal.type));
 			KerbalExt ext = new KerbalExt ();
 			Roster.Add (ext);
-			foreach (var mod in modules.Values) {
-				mod.AddKerbal (kerbal);
-			}
+			ext.NewKerbal (kerbal);
 		}
 
 		void onKerbalAdded (ProtoCrewMember kerbal)

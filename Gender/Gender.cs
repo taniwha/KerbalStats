@@ -100,7 +100,7 @@ namespace KerbalStats {
 	{
 		void Awake ()
 		{
-			KerbalStats.AddModule (new Gender ());
+			KerbalExt.AddModule (new Gender ());
 			Destroy (this);
 		}
 	}
