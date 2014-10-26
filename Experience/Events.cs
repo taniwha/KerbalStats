@@ -148,9 +148,6 @@ namespace KerbalStats.Experience {
 				GameEvents.onVesselRecovered.Add (onVesselRecovered);
 				GameEvents.onVesselSituationChange.Add (onVesselSituationChange);
 				GameEvents.onVesselSOIChanged.Add (onVesselSOIChanged);
-			} else if (scene == GameScenes.MAINMENU
-					   && ExperienceTracker.instance == null) {
-				KerbalExt.AddModule (new ExperienceTracker ());
 			}
 		}
 		void OnDestroy ()

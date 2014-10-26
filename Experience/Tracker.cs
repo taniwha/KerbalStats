@@ -98,4 +98,13 @@ namespace KerbalStats.Experience {
 			}
 		}
 	}
+
+	[KSPAddon (KSPAddon.Startup.MainMenu, true)]
+	public class KSGenderInit : MonoBehaviour
+	{
+		void Awake ()
+		{
+			KerbalExt.AddModule (new ExperienceTracker ());
+		}
+	}
 }

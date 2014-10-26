@@ -40,8 +40,8 @@ namespace KerbalStats {
 				i++;
 			}
 			for (int i = 0; i < node.values.Count; ) {
-				if (modules.ContainsKey (node.nodes[i].name)) {
-					node.RemoveValues (node.nodes[i].name);
+				if (modules.ContainsKey (node.values[i].name)) {
+					node.RemoveValues (node.values[i].name);
 					continue;
 				}
 				i++;
@@ -52,7 +52,7 @@ namespace KerbalStats {
 		{
 			node.CopyTo (ext, "KerbalExt");
 			foreach (var mod in modules.Values) {
-				mod.Save (kerbal, node);
+				mod.Save (kerbal, ext);
 			}
 		}
 	}
