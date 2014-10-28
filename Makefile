@@ -17,7 +17,7 @@ KS_FILES := \
 	Gender/Gender.cs				\
 	KerbalExt.cs					\
 	KerbalStats.cs					\
-    assembly/AssemblyInfo.cs		\
+	assembly/AssemblyInfo.cs		\
 	assembly/VersionReport.cs		\
 	$e
 
