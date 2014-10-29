@@ -10,58 +10,49 @@ namespace KerbalStats.Experience {
 	[KSPAddon (KSPAddon.Startup.EveryScene, false)]
 	public class KSExperienceTrackerEvents : MonoBehaviour
 	{
-		void onCrewBoardVessel (GameEvents.FromToAction<Part, Part> ft)
+		string GetPartName (Part part)
 		{
-			Part part = ft.to;
-			// The "from" part is almost useless for getting the kerbal as
-			// it has already been removed. Fortunately the part name is
-			// formatted as "kerbalEVA (name)". The kerbal can then be found
-			// in the part's crew list using the extracted name.
-			string kname = ft.from.name;
-			if (!kname.StartsWith ("kerbalEVA (")) {
-				// don't know what to do with it
-				return;
-			}
-			kname = kname.Substring (11, kname.Length - 12);
-			ProtoCrewMember kerbal = null;
-			foreach (var crew in part.protoModuleCrew) {
-				if (crew.name == kname) {
-					kerbal = crew;
-					break;
-				}
-			}
 			// Extract the actual part name from the part. Root nodes include
 			// the vessel name :P
 			string pname = part.name;
 			if (pname.Contains (" (")) {
 				pname = pname.Substring (0, pname.IndexOf (" ("));
 			}
+			return pname;
+		}
+
+		string GetSeat (ProtoCrewMember kerbal)
+		{
 			// Try to find the seat name
 			string seat = "";
 			if (kerbal.seat != null) {
 				seat = kerbal.seat.transform.name;
 			}
-			Debug.Log (String.Format ("[KS Exp] {0}: '{1}' '{2}' '{3}' {4} {5}",
-									  "onCrewBoardVessel", kerbal.name,
-									  pname, seat, kerbal.seat, kerbal.seatIdx));
-			double UT = Planetarium.GetUniversalTime ();
-			string task = ExperienceTracker.partSeatTasks[pname][seat];
-			string situation = part.vessel.situation.ToString ();
-			ExperienceTracker.instance.FinishAllTasks (kerbal, UT);
-			ExperienceTracker.instance.BeginTask (kerbal, UT, task, situation);
+			return seat;
 		}
 
-		void onCrewOnEva (GameEvents.FromToAction<Part, Part> ft)
+		void onCrewTransferred (GameEvents.HostedFromToAction<ProtoCrewMember,Part> hft)
 		{
-			Part part = ft.from;
-			Vessel vessel = ft.to.vessel;
-			ProtoCrewMember kerbal = ft.to.protoModuleCrew[0];
-			Debug.Log (String.Format ("[KS Exp] {0}: {1} {2}",
-									  "onCrewOnEva", part, kerbal.name));
+			var kerbal = hft.host;
+			var src_part = hft.from;
+			var dst_part = hft.to;
+			Debug.Log (String.Format ("[KS Exp] onCrewTransferred: {0} {1} {2}",
+									  kerbal, src_part, dst_part));
 			double UT = Planetarium.GetUniversalTime ();
-			string situation = vessel.situation.ToString ();
 			ExperienceTracker.instance.FinishAllTasks (kerbal, UT);
-			ExperienceTracker.instance.BeginTask (kerbal, UT, "EVA", situation);
+			string task;
+			Vessel vessel = dst_part.vessel;
+			if (dst_part.vessel.isEVA) {
+				task = "EVA";
+			} else {
+				string pname = GetPartName (dst_part);
+				string seat = GetSeat (kerbal);
+				task = ExperienceTracker.partSeatTasks[pname][seat];
+			}
+			string situation = vessel.situation.ToString ();
+			Debug.Log (String.Format ("[KS Exp] '{0}' '{1}' '{2}'",
+									  kerbal.name, task, situation));
+			ExperienceTracker.instance.BeginTask (kerbal, UT, task, situation);
 		}
 
 		void onKerbalStatusChange (ProtoCrewMember pcm, ProtoCrewMember.RosterStatus old_status, ProtoCrewMember.RosterStatus new_status)
@@ -138,8 +129,7 @@ namespace KerbalStats.Experience {
 				|| scene == GameScenes.FLIGHT
 				|| scene == GameScenes.TRACKSTATION
 				|| scene == GameScenes.SPH) {
-				GameEvents.onCrewBoardVessel.Add (onCrewBoardVessel);
-				GameEvents.onCrewOnEva.Add (onCrewOnEva);
+				GameEvents.onCrewTransferred.Add (onCrewTransferred);
 				GameEvents.onKerbalStatusChange.Add (onKerbalStatusChange);
 				GameEvents.onKerbalTypeChange.Add (onKerbalTypeChange);
 				GameEvents.onNewVesselCreated.Add (onNewVesselCreated);
@@ -152,8 +142,7 @@ namespace KerbalStats.Experience {
 		}
 		void OnDestroy ()
 		{
-			GameEvents.onCrewBoardVessel.Remove (onCrewBoardVessel);
-			GameEvents.onCrewOnEva.Remove (onCrewOnEva);
+			GameEvents.onCrewTransferred.Remove (onCrewTransferred);
 			GameEvents.onKerbalStatusChange.Remove (onKerbalStatusChange);
 			GameEvents.onKerbalTypeChange.Remove (onKerbalTypeChange);
 			GameEvents.onNewVesselCreated.Remove (onNewVesselCreated);
