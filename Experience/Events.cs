@@ -105,7 +105,7 @@ namespace KerbalStats.Experience {
 		{
 			Vessel vessel = hft.host;
 			var oldsit = hft.from;
-			var newsit = hft.from;
+			var newsit = hft.to;
 			Debug.Log (String.Format ("[KS Exp] {0}: {1} {2} {3}",
 									  "onVesselSituationChange",
 									  vessel.vesselName, oldsit, newsit));
