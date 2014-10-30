@@ -26,9 +26,32 @@ namespace KerbalStats.Experience {
 			// Try to find the seat name
 			string seat = "";
 			if (kerbal.seat != null) {
-				seat = kerbal.seat.transform.name;
+				seat = kerbal.seat.seatTransformName;
 			}
+			Debug.Log (String.Format ("[KS Exp] GetSeat: {0}", seat));
 			return seat;
+		}
+
+		void foobar (ProtoCrewMember kerbal, Vessel vessel, string task)
+		{
+			double UT = Planetarium.GetUniversalTime ();
+			ExperienceTracker.instance.FinishAllTasks (kerbal, UT);
+			string situation = vessel.situation.ToString ();
+			Debug.Log (String.Format ("[KS Exp] '{0}' '{1}' '{2}'",
+									  kerbal.name, task, situation));
+			ExperienceTracker.instance.BeginTask (kerbal, UT, task, situation);
+		}
+
+		IEnumerator<YieldInstruction> WaitAndSeatKerbal (ProtoCrewMember kerbal)
+		{
+			yield return null;
+			Part part = kerbal.KerbalRef.InPart;
+			Debug.Log (String.Format ("[KS Exp] WaitAndSeatKerbal: {0} {1} {2}",
+									  kerbal.name, part, kerbal.seat));
+			string pname = GetPartName (part);
+			string seat = GetSeat (kerbal);
+			string task = ExperienceTracker.partSeatTasks[pname][seat];
+			foobar (kerbal, part.vessel, task);
 		}
 
 		void onCrewTransferred (GameEvents.HostedFromToAction<ProtoCrewMember,Part> hft)
@@ -36,23 +59,14 @@ namespace KerbalStats.Experience {
 			var kerbal = hft.host;
 			var src_part = hft.from;
 			var dst_part = hft.to;
-			Debug.Log (String.Format ("[KS Exp] onCrewTransferred: {0} {1} {2}",
-									  kerbal, src_part, dst_part));
-			double UT = Planetarium.GetUniversalTime ();
-			ExperienceTracker.instance.FinishAllTasks (kerbal, UT);
-			string task;
-			Vessel vessel = dst_part.vessel;
+			Debug.Log (String.Format ("[KS Exp] onCrewTransferred: {0} {1} {2} '{3}'",
+									  kerbal, src_part, dst_part, kerbal.seat));
 			if (dst_part.vessel.isEVA) {
-				task = "EVA";
+				Vessel vessel = dst_part.vessel;
+				foobar (kerbal, vessel, "EVA");
 			} else {
-				string pname = GetPartName (dst_part);
-				string seat = GetSeat (kerbal);
-				task = ExperienceTracker.partSeatTasks[pname][seat];
+				StartCoroutine (WaitAndSeatKerbal (kerbal));
 			}
-			string situation = vessel.situation.ToString ();
-			Debug.Log (String.Format ("[KS Exp] '{0}' '{1}' '{2}'",
-									  kerbal.name, task, situation));
-			ExperienceTracker.instance.BeginTask (kerbal, UT, task, situation);
 		}
 
 		void onKerbalStatusChange (ProtoCrewMember pcm, ProtoCrewMember.RosterStatus old_status, ProtoCrewMember.RosterStatus new_status)
