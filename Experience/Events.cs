@@ -32,7 +32,7 @@ namespace KerbalStats.Experience {
 			return seat;
 		}
 
-		void foobar (ProtoCrewMember kerbal, Vessel vessel, string task)
+		void SeatKerbal (ProtoCrewMember kerbal, Vessel vessel, string task)
 		{
 			double UT = Planetarium.GetUniversalTime ();
 			ExperienceTracker.instance.FinishAllTasks (kerbal, UT);
@@ -51,7 +51,7 @@ namespace KerbalStats.Experience {
 			string pname = GetPartName (part);
 			string seat = GetSeat (kerbal);
 			string task = ExperienceTracker.partSeatTasks[pname][seat];
-			foobar (kerbal, part.vessel, task);
+			SeatKerbal (kerbal, part.vessel, task);
 		}
 
 		void onCrewTransferred (GameEvents.HostedFromToAction<ProtoCrewMember,Part> hft)
@@ -63,7 +63,7 @@ namespace KerbalStats.Experience {
 									  kerbal, src_part, dst_part, kerbal.seat));
 			if (dst_part.vessel.isEVA) {
 				Vessel vessel = dst_part.vessel;
-				foobar (kerbal, vessel, "EVA");
+				SeatKerbal (kerbal, vessel, "EVA");
 			} else {
 				StartCoroutine (WaitAndSeatKerbal (kerbal));
 			}
@@ -134,7 +134,7 @@ namespace KerbalStats.Experience {
 												  kerbal.seat, kerbal.seatIdx));
 						string seat = GetSeat (kerbal);
 						string task = ExperienceTracker.partSeatTasks[pname][seat];
-						foobar (kerbal, vessel, task);
+						SeatKerbal (kerbal, vessel, task);
 					}
 				}
 			} else {
@@ -154,7 +154,7 @@ namespace KerbalStats.Experience {
 						Debug.Log (String.Format ("[KS Exp SVC ul] {0} {1} {2}",
 												  kerbal.name,
 												  seat, task));
-						foobar (kerbal, vessel, task);
+						SeatKerbal (kerbal, vessel, task);
 					}
 				}
 			}
