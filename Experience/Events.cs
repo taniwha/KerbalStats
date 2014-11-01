@@ -189,7 +189,9 @@ namespace KerbalStats.Experience {
 			} else {
 				// This is an existing vessel loaded from a saved game.
 				// Any crew are already on board.
-				ScanVesselCrew (vessel);
+				// However, the KerbalStats scenario is loaded after vessels,
+				// so wait a frame for the scenario to load.
+				StartCoroutine (WaitAndScanVesselCrew (vessel));
 			}
 		}
 
