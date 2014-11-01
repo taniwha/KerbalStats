@@ -205,6 +205,25 @@ namespace KerbalStats.Experience {
 		{
 			Debug.Log (String.Format ("[KS Exp] {0}: {1}",
 									  "OnVesselRecoveryRequested", vessel));
+			double UT = Planetarium.GetUniversalTime ();
+			if (vessel.loaded) {
+				for (int i = 0; i < vessel.parts.Count; i++) {
+					Part part = vessel.parts[i];
+					for (int j = 0; j < part.protoModuleCrew.Count; j++) {
+						ProtoCrewMember kerbal = part.protoModuleCrew[j];
+						ExperienceTracker.instance.FinishAllTasks (kerbal, UT);
+					}
+				}
+			} else {
+				ProtoVessel pv = vessel.protoVessel;
+				for (int i = 0; i < pv.protoPartSnapshots.Count; i++) {
+					ProtoPartSnapshot pp = pv.protoPartSnapshots[i];
+					for (int j = 0; j < pp.protoModuleCrew.Count; j++) {
+						ProtoCrewMember kerbal = pp.protoModuleCrew[j];
+						ExperienceTracker.instance.FinishAllTasks (kerbal, UT);
+					}
+				}
+			}
 		}
 
 		void onVesselSituationChange (GameEvents.HostedFromToAction<Vessel, Vessel.Situations> hft)
