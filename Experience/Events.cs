@@ -69,15 +69,19 @@ namespace KerbalStats.Experience {
 			}
 		}
 
-		void onKerbalStatusChange (ProtoCrewMember pcm, ProtoCrewMember.RosterStatus old_status, ProtoCrewMember.RosterStatus new_status)
+		void onKerbalStatusChange (ProtoCrewMember kerbal, ProtoCrewMember.RosterStatus old_status, ProtoCrewMember.RosterStatus new_status)
 		{
-			if (pcm.name == null || pcm.name == "") {
+			if (kerbal.name == null || kerbal.name == "") {
 				// premature event: the kerbal is still in the process of being
 				// created by KSP
 				return;
 			}
 			Debug.Log (String.Format ("[KS Exp] {0}: {1} {2} {3}",
-									  "onKerbalStatusChange", pcm.name, old_status, new_status));
+									  "onKerbalStatusChange", kerbal.name, old_status, new_status));
+			if (new_status == ProtoCrewMember.RosterStatus.Dead) {
+				double UT = Planetarium.GetUniversalTime ();
+				ExperienceTracker.instance.FinishAllTasks (kerbal, UT);
+			}
 		}
 
 		void onKerbalTypeChange (ProtoCrewMember pcm, ProtoCrewMember.KerbalType old_type, ProtoCrewMember.KerbalType new_type)
