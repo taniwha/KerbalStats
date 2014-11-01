@@ -9,63 +9,53 @@ using KSP.IO;
 namespace KerbalStats.Experience {
 	class Task
 	{
-		Dictionary <string, double> situations;
-		double currentUT;
+		Dictionary <string, Body> bodies;
 		string current;
 
 		public void Load (ConfigNode node)
 		{
-			situations = new Dictionary <string, double> ();
+			bodies = new Dictionary <string, Body> ();
 			current = node.GetValue ("_current");
-			if (current != null) {
-				var sut = node.GetValue ("_currentUT");
-				if (!double.TryParse (sut, out currentUT)) {
-					currentUT = 0;
-					current = null;
-				}
-			}
-			foreach (ConfigNode.Value value in node.values) {
-				if (value.name[0] != '_') {
-					double dur;
-					if (double.TryParse (value.value, out dur)) {
-						situations[value.name] = dur;
-					}
-				}
+			foreach (ConfigNode body_node in node.nodes) {
+				bodies[body_node.name] = new Body ();
+				bodies[body_node.name].Load (node);
 			}
 		}
 
 		public void Save (ConfigNode node)
 		{
+			foreach (var kv in bodies) {
+				var body_node = new ConfigNode (kv.Key);
+				node.AddNode (body_node);
+				kv.Value.Save (body_node);
+			}
 			if (current != null) {
 				node.AddValue ("_current", current);
-				node.AddValue ("_currentUT", currentUT);
-			}
-			foreach (var kv in situations) {
-				node.AddValue (kv.Key, kv.Value.ToString ("G17"));
 			}
 		}
 
 		public Task ()
 		{
-			situations = new Dictionary <string, double> ();
+			bodies = new Dictionary <string, Body> ();
 		}
 
 		void EndSituation (double UT)
 		{
 			if (current != null) {
-				if (!situations.ContainsKey (current)) {
-					situations[current] = 0;
+				if (bodies.ContainsKey (current)) {
+					bodies[current].EndSituation (UT);
 				}
-				situations[current] += UT - currentUT;
 			}
-			current = null;
 		}
 
-		public void SetSituation (double UT, string situation)
+		public void SetSituation (double UT, string body, string situation)
 		{
 			EndSituation (UT);
-			current = situation;
-			currentUT = UT;
+			current = body;
+			if (!bodies.ContainsKey (current)) {
+				bodies[current] = new Body ();
+			}
+			bodies[current].SetSituation (UT, situation);
 		}
 
 		public void FinishTask (double UT)
@@ -73,31 +63,42 @@ namespace KerbalStats.Experience {
 			EndSituation (UT);
 		}
 
-		public void BeginTask (double UT, string situation)
+		public void BeginTask (double UT, string body, string situation)
 		{
-			SetSituation (UT, situation);
+			Debug.Log (String.Format ("[KS Exp] Task.BeginTask: {0} {1} {2}", UT, body, situation));
+			if (body != current) {
+				EndSituation (UT);
+			}
+			current = body;
+			if (!bodies.ContainsKey (current)) {
+				bodies[current] = new Body ();
+			}
+			bodies[current].BeginTask (UT, situation);
 		}
 
 		public double Experience (double UT)
 		{
 			double exp = 0;
-			foreach (var dur in situations.Values) {
-				exp += dur;
-			}
-			if (current != null) {
-				exp += UT - currentUT;
+			foreach (var body in bodies.Values) {
+				exp += body.Experience (UT);
 			}
 			return exp;
 		}
 
-		public double Experience (double UT, string sit)
+		public double Experience (double UT, string body)
 		{
 			double exp = 0;
-			if (situations.ContainsKey (sit)) {
-				exp += situations[sit];
+			if (bodies.ContainsKey (body)) {
+				exp += bodies[body].Experience (UT);
 			}
-			if (current == sit) {
-				exp += UT - currentUT;
+			return exp;
+		}
+
+		public double Experience (double UT, string body, string sit)
+		{
+			double exp = 0;
+			if (bodies.ContainsKey (body)) {
+				exp += bodies[body].Experience (UT, sit);
 			}
 			return exp;
 		}

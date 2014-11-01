@@ -37,9 +37,11 @@ namespace KerbalStats.Experience {
 			double UT = Planetarium.GetUniversalTime ();
 			ExperienceTracker.instance.FinishAllTasks (kerbal, UT);
 			string situation = vessel.situation.ToString ();
-			Debug.Log (String.Format ("[KS Exp] '{0}' '{1}' '{2}'",
-									  kerbal.name, task, situation));
-			ExperienceTracker.instance.BeginTask (kerbal, UT, task, situation);
+			string body = vessel.mainBody.bodyName;
+			Debug.Log (String.Format ("[KS Exp] '{0}' '{1}' '{2}' '{3}'",
+									  kerbal.name, task, body, situation));
+			ExperienceTracker.instance.BeginTask (kerbal, UT, task, body,
+												  situation);
 		}
 
 		IEnumerator<YieldInstruction> WaitAndSeatKerbal (ProtoCrewMember kerbal)
@@ -242,9 +244,11 @@ namespace KerbalStats.Experience {
 									  vessel.vesselName, oldsit, newsit));
 			var crew = vessel.GetVesselCrew ();
 			string situation = newsit.ToString ();
+			string body = vessel.mainBody.bodyName;
 			double UT = Planetarium.GetUniversalTime ();
 			foreach (var kerbal in crew) {
-				ExperienceTracker.instance.SetSituation (kerbal, UT, situation);
+				ExperienceTracker.instance.SetSituation (kerbal, UT, body,
+														 situation);
 			}
 		}
 

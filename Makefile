@@ -8,6 +8,7 @@ TARGETS		:= bin/KerbalStats.dll
 DATA		:= License.txt Experience/seat_tasks.cfg
 
 KS_FILES := \
+	Experience/Body.cs				\
 	Experience/Events.cs			\
 	Experience/Experience.cs		\
 	Experience/PartSeatTasks.cs		\
