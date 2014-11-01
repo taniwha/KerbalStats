@@ -65,7 +65,6 @@ namespace KerbalStats.Experience {
 
 		public void BeginTask (double UT, string body, string situation)
 		{
-			Debug.Log (String.Format ("[KS Exp] Task.BeginTask: {0} {1} {2}", UT, body, situation));
 			if (body != current) {
 				EndSituation (UT);
 			}

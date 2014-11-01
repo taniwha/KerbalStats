@@ -35,7 +35,6 @@ namespace KerbalStats.Experience {
 
 		public void Save (ConfigNode node)
 		{
-			Debug.Log (String.Format ("[KS Exp] {0} {1}", current.Count, tasks.Count));
 			foreach (var kv in tasks) {
 				var task_node = new ConfigNode (kv.Key);
 				node.AddNode (task_node);
@@ -45,7 +44,6 @@ namespace KerbalStats.Experience {
 				var task_list = String.Join (",", current.ToArray ());
 				node.AddValue ("_current", task_list);
 			}
-			Debug.Log (String.Format ("[KS Exp] Experience.Save: {0}", node));
 		}
 
 		public Experience ()
@@ -64,13 +62,11 @@ namespace KerbalStats.Experience {
 		public void BeginTask (double UT, string task, string body,
 							   string situation)
 		{
-			Debug.Log (String.Format ("[KS Exp] Experience.BeginTask: {0} {1} {2} {3}", UT, task, body, situation));
 			if (!tasks.ContainsKey (task)) {
 				tasks[task] = new Task ();
 			}
 			current.Add (task);
 			tasks[task].BeginTask (UT, body, situation);
-			Debug.Log (String.Format ("[KS Exp] {0} {1}", current.Count, tasks.Count));
 		}
 
 		public void FinishTask (double UT, string task)

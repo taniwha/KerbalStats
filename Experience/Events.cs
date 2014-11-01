@@ -28,7 +28,6 @@ namespace KerbalStats.Experience {
 			if (kerbal.seat != null) {
 				seat = kerbal.seat.seatTransformName;
 			}
-			Debug.Log (String.Format ("[KS Exp] GetSeat: {0}", seat));
 			return seat;
 		}
 
@@ -38,8 +37,6 @@ namespace KerbalStats.Experience {
 			ExperienceTracker.instance.FinishAllTasks (kerbal, UT);
 			string situation = vessel.situation.ToString ();
 			string body = vessel.mainBody.bodyName;
-			Debug.Log (String.Format ("[KS Exp] '{0}' '{1}' '{2}' '{3}'",
-									  kerbal.name, task, body, situation));
 			ExperienceTracker.instance.BeginTask (kerbal, UT, task, body,
 												  situation);
 		}
@@ -48,8 +45,6 @@ namespace KerbalStats.Experience {
 		{
 			yield return null;
 			Part part = kerbal.KerbalRef.InPart;
-			Debug.Log (String.Format ("[KS Exp] WaitAndSeatKerbal: {0} {1} {2}",
-									  kerbal.name, part, kerbal.seat));
 			string pname = GetPartName (part);
 			string seat = GetSeat (kerbal);
 			string task = ExperienceTracker.partSeatTasks[pname][seat];
@@ -61,8 +56,6 @@ namespace KerbalStats.Experience {
 			var kerbal = hft.host;
 			var src_part = hft.from;
 			var dst_part = hft.to;
-			Debug.Log (String.Format ("[KS Exp] onCrewTransferred: {0} {1} {2} '{3}'",
-									  kerbal, src_part, dst_part, kerbal.seat));
 			if (dst_part.vessel.isEVA) {
 				Vessel vessel = dst_part.vessel;
 				SeatKerbal (kerbal, vessel, "EVA");
@@ -78,8 +71,6 @@ namespace KerbalStats.Experience {
 				// created by KSP
 				return;
 			}
-			Debug.Log (String.Format ("[KS Exp] {0}: {1} {2} {3}",
-									  "onKerbalStatusChange", kerbal.name, old_status, new_status));
 			if (new_status == ProtoCrewMember.RosterStatus.Dead) {
 				double UT = Planetarium.GetUniversalTime ();
 				ExperienceTracker.instance.FinishAllTasks (kerbal, UT);
@@ -135,9 +126,6 @@ namespace KerbalStats.Experience {
 					string pname = GetPartName (part);
 					for (int j = 0; j < part.protoModuleCrew.Count; j++) {
 						ProtoCrewMember kerbal = part.protoModuleCrew[j];
-						Debug.Log (String.Format ("[KS Exp SVC l] {0} {1} {2}",
-												  kerbal.name,
-												  kerbal.seat, kerbal.seatIdx));
 						string seat = GetSeat (kerbal);
 						string task = ExperienceTracker.partSeatTasks[pname][seat];
 						SeatKerbal (kerbal, vessel, task);
@@ -157,9 +145,6 @@ namespace KerbalStats.Experience {
 						}
 						string pname = pp.partName;
 						string task = ExperienceTracker.partSeatTasks[pname][seat];
-						Debug.Log (String.Format ("[KS Exp SVC ul] {0} {1} {2}",
-												  kerbal.name,
-												  seat, task));
 						SeatKerbal (kerbal, vessel, task);
 					}
 				}
@@ -182,8 +167,6 @@ namespace KerbalStats.Experience {
 
 		void onVesselCreate (Vessel vessel)
 		{
-			Debug.Log (String.Format ("[KS Exp] {0}: {1} {2}",
-									  "onVesselCreate", vessel, vessel.protoVessel));
 			if (vessel.protoVessel == null) {
 				// This is a newly created vessel.
 				// Crew have yet to be assigned to their positions.
@@ -211,8 +194,6 @@ namespace KerbalStats.Experience {
 
 		void OnVesselRecoveryRequested (Vessel vessel)
 		{
-			Debug.Log (String.Format ("[KS Exp] {0}: {1}",
-									  "OnVesselRecoveryRequested", vessel));
 			double UT = Planetarium.GetUniversalTime ();
 			if (vessel.loaded) {
 				for (int i = 0; i < vessel.parts.Count; i++) {
@@ -239,9 +220,6 @@ namespace KerbalStats.Experience {
 			Vessel vessel = hft.host;
 			var oldsit = hft.from;
 			var newsit = hft.to;
-			Debug.Log (String.Format ("[KS Exp] {0}: {1} {2} {3}",
-									  "onVesselSituationChange",
-									  vessel.vesselName, oldsit, newsit));
 			var crew = vessel.GetVesselCrew ();
 			string situation = newsit.ToString ();
 			string body = vessel.mainBody.bodyName;

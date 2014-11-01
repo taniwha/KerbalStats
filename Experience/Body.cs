@@ -43,7 +43,6 @@ namespace KerbalStats.Experience {
 			foreach (var kv in situations) {
 				node.AddValue (kv.Key, kv.Value.ToString ("G17"));
 			}
-			Debug.Log (String.Format ("[KS Exp] Body.Save: {0}", node));
 		}
 
 		public Body ()
@@ -64,7 +63,6 @@ namespace KerbalStats.Experience {
 
 		public void SetSituation (double UT, string situation)
 		{
-			Debug.Log (String.Format ("[KS Exp] Body.SetSituation: {0} {1}", UT, situation));
 			EndSituation (UT);
 			current = situation;
 			currentUT = UT;
@@ -77,7 +75,6 @@ namespace KerbalStats.Experience {
 
 		public void BeginTask (double UT, string situation)
 		{
-			Debug.Log (String.Format ("[KS Exp] Body.BeginTask: {0} {1}", UT, situation));
 			SetSituation (UT, situation);
 		}
 
