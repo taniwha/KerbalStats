@@ -54,7 +54,6 @@ namespace KerbalStats.Experience {
 		void onCrewTransferred (GameEvents.HostedFromToAction<ProtoCrewMember,Part> hft)
 		{
 			var kerbal = hft.host;
-			var src_part = hft.from;
 			var dst_part = hft.to;
 			if (dst_part.vessel.isEVA) {
 				Vessel vessel = dst_part.vessel;
