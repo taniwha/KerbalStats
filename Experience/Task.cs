@@ -18,7 +18,7 @@ namespace KerbalStats.Experience {
 			current = node.GetValue ("_current");
 			foreach (ConfigNode body_node in node.nodes) {
 				bodies[body_node.name] = new Body ();
-				bodies[body_node.name].Load (node);
+				bodies[body_node.name].Load (body_node);
 			}
 		}
 
