@@ -57,7 +57,7 @@ namespace KerbalStats {
 			}
 		}
 
-		public string Get (ProtoCrewMember kerbal, string parms)
+		public static string Get (ProtoCrewMember kerbal, string parms)
 		{
 			string system = parms;
 			if (parms.Contains (":")) {
