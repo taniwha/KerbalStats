@@ -89,6 +89,15 @@ namespace KerbalStats {
 			}
 		}
 
+		public string Get (ProtoCrewMember kerbal, string parms)
+		{
+			if (kerbal_gender.ContainsKey (kerbal.name)) {
+				return kerbal_gender[kerbal.name];
+			}
+			Debug.LogError ("[KS] Gender.Get: no such kerbal: " + kerbal.name);
+			return null;
+		}
+
 		public Gender ()
 		{
 			kerbal_gender = new Dictionary <string, string> ();

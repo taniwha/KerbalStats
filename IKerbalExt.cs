@@ -11,5 +11,7 @@ namespace KerbalStats {
 		void RemoveKerbal (ProtoCrewMember kerbal);
 		void Load (ProtoCrewMember kerbal, ConfigNode node);
 		void Save (ProtoCrewMember kerbal, ConfigNode node);
+
+		string Get (ProtoCrewMember kerbal, string parms);
 	}
 }

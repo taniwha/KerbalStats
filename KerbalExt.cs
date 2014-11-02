@@ -1,3 +1,4 @@
+using UnityEngine;
 using System.Collections.Generic;
 
 namespace KerbalStats {
@@ -54,6 +55,23 @@ namespace KerbalStats {
 			foreach (var mod in modules.Values) {
 				mod.Save (kerbal, ext);
 			}
+		}
+
+		public string Get (ProtoCrewMember kerbal, string parms)
+		{
+			string system = parms;
+			if (parms.Contains (":")) {
+				int index = parms.IndexOf (":");
+				system = parms.Substring (0, index);
+				parms = parms.Substring (index + 1);
+			} else {
+				parms = "";
+			}
+			if (!modules.ContainsKey (system)) {
+				Debug.LogError ("[KS] KerbalExt.Get: no such module: " + system);
+				return null;
+			}
+			return modules[system].Get (kerbal, parms);
 		}
 	}
 }

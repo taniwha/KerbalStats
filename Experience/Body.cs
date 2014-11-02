@@ -78,26 +78,23 @@ namespace KerbalStats.Experience {
 			SetSituation (UT, situation);
 		}
 
-		public double Experience (double UT)
+		public double GetExperience (double UT, string situation)
 		{
 			double exp = 0;
-			foreach (var dur in situations.Values) {
-				exp += dur;
-			}
-			if (current != null) {
-				exp += UT - currentUT;
-			}
-			return exp;
-		}
-
-		public double Experience (double UT, string sit)
-		{
-			double exp = 0;
-			if (situations.ContainsKey (sit)) {
-				exp += situations[sit];
-			}
-			if (current == sit) {
-				exp += UT - currentUT;
+			if (situation == null) {
+				foreach (var dur in situations.Values) {
+					exp += dur;
+				}
+				if (current != null) {
+					exp += UT - currentUT;
+				}
+			} else {
+				if (situations.ContainsKey (situation)) {
+					exp += situations[situation];
+				}
+				if (current == situation) {
+					exp += UT - currentUT;
+				}
 			}
 			return exp;
 		}

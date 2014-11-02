@@ -78,40 +78,19 @@ namespace KerbalStats.Experience {
 			tasks[task].FinishTask (UT);
 		}
 
-		public double GetExperience (double UT)
+		public double GetExperience (double UT, string task, string body, string situation)
 		{
-			double exp = 0;
-			foreach (var task in tasks.Values) {
-				exp += task.Experience (UT);
+			double dur = 0;
+			if (task == null) {
+				foreach (var t in tasks.Values) {
+					dur += t.GetExperience (UT, body, situation);
+				}
+			} else {
+				if (tasks.ContainsKey (task)) {
+					dur = tasks[task].GetExperience (UT, body, situation);
+				}
 			}
-			return exp;
-		}
-
-		public double GetSituationExperience (double UT, string situation)
-		{
-			double exp = 0;
-			foreach (var task in tasks.Values) {
-				exp += task.Experience (UT, situation);
-			}
-			return exp;
-		}
-
-		public double GetTaskExperience (double UT, string task)
-		{
-			double exp = 0;
-			if (tasks.ContainsKey (task)) {
-				exp += tasks[task].Experience (UT);
-			}
-			return exp;
-		}
-
-		public double GetTaskExperience (double UT, string task, string situation)
-		{
-			double exp = 0;
-			if (tasks.ContainsKey (task)) {
-				exp += tasks[task].Experience (UT, situation);
-			}
-			return exp;
+			return dur;
 		}
 	}
 }
