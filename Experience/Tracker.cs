@@ -66,24 +66,26 @@ namespace KerbalStats.Experience {
 				Debug.LogError ("[KS] ExperienceTracker.Get: no such kerbal: " + kerbal.name);
 				return null;
 			}
-			string [] param_list = parms.Split (',');
 			string task = null;
 			string body = null;
 			string situation = null;
-			for (int i = 0; i < param_list.Count (); i++) {
-				string [] args = param_list[i].Split ('=');
-				if (args.Count () == 2) {
-					if (args[0] == "task") {
-						task = args[1];
-					} else if (args[0] == "body") {
-						body = args[1];
-					} else if (args[0] == "situation") {
-						situation = args[1];
+			if (parms != "") {
+				string [] param_list = parms.Split (',');
+				for (int i = 0; i < param_list.Count (); i++) {
+					string [] args = param_list[i].Split ('=');
+					if (args.Count () == 2) {
+						if (args[0] == "task") {
+							task = args[1];
+						} else if (args[0] == "body") {
+							body = args[1];
+						} else if (args[0] == "situation") {
+							situation = args[1];
+						} else {
+							Debug.LogError ("[KS] ExperienceTracker.Get: invalid keyword" + args[0]);
+						}
 					} else {
-						Debug.LogError ("[KS] ExperienceTracker.Get: invalid keyword" + args[0]);
+						Debug.LogError ("[KS] ExperienceTracker.Get: invalid param" + param_list[i]);
 					}
-				} else {
-					Debug.LogError ("[KS] ExperienceTracker.Get: invalid param" + param_list[i]);
 				}
 			}
 			double UT = Planetarium.GetUniversalTime ();
