@@ -3,9 +3,9 @@ using System.Collections.Generic;
 namespace KerbalStats {
 	public class KerbalExt
 	{
-		static Dictionary<string, IKerbalStats> modules = new Dictionary<string, IKerbalStats> ();
+		static Dictionary<string, IKerbalExt> modules = new Dictionary<string, IKerbalExt> ();
 
-		public static void AddModule (IKerbalStats mod)
+		public static void AddModule (IKerbalExt mod)
 		{
 			if (!modules.ContainsKey (mod.name)) {
 				modules[mod.name] = mod;

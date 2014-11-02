@@ -7,7 +7,7 @@ using UnityEngine;
 using KSP.IO;
 
 namespace KerbalStats.Experience {
-	public class ExperienceTracker : IKerbalStats
+	public class ExperienceTracker : IKerbalExt
 	{
 		Dictionary<string,Experience> kerbal_experience;
 		public static PartSeatTasks partSeatTasks;

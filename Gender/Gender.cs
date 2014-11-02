@@ -7,7 +7,7 @@ using UnityEngine;
 using KSP.IO;
 
 namespace KerbalStats {
-	public class Gender : IKerbalStats
+	public class Gender : IKerbalExt
 	{
 		static string[] male_names = {
 			"Adam", "Al", "Alan", "Archibald", "Bill", "Bob", "Buzz",

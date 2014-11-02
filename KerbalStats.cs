@@ -4,15 +4,6 @@ using System.Linq;
 using UnityEngine;
 
 namespace KerbalStats {
-	public interface IKerbalStats
-	{
-		string name { get; }
-		void AddKerbal (ProtoCrewMember kerbal);
-		void RemoveKerbal (ProtoCrewMember kerbal);
-		void Load (ProtoCrewMember kerbal, ConfigNode node);
-		void Save (ProtoCrewMember kerbal, ConfigNode node);
-	}
-
 	public static class EnumUtil {
 		public static T[] GetValues<T>() {
 			return (T[])Enum.GetValues(typeof(T));
