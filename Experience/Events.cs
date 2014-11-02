@@ -217,7 +217,6 @@ namespace KerbalStats.Experience {
 		void onVesselSituationChange (GameEvents.HostedFromToAction<Vessel, Vessel.Situations> hft)
 		{
 			Vessel vessel = hft.host;
-			var oldsit = hft.from;
 			var newsit = hft.to;
 			var crew = vessel.GetVesselCrew ();
 			string situation = newsit.ToString ();
