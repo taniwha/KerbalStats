@@ -79,6 +79,11 @@ KerbalStatsWrapper.cs has been writted such that there is no need to link
 against KerbalStats.dll. If the dll is not present, then KerbalExt.Get()
 will return **null** and log the issue.
 
+**NOTE**: KerbalStatsWrapper.cs is licensed using the GNU LGPL (as is the
+rest of KerbalStats). This means that mods are free to use
+KerbalStatsWrapper.cs without worrying about their own license so long as
+KerbalStatsWrapper.cs itself remains under the GNU LGPL.
+
 **Extending KerbalStats**
 
 At this stage, extending KerbalStats requires linking agaist
