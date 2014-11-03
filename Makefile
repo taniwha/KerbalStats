@@ -5,7 +5,12 @@ KSGAMEDATA  := ${GAMEDATA}/KerbalStats
 PLUGINDIR	:= ${KSGAMEDATA}/Plugins
 
 TARGETS		:= bin/KerbalStats.dll
-DATA		:= License.txt Experience/seat_tasks.cfg
+DATA		:= \
+	KerbalStatsWrapper.cs		\
+	License.txt					\
+	README.md					\
+	Experience/seat_tasks.cfg	\
+	$e
 
 KS_FILES := \
 	Experience/Body.cs				\
