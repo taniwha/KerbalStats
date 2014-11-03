@@ -14,6 +14,7 @@ name for any forms that seemed to indicate a gender to the author and
 assigns a gender as appropriate, or should there be no obvious forms, the
 gender is chosen randomly.
 
+### Gender Queries
 For mods wishing to query the gender of a kerbal, the query string is
 simply **"gender"** (the module name). Any parameters will be silently
 ignored. The returned value is either "M" or "F" for male and female.
@@ -51,6 +52,7 @@ The config file has a root node named **KSExpSeatMap** with subnodes named
 * **seat-name=task** This is the name of the seat transform as specified in
   the part's internal config.
 
+### Experience Queries
 For mods wishing to query the experience of a kerbal, the query string is
 of the form **"experience:task=Pilot,body=Kerbin,situation=ORBITING"**.
 However, the parameters are optional: **"experience"** will return the
