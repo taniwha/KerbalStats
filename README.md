@@ -16,7 +16,7 @@ gender is chosen randomly.
 
 For mods wishing to query the gender of a kerbal, the query string is
 simply **"gender"** (the module name). Any parameters will be silently
-ignored.
+ignored. The returned value is either "M" or "F" for male and female.
 
 ##*experience* module
 The experience module is rather complicated. It keeps track of the amount
@@ -57,7 +57,12 @@ However, the parameters are optional: **"experience"** will return the
 total experience for all tasks, bodies and situtations. Also, ommitting any
 of the *task*, *body* or *situation* parameters will return the total for
 the ommitted qualities. eg, **"experience:body=Eve"** will return the total
-experience for all tasks and situtations in Eve's sphere of influence.
+experience for all tasks and situtations in Eve's sphere of influence. The
+returned value is the string representation ("G17" format) of the amount of
+time, in seconds, the kerbal has logged for the relevant task, body and/or
+situation.
+
+It is up to the mod to give actual meaning to the experience.
 
 ##Querying KerbalStats
 
