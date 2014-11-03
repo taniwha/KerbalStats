@@ -1,5 +1,4 @@
-<big>**KerbalStats**</big>
-
+#KerbalStats
 KerbalStats is a KSP mod for keeping track of extra information about the
 kerbals in your game. It has been designed to be easily extended by other
 mods wishing to store kerbal specific information. Also, it is easy for
@@ -8,7 +7,7 @@ mods to query KerbalStats for the stored information.
 KerbalStats comes with two built-in modules that are both useful and act as
 sample implementations: *gender* and *experience*.
 
-** *gender* module**:
+##*gender* module
 The gender module is very simple and stores only a single value
 representing the gender of the kerbal. It currently checks the kerbal's
 name for any forms that seemed to indicate a gender to the author and
@@ -19,7 +18,7 @@ For mods wishing to query the gender of a kerbal, the query string is
 simply **"gender"** (the module name). Any parameters will be silently
 ignored.
 
-** *experience* module**:
+##*experience* module
 The experience module is rather complicated. It keeps track of the amount
 of game-time assigned kerbals spend doing various tasks. Along with the
 task, the location (planet) and situation (landed, flying, etc) of the
@@ -37,7 +36,7 @@ The tasks defined in KerbalStats are "Science", "Pilot", "Command",
 "Passenger" and "EVA". Other mods are free to define their own tasks and
 assign them to seats in parts.
 
-** *seat_tasks.cfg* database**:
+### *seat_tasks.cfg* database
 This is simply a standard KSP config file. Mods wishing to define their own
 tasks and seat assignments need only to supply their own config file.
 
@@ -60,7 +59,7 @@ of the *task*, *body* or *situation* parameters will return the total for
 the ommitted qualities. eg, **"experience:body=Eve"** will return the total
 experience for all tasks and situtations in Eve's sphere of influence.
 
-**Querying KerbalStats**
+##Querying KerbalStats
 
 Querying KerbalStats from a mod is very easy: include KerbalStatsWrapper.cs
 in your project, change **ModName** in the namespace to the name of your
@@ -84,7 +83,7 @@ rest of KerbalStats). This means that mods are free to use
 KerbalStatsWrapper.cs without worrying about their own license so long as
 KerbalStatsWrapper.cs itself remains under the GNU LGPL.
 
-**Extending KerbalStats**
+##Extending KerbalStats
 
 At this stage, extending KerbalStats requires linking agaist
 KerbalStats.dll. To create a module, derive from IKerbalExt. It is probably
