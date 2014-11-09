@@ -138,6 +138,11 @@ namespace KerbalStats.Experience {
 			if (vessel.loaded) {
 				for (int i = 0; i < vessel.parts.Count; i++) {
 					Part part = vessel.parts[i];
+					if (part == null || part.name == null) {
+						// the part has been deleted. Probably EL loading
+						// a craft for cost checking.
+						return;
+					}
 					string pname = GetPartName (part);
 					for (int j = 0; j < part.protoModuleCrew.Count; j++) {
 						ProtoCrewMember kerbal = part.protoModuleCrew[j];
