@@ -275,8 +275,7 @@ namespace KerbalStats.Experience {
 			if (scene == GameScenes.SPACECENTER
 				|| scene == GameScenes.EDITOR
 				|| scene == GameScenes.FLIGHT
-				|| scene == GameScenes.TRACKSTATION
-				|| scene == GameScenes.SPH) {
+				|| scene == GameScenes.TRACKSTATION) {
 				GameEvents.onCrewTransferred.Add (onCrewTransferred);
 				GameEvents.onKerbalStatusChange.Add (onKerbalStatusChange);
 				GameEvents.onKerbalTypeChange.Add (onKerbalTypeChange);
