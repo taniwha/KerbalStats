@@ -249,8 +249,24 @@ namespace KerbalStats.Experience {
 			}
 		}
 
+		IEnumerator<YieldInstruction> WaitAndSetBody (Vessel vessel)
+		{
+			yield return null;
+			yield return null;
+			var crew = vessel.GetVesselCrew ();
+			string situation = vessel.situation.ToString ();
+			string body = vessel.mainBody.bodyName;
+			double UT = Planetarium.GetUniversalTime ();
+			foreach (var kerbal in crew) {
+				ExperienceTracker.instance.SetSituation (kerbal, UT, body,
+														 situation);
+			}
+		}
+
 		void onVesselSOIChanged (GameEvents.HostedFromToAction<Vessel, CelestialBody> hft)
 		{
+			Vessel vessel = hft.host;
+			StartCoroutine (WaitAndSetBody (vessel));
 		}
 
 		void Awake ()
