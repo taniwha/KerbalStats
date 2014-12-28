@@ -137,7 +137,9 @@ namespace KerbalStats {
 			var game = HighLogic.CurrentGame;
 			var roster = game.CrewRoster;
 			int index = roster.IndexOf (kerbal);
-			Roster.RemoveAt (index);
+			if (index < Roster.Count) {
+				Roster.RemoveAt (index);
+			}
 		}
 
 		public override void OnAwake ()
