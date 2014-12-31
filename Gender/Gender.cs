@@ -48,7 +48,9 @@ namespace KerbalStats {
 		static string PickGender (string name)
 		{
 			int end = name.LastIndexOf (" ");
-			name = name.Substring (0, end);
+			if (end > 0) {
+				name = name.Substring (0, end);
+			}
 			if (male_names.Contains (name)) {
 				Debug.Log (String.Format ("[KS Gender] Male fn: {0}", name));
 				return "M";
