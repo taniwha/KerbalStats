@@ -29,6 +29,18 @@ namespace KerbalStats.Genetics {
 			this.b = b;
 		}
 
+		public GenePair (string pair)
+		{
+			string[] genes = pair.Split (',');
+			int.TryParse (genes[0], out this.a);
+			int.TryParse (genes[1], out this.b);
+		}
+
+		public override string ToString ()
+		{
+			return a.ToString () + ", " + b.ToString ();
+		}
+
 		public static GenePair Combine (GenePair g1, GenePair g2)
 		{
 			int a, b;
