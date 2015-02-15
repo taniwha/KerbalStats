@@ -16,7 +16,7 @@ along with KerbalStats.  If not, see <http://www.gnu.org/licenses/>.
 */
 using System;
 
-namespace KerbalStats.Genetics {
+namespace KerbalStats.Genome {
 	public class test
 	{
 		static float pdf0 (float x)
