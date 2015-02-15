@@ -2,6 +2,7 @@ TARGETS		:= test
 
 test_FILES := \
 	BadAss.cs		\
+	Courage.cs		\
 	GenePair.cs		\
 	Probability.cs	\
 	Random.cs		\

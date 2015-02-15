@@ -80,6 +80,14 @@ namespace KerbalStats.Genetics {
 				GenePair gene = badass.CreateGene ("False");
 				Console.WriteLine(String.Format ("{0}, {1}: {2}", gene.a, gene.b, badass.CreateValue (gene)));
 			}
+
+			Trait courage = new Courage ();
+			Console.WriteLine("Courage 0..1");
+			for (int i = 0; i < 11; i++) {
+				float c = i / 10f;
+				GenePair gene = courage.CreateGene (c.ToString ("G9"));
+				Console.WriteLine(String.Format ("{0}: {1}, {2}: {3}", c, gene.a, gene.b, courage.CreateValue (gene)));
+			}
 		}
 	}
 }
