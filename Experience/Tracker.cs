@@ -70,7 +70,7 @@ namespace KerbalStats.Experience {
 		public void Save (ProtoCrewMember kerbal, ConfigNode node)
 		{
 			if (kerbal_experience.ContainsKey (kerbal.name)) {
-				var exp = new ConfigNode ("experience");
+				var exp = new ConfigNode (name);
 				node.AddNode (exp);
 				kerbal_experience[kerbal.name].Save (exp);
 			}
@@ -156,7 +156,7 @@ namespace KerbalStats.Experience {
 	}
 
 	[KSPAddon (KSPAddon.Startup.MainMenu, true)]
-	public class KSGenderInit : MonoBehaviour
+	public class KSExperienceInit : MonoBehaviour
 	{
 		void Awake ()
 		{
