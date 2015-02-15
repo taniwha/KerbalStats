@@ -22,10 +22,34 @@ namespace KerbalStats.Genetics {
 	public struct GenePair
 	{
 		public int a, b;
+
 		public GenePair (int a, int b)
 		{
 			this.a = a;
 			this.b = b;
+		}
+
+		public static GenePair Combine (GenePair g1, GenePair g2)
+		{
+			int a, b;
+
+			if (Random.Range (0, 2) != 0) {
+				a = g1.a;
+			} else {
+				a = g1.b;
+			}
+
+			if (Random.Range (0, 2) != 0) {
+				b = g2.a;
+			} else {
+				b = g2.b;
+			}
+
+			if (Random.Range (0, 2) != 0) {
+				return new GenePair (a, b);
+			} else {
+				return new GenePair (b, a);
+			}
 		}
 	}
 }
