@@ -6,6 +6,7 @@ test_FILES := \
 	GenePair.cs		\
 	Probability.cs	\
 	Random.cs		\
+	Stupidity.cs	\
 	Trait.cs		\
 	test.cs			\
 	$e

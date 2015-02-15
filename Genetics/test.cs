@@ -88,6 +88,14 @@ namespace KerbalStats.Genetics {
 				GenePair gene = courage.CreateGene (c.ToString ("G9"));
 				Console.WriteLine(String.Format ("{0}: {1}, {2}: {3}", c, gene.a, gene.b, courage.CreateValue (gene)));
 			}
+
+			Trait stupidity = new Stupidity ();
+			Console.WriteLine("Stupidity 0..1");
+			for (int i = 0; i < 11; i++) {
+				float c = i / 10f;
+				GenePair gene = stupidity.CreateGene (c.ToString ("G9"));
+				Console.WriteLine(String.Format ("{0}: {1}, {2}: {3}", c, gene.a, gene.b, stupidity.CreateValue (gene)));
+			}
 		}
 	}
 }
