@@ -68,7 +68,7 @@ namespace KerbalStats.Genetics {
 
 		DiscreteDistribution ChooseDistribution (GenePair gene)
 		{
-			int index = CountBits (gene.a) + CountBits (gene.b);
+			int index = CountBits (gene.a & 7) + CountBits (gene.b & 7);
 			return distributions[index];
 		}
 
