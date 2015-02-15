@@ -96,6 +96,15 @@ namespace KerbalStats.Genetics {
 				GenePair gene = stupidity.CreateGene (c.ToString ("G9"));
 				Console.WriteLine(String.Format ("{0}: {1}, {2}: {3}", c, gene.a, gene.b, stupidity.CreateValue (gene)));
 			}
+
+			Trait gender = new Gender ();
+			Console.WriteLine("Gender");
+			{
+				GenePair gene = gender.CreateGene ("M");
+				Console.WriteLine(String.Format ("{0}: {1}, {2}: {3}", "M", gene.a, gene.b, gender.CreateValue (gene)));
+				gene = gender.CreateGene ("F");
+				Console.WriteLine(String.Format ("{0}: {1}, {2}: {3}", "F", gene.a, gene.b, gender.CreateValue (gene)));
+			}
 		}
 	}
 }
