@@ -56,6 +56,13 @@ namespace KerbalStats.Genetics {
 			new int[]{7, 7, 7},
 		};
 
+		public int GeneSize
+		{
+			get {
+				return 3;
+			}
+		}
+
 		int CountBits (int x)
 		{
 			int count = 0;

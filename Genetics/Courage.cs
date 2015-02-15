@@ -67,6 +67,13 @@ namespace KerbalStats.Genetics {
 			},
 		};
 
+		public int GeneSize
+		{
+			get {
+				return 1;
+			}
+		}
+
 		ContinuousDistribution ChooseDistribution (GenePair gene)
 		{
 			int index = (gene.a & 1) + (gene.b & 1);
