@@ -21,6 +21,7 @@ KS_FILES := \
 	Experience/Task.cs				\
 	Experience/Tracker.cs			\
 	Gender/Gender.cs				\
+	Profession/Profession.cs		\
 	IKerbalExt.cs					\
 	KerbalExt.cs					\
 	KerbalStats.cs					\
