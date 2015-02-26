@@ -22,7 +22,7 @@ using UnityEngine;
 
 using KSP.IO;
 
-namespace KerbalStats.Experience {
+namespace KerbalStats.Profession {
 	public class ProfessionTracker : IKerbalExt
 	{
 		public void AddKerbal (ProtoCrewMember kerbal)
