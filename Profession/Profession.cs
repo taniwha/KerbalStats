@@ -56,6 +56,11 @@ namespace KerbalStats.Profession {
 			trait.AddValue ("current", kerbal.experienceTrait.TypeName);
 		}
 
+		public void Clear ()
+		{
+			// nothing to clear
+		}
+
 		public string Get (ProtoCrewMember kerbal, string parms)
 		{
 			Debug.LogError ("[KS] ProfessionTracker.Get: stock feature enhancement");

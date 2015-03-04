@@ -86,6 +86,8 @@ namespace KerbalStats {
 			Debug.Log (String.Format ("[KS] OnLoad"));
 			var roster = config.GetNode ("Roster");
 
+			KerbalExt.Clear ();
+
 			if (roster == null) {
 				build_roster (game);
 			} else {

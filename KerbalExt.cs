@@ -73,6 +73,13 @@ namespace KerbalStats {
 			}
 		}
 
+		internal static void Clear ()
+		{
+			foreach (var mod in modules.Values) {
+				mod.Clear ();
+			}
+		}
+
 		public static string Get (ProtoCrewMember kerbal, string parms)
 		{
 			string system = parms;

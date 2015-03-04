@@ -36,7 +36,7 @@ namespace KerbalStats.Experience {
 			if (partSeatTasks == null) {
 				partSeatTasks = new PartSeatTasks ();
 			}
-			kerbal_experience = new Dictionary<string,Experience> ();
+			Clear ();
 		}
 
 		public void AddKerbal (ProtoCrewMember kerbal)
@@ -74,6 +74,11 @@ namespace KerbalStats.Experience {
 				node.AddNode (exp);
 				kerbal_experience[kerbal.name].Save (exp);
 			}
+		}
+
+		public void Clear ()
+		{
+			kerbal_experience = new Dictionary<string,Experience> ();
 		}
 
 		public string Get (ProtoCrewMember kerbal, string parms)

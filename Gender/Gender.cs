@@ -107,6 +107,11 @@ namespace KerbalStats {
 			}
 		}
 
+		public void Clear ()
+		{
+			kerbal_gender = new Dictionary <string, string> ();
+		}
+
 		public string Get (ProtoCrewMember kerbal, string parms)
 		{
 			if (kerbal_gender.ContainsKey (kerbal.name)) {
@@ -118,7 +123,7 @@ namespace KerbalStats {
 
 		public Gender ()
 		{
-			kerbal_gender = new Dictionary <string, string> ();
+			Clear ();
 		}
 	}
 
