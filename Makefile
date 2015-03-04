@@ -30,6 +30,8 @@ KS_FILES := \
 	Genome/Stupidity.cs				\
 	Genome/Trait.cs					\
 	Profession/Profession.cs		\
+	Progeny/Female.cs				\
+	Progeny/Tracker.cs				\
 	IKerbalExt.cs					\
 	KerbalExt.cs					\
 	KerbalStats.cs					\
