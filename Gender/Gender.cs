@@ -43,6 +43,8 @@ namespace KerbalStats {
 			"zor",
 		};
 
+		static Gender instance;
+
 		Dictionary <string, string> kerbal_gender;
 
 		static string PickGender (string name)
@@ -123,7 +125,20 @@ namespace KerbalStats {
 
 		public Gender ()
 		{
+			instance = this;
 			Clear ();
+		}
+
+		public static bool IsFemale (ProtoCrewMember kerbal)
+		{
+			string gender = instance.Get (kerbal, "");
+			return gender != null ? gender[0] == 'F' : false;
+		}
+
+		public static bool IsMale (ProtoCrewMember kerbal)
+		{
+			string gender = instance.Get (kerbal, "");
+			return gender != null ? gender[0] == 'M' : true;
 		}
 	}
 
