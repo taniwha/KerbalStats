@@ -21,6 +21,14 @@ KS_FILES := \
 	Experience/Task.cs				\
 	Experience/Tracker.cs			\
 	Gender/Gender.cs				\
+	Genome/BadAss.cs				\
+	Genome/Courage.cs				\
+	Genome/Gender.cs				\
+	Genome/GenePair.cs				\
+	Genome/Genome.cs				\
+	Genome/Probability.cs			\
+	Genome/Stupidity.cs				\
+	Genome/Trait.cs					\
 	Profession/Profession.cs		\
 	IKerbalExt.cs					\
 	KerbalExt.cs					\

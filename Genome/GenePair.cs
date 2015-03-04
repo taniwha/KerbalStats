@@ -45,19 +45,19 @@ namespace KerbalStats.Genome {
 		{
 			int a, b;
 
-			if (Random.Range (0, 2) != 0) {
+			if (UnityEngine.Random.Range (0, 2) != 0) {
 				a = g1.a;
 			} else {
 				a = g1.b;
 			}
 
-			if (Random.Range (0, 2) != 0) {
+			if (UnityEngine.Random.Range (0, 2) != 0) {
 				b = g2.a;
 			} else {
 				b = g2.b;
 			}
 
-			if (Random.Range (0, 2) != 0) {
+			if (UnityEngine.Random.Range (0, 2) != 0) {
 				return new GenePair (a, b);
 			} else {
 				return new GenePair (b, a);

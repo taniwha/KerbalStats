@@ -92,14 +92,14 @@ namespace KerbalStats.Genome {
 			//	Console.WriteLine(String.Format ("{0} {1}", i, probabilities[i]));
 			//}
 			var dist = new DiscreteDistribution (probabilities);
-			int index = dist.Value (Random.Range (0, 1f));
-			return genes[Random.Range (0, 2)][index];
+			int index = dist.Value (UnityEngine.Random.Range (0, 1f));
+			return genes[UnityEngine.Random.Range (0, 2)][index];
 		}
 
 		public string CreateValue (GenePair gene)
 		{
 			ContinuousDistribution dist = ChooseDistribution (gene);
-			return dist.Value (Random.Range (0, 1f)).ToString ("G9");
+			return dist.Value (UnityEngine.Random.Range (0, 1f)).ToString ("G9");
 		}
 	}
 }

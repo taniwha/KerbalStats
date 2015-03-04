@@ -39,7 +39,7 @@ namespace KerbalStats.Genome {
 				return new GenePair (1, 1);
 			}
 			// male: either XY or YX
-			int y = Random.Range (0, 2);
+			int y = UnityEngine.Random.Range (0, 2);
 			return new GenePair (y, 1 - y);
 		}
 

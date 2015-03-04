@@ -84,12 +84,12 @@ namespace KerbalStats.Genome {
 			bool isBad = false;
 			bool.TryParse (isBadS, out isBad);
 			DiscreteDistribution dist = reverse[isBad ? 1 : 0];
-			int numBits = 2 + dist.Value (Random.Range (0, 1f));
+			int numBits = 2 + dist.Value (UnityEngine.Random.Range (0, 1f));
 			int max = numBits > 3 ? 4 : numBits + 1;
 			int min = numBits > 3 ? 1 : 0;
-			int first = Random.Range (min, max);
-			int a = Random.Range (0, 3);
-			int b = Random.Range (0, 3);
+			int first = UnityEngine.Random.Range (min, max);
+			int a = UnityEngine.Random.Range (0, 3);
+			int b = UnityEngine.Random.Range (0, 3);
 			//Console.WriteLine(String.Format ("{0} {1} {2} {3} {4} {5}", numBits, min, max, first, a, b));
 			return new GenePair (codes[first][a], codes[numBits - first][b]);
 		}
@@ -97,7 +97,7 @@ namespace KerbalStats.Genome {
 		public string CreateValue (GenePair gene)
 		{
 			DiscreteDistribution dist = ChooseDistribution (gene);
-			return (dist.Value (Random.Range (0, 1f)) > 0).ToString ();
+			return (dist.Value (UnityEngine.Random.Range (0, 1f)) > 0).ToString ();
 		}
 	}
 }
