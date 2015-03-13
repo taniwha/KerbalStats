@@ -50,17 +50,11 @@ namespace KerbalStats.Progeny {
 		public void Load (ProtoCrewMember kerbal, ConfigNode node)
 		{
 			if (node.HasNode (name)) {
-				var trait = node.GetNode (name);
-				string traitName = trait.GetValue ("current");
-				KerbalRoster.SetExperienceTrait (kerbal, traitName);
 			}
 		}
 
 		public void Save (ProtoCrewMember kerbal, ConfigNode node)
 		{
-			var trait = new ConfigNode (name);
-			node.AddNode (trait);
-			trait.AddValue ("current", kerbal.experienceTrait.TypeName);
 		}
 
 		public void Clear ()
