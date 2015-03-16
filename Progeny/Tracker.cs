@@ -90,12 +90,14 @@ namespace KerbalStats.Progeny {
 
 		public ProgenyTracker ()
 		{
+			instance = this;
 			Clear ();
 			GameEvents.onVesselCreate.Add (onVesselCreate);
 		}
 
 		~ProgenyTracker ()
 		{
+			instance = null;
 			GameEvents.onVesselCreate.Remove (onVesselCreate);
 		}
 
@@ -150,7 +152,7 @@ namespace KerbalStats.Progeny {
 		}
 	}
 
-	[KSPAddon (KSPAddon.Startup.MainMenu, false)]
+	[KSPAddon (KSPAddon.Startup.EveryScene, false)]
 	public class KSProgenyRunner : MonoBehaviour
 	{
 		internal static KSProgenyRunner instance;
@@ -161,7 +163,18 @@ namespace KerbalStats.Progeny {
 				return;
 			}
 			instance = this;
-			StartCoroutine (ProgenyTracker.instance.ScanFemales ());
+		}
+
+		void OnDestroy ()
+		{
+			instance = null;
+		}
+
+		void Start ()
+		{
+			if (instance != null && ProgenyTracker.instance != null) {
+				StartCoroutine (ProgenyTracker.instance.ScanFemales ());
+			}
 		}
 	}
 
