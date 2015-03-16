@@ -89,17 +89,34 @@ namespace KerbalStats.Progeny {
 		public ProgenyTracker ()
 		{
 			Clear ();
+
+		string[] ShuffledNames (string[] names)
+		{
+			int len = names.Length;
+			var kv = new List<KeyValuePair<float, string>> ();
+			for (int i = 0; i < len; i++) {
+				kv.Add (new KeyValuePair<float, string>(UnityEngine.Random.Range(0, 1f), names[i]));
+			}
+			var skv = (from item in kv orderby item.Key select item).ToArray ();
+			string [] shuffled = new string[len];
+			for (int i = 0; i < len; i++) {
+				shuffled[i] = skv[i].Value;
+			}
+			return shuffled;
 		}
 
 		internal IEnumerator<YieldInstruction> ScanFemales ()
 		{
 			while (true) {
-				string[] females = female_kerbals.Keys.ToArray ();
+				//Debug.Log(String.Format ("[KS Progeny] ScanFemales"));
+				string[] females = ShuffledNames (female_kerbals.Keys.ToArray ());
+				yield return null;
 				for (int i = 0; i < females.Length; i++) {
 					if (!female_kerbals.ContainsKey (females[i])) {
 						// the kerbal was removed so just skip to the next one
 						continue;
 					}
+					//Debug.Log(String.Format ("[KS Progeny] ScanFemales: {0}", females[i]));
 					female_kerbals[females[i]].Update ();
 					yield return null;
 				}
