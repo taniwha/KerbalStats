@@ -31,6 +31,7 @@ KS_FILES := \
 	Genome/Trait.cs					\
 	Profession/Profession.cs		\
 	Progeny/Female.cs				\
+	Progeny/Male.cs					\
 	Progeny/Tracker.cs				\
 	IKerbalExt.cs					\
 	KerbalExt.cs					\

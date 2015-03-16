@@ -26,12 +26,15 @@ namespace KerbalStats.Progeny {
 	public class ProgenyTracker : IKerbalExt
 	{
 		Dictionary <string, Female> female_kerbals;
+		Dictionary <string, Male> male_kerbals;
 		internal static ProgenyTracker instance;
 
 		public void AddKerbal (ProtoCrewMember kerbal)
 		{
 			if (Gender.IsFemale (kerbal)) {
 				female_kerbals[kerbal.name] = new Female (kerbal);
+			} else {
+				male_kerbals[kerbal.name] = new Male (kerbal);
 			}
 		}
 
@@ -50,16 +53,32 @@ namespace KerbalStats.Progeny {
 		public void Load (ProtoCrewMember kerbal, ConfigNode node)
 		{
 			if (node.HasNode (name)) {
+				var progeny = node.GetNode (name);
+				if (Gender.IsFemale (kerbal)) {
+					female_kerbals[kerbal.name] = new Female (kerbal, progeny);
+				} else {
+					male_kerbals[kerbal.name] = new Male (kerbal, progeny);
+				}
+			} else {
+				AddKerbal (kerbal);
 			}
 		}
 
 		public void Save (ProtoCrewMember kerbal, ConfigNode node)
 		{
+			var progeny = new ConfigNode (name);
+			node.AddNode (progeny);
+			if (Gender.IsFemale (kerbal)) {
+				female_kerbals[kerbal.name].Save (progeny);
+			} else {
+				male_kerbals[kerbal.name].Save (progeny);
+			}
 		}
 
 		public void Clear ()
 		{
 			female_kerbals = new Dictionary<string, Female> ();
+			male_kerbals = new Dictionary<string, Male> ();
 		}
 
 		public string Get (ProtoCrewMember kerbal, string parms)

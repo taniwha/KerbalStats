@@ -64,6 +64,13 @@ namespace KerbalStats.Progeny {
 
 		KerbalFSM fsm;
 
+		public string name
+		{
+			get {
+				return kerbal.name;
+			}
+		}
+
 		void enter_fertile_states (KFSMState st)
 		{
 			event_assigned.GoToStateOnEvent = state_assigned_fertile;
@@ -257,6 +264,17 @@ namespace KerbalStats.Progeny {
 			this.kerbal = kerbal;
 			lastUpdate = Planetarium.GetUniversalTime ();
 			GameEvents.onKerbalStatusChange.Add (onKerbalStatusChange);
+		}
+
+		public Female (ProtoCrewMember kerbal, ConfigNode progeny)
+		{
+			this.kerbal = kerbal;
+			lastUpdate = Planetarium.GetUniversalTime ();
+			GameEvents.onKerbalStatusChange.Add (onKerbalStatusChange);
+		}
+
+		internal void Save (ConfigNode progeny)
+		{
 		}
 
 		~Female ()
