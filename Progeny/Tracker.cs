@@ -29,6 +29,7 @@ namespace KerbalStats.Progeny {
 		Dictionary <string, Male> male_kerbals;
 		internal static ProgenyTracker instance;
 
+		Dictionary <string, Vessel> kerbal_vessels;
 		public void AddKerbal (ProtoCrewMember kerbal)
 		{
 			if (Gender.IsFemale (kerbal)) {
@@ -79,6 +80,7 @@ namespace KerbalStats.Progeny {
 		{
 			female_kerbals = new Dictionary<string, Female> ();
 			male_kerbals = new Dictionary<string, Male> ();
+			kerbal_vessels = new Dictionary<string, Vessel> ();
 		}
 
 		public string Get (ProtoCrewMember kerbal, string parms)
@@ -89,6 +91,30 @@ namespace KerbalStats.Progeny {
 		public ProgenyTracker ()
 		{
 			Clear ();
+			GameEvents.onVesselCreate.Add (onVesselCreate);
+		}
+
+		~ProgenyTracker ()
+		{
+			GameEvents.onVesselCreate.Remove (onVesselCreate);
+		}
+
+		internal IEnumerator<YieldInstruction> WaitAndGetCrew (Vessel vessel)
+		{
+			yield return null;
+			var crew = vessel.GetVesselCrew ();
+			for (int i = 0; i < crew.Count; i++) {
+				Debug.Log(String.Format ("[KS Progeny] {0}", crew[i].name));
+				kerbal_vessels[crew[i].name] = vessel;
+			}
+		}
+
+
+		void onVesselCreate (Vessel vessel)
+		{
+			Debug.Log(String.Format ("[KS Progeny] onVesselCreate"));
+			KSProgenyRunner.instance.StartCoroutine (WaitAndGetCrew (vessel));
+		}
 
 		string[] ShuffledNames (string[] names)
 		{
