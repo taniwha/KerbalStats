@@ -28,8 +28,6 @@ namespace KerbalStats.Progeny {
 		ProtoCrewMember kerbal;
 		double lastUpdate;
 		double UT;
-		bool update_pending;
-		ProtoCrewMember.RosterStatus oldStatus;
 
 		KFSMState state_available_fertile;
 		KFSMState state_available_pregnant;
@@ -263,23 +261,16 @@ namespace KerbalStats.Progeny {
 		{
 			this.kerbal = kerbal;
 			lastUpdate = Planetarium.GetUniversalTime ();
-			GameEvents.onKerbalStatusChange.Add (onKerbalStatusChange);
 		}
 
 		public Female (ProtoCrewMember kerbal, ConfigNode progeny)
 		{
 			this.kerbal = kerbal;
 			lastUpdate = Planetarium.GetUniversalTime ();
-			GameEvents.onKerbalStatusChange.Add (onKerbalStatusChange);
 		}
 
 		internal void Save (ConfigNode progeny)
 		{
-		}
-
-		~Female ()
-		{
-			GameEvents.onKerbalStatusChange.Remove (onKerbalStatusChange);
 		}
 
 		public void Update ()
@@ -292,26 +283,8 @@ namespace KerbalStats.Progeny {
 			lastUpdate = UT;
 		}
 
-		void onKerbalStatusChange (ProtoCrewMember kerbal, ProtoCrewMember.RosterStatus oldStatus, ProtoCrewMember.RosterStatus newStatus)
+		public void UpdateStatus ()
 		{
-			if (kerbal != this.kerbal || newStatus == oldStatus) {
-				return;
-			}
-			KSProgenyRunner.instance.StartCoroutine (DelayStatusUpdate ());
-		}
-
-		internal IEnumerator<YieldInstruction> DelayStatusUpdate ()
-		{
-			if (update_pending) {
-				yield break;
-			}
-			oldStatus = kerbal.rosterStatus;
-			update_pending = true;
-			yield return null;
-			yield return null;
-			if (kerbal.rosterStatus == oldStatus) {
-				yield break;
-			}
 			switch (kerbal.rosterStatus) {
 				case ProtoCrewMember.RosterStatus.Available:
 					fsm.RunEvent (event_recover);

@@ -26,8 +26,6 @@ namespace KerbalStats.Progeny {
 	public class Male
 	{
 		ProtoCrewMember kerbal;
-		bool update_pending;
-		ProtoCrewMember.RosterStatus oldStatus;
 
 		public string name
 		{
@@ -39,44 +37,15 @@ namespace KerbalStats.Progeny {
 		public Male (ProtoCrewMember kerbal)
 		{
 			this.kerbal = kerbal;
-			GameEvents.onKerbalStatusChange.Add (onKerbalStatusChange);
 		}
 
 		public Male (ProtoCrewMember kerbal, ConfigNode progeny)
 		{
 			this.kerbal = kerbal;
-			GameEvents.onKerbalStatusChange.Add (onKerbalStatusChange);
 		}
 
 		internal void Save (ConfigNode progeny)
 		{
-		}
-
-		~Male ()
-		{
-			GameEvents.onKerbalStatusChange.Remove (onKerbalStatusChange);
-		}
-
-		void onKerbalStatusChange (ProtoCrewMember kerbal, ProtoCrewMember.RosterStatus oldStatus, ProtoCrewMember.RosterStatus newStatus)
-		{
-			if (kerbal != this.kerbal || newStatus == oldStatus) {
-				return;
-			}
-			KSProgenyRunner.instance.StartCoroutine (DelayStatusUpdate ());
-		}
-
-		internal IEnumerator<YieldInstruction> DelayStatusUpdate ()
-		{
-			if (update_pending) {
-				yield break;
-			}
-			oldStatus = kerbal.rosterStatus;
-			update_pending = true;
-			yield return null;
-			yield return null;
-			if (kerbal.rosterStatus == oldStatus) {
-				yield break;
-			}
 		}
 	}
 }

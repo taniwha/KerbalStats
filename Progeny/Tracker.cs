@@ -92,13 +92,19 @@ namespace KerbalStats.Progeny {
 		{
 			instance = this;
 			Clear ();
+			GameEvents.onKerbalStatusChange.Add (onKerbalStatusChange);
 			GameEvents.onVesselCreate.Add (onVesselCreate);
 		}
 
 		~ProgenyTracker ()
 		{
 			instance = null;
+			GameEvents.onKerbalStatusChange.Remove (onKerbalStatusChange);
 			GameEvents.onVesselCreate.Remove (onVesselCreate);
+		}
+
+		void onKerbalStatusChange (ProtoCrewMember kerbal, ProtoCrewMember.RosterStatus oldStatus, ProtoCrewMember.RosterStatus newStatus)
+		{
 		}
 
 		internal IEnumerator<YieldInstruction> WaitAndGetCrew (Vessel vessel)
