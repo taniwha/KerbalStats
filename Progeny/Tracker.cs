@@ -217,6 +217,29 @@ namespace KerbalStats.Progeny {
 
 		void onCrewTransferred (GameEvents.HostedFromToAction<ProtoCrewMember,Part> hft)
 		{
+			if (hft.from != null && hft.to != null) {
+				if (hft.from.vessel != hft.to.vessel) {
+					Debug.Log(String.Format ("[KS Progeny] transfer: {0}", hft.host.name));
+					kerbal_vessels[hft.host.name] = hft.to.vessel;
+					IKerbal kerbal = kerbals[hft.host.name];
+					if (kerbal is Male) {
+						Vessel vf = hft.from.vessel;
+						Vessel vt = hft.to.vessel;
+						boarded_males[vf.id].Remove (kerbal as Male);
+						// EVA spawns a new vessel, so onVesselCreate should
+						// take care of things.
+						if (boarded_males.ContainsKey (vt.id)) {
+							boarded_males[vt.id].Add (kerbal as Male);
+						}
+					}
+				}
+			} else if (hft.from != null) {
+				Debug.Log(String.Format ("[KS Progeny] transfer?1: {0}", hft.host.name));
+			} else if (hft.to != null) {
+				Debug.Log(String.Format ("[KS Progeny] transfer?2: {0}", hft.host.name));
+			} else {
+				Debug.Log(String.Format ("[KS Progeny] transfer?3: {0}", hft.host.name));
+			}
 		}
 
 		internal IEnumerator<YieldInstruction> WaitAndGetCrew (Vessel vessel)
