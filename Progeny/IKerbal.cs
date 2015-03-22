@@ -23,33 +23,9 @@ using UnityEngine;
 using KSP.IO;
 
 namespace KerbalStats.Progeny {
-	public class Male : IKerbal
+	public interface IKerbal
 	{
-		ProtoCrewMember kerbal;
-
-		public string name
-		{
-			get {
-				return kerbal.name;
-			}
-		}
-
-		public Male (ProtoCrewMember kerbal)
-		{
-			this.kerbal = kerbal;
-		}
-
-		public Male (ProtoCrewMember kerbal, ConfigNode progeny)
-		{
-			this.kerbal = kerbal;
-		}
-
-		public void Save (ConfigNode progeny)
-		{
-		}
-
-		public void UpdateStatus ()
-		{
-		}
+		void Save (ConfigNode node);
+		void UpdateStatus ();
 	}
 }

@@ -23,7 +23,7 @@ using UnityEngine;
 using KSP.IO;
 
 namespace KerbalStats.Progeny {
-	public class Female
+	public class Female : IKerbal
 	{
 		ProtoCrewMember kerbal;
 		double lastUpdate;
@@ -269,7 +269,7 @@ namespace KerbalStats.Progeny {
 			lastUpdate = Planetarium.GetUniversalTime ();
 		}
 
-		internal void Save (ConfigNode progeny)
+		public void Save (ConfigNode progeny)
 		{
 		}
 
