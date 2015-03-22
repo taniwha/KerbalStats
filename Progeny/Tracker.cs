@@ -132,13 +132,20 @@ namespace KerbalStats.Progeny {
 		{
 			yield return null;
 			if (pcm.rosterStatus == ProtoCrewMember.RosterStatus.Available) {
+				Debug.Log(String.Format ("[KS Progeny] WaitAndCheckStatus: {0} available", pcm.name));
 				IKerbal kerbal = kerbals[pcm.name];
 				Vessel v = kerbal_vessels[pcm.name];
 				kerbal_vessels.Remove (pcm.name);
 				if (kerbal is Male) {
-					boarded_males[v.id].Remove (kerbal as Male);
+					if (boarded_males.ContainsKey (v.id)) {
+						boarded_males[v.id].Remove (kerbal as Male);
+					} else {
+						Debug.Log(String.Format ("[KS Progeny] WaitAndCheckStatus: no vessel {0}", v.id));
+					}
 					available_males[pcm.name] = kerbal as Male;
 				}
+			} else {
+				Debug.Log(String.Format ("[KS Progeny] WaitAndCheckStatus: {0} {1}", pcm.name, pcm.rosterStatus));
 			}
 		}
 
