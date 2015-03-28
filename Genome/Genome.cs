@@ -29,8 +29,11 @@ namespace KerbalStats.Genome {
 		Dictionary<string, GenePair[]> kerbal_genome;
 		Trait[] traits;
 
+		static Genome instance;
+
 		public Genome ()
 		{
+			instance = this;
 			traits = new Trait[] {
 				new Gender (),
 				new Stupidity (),
@@ -76,15 +79,19 @@ namespace KerbalStats.Genome {
 			}
 		}
 
+		static void WriteGenes (GenePair[] genes, ConfigNode node)
+		{
+			for (int i = 0; i < genes.Length; i++) {
+				node.AddValue ("genepair", genes[i].ToString ());
+			}
+		}
+
 		public void Save (ProtoCrewMember kerbal, ConfigNode node)
 		{
 			if (kerbal_genome.ContainsKey (kerbal.name)) {
 				var gen = new ConfigNode (name);
 				node.AddNode (gen);
-				var genes = kerbal_genome[kerbal.name];
-				for (int i = 0; i < genes.Length; i++) {
-					gen.AddValue ("genepair", genes[i].ToString ());
-				}
+				WriteGenes (kerbal_genome[kerbal.name], gen);
 			}
 		}
 
@@ -96,6 +103,19 @@ namespace KerbalStats.Genome {
 		public string Get (ProtoCrewMember kerbal, string parms)
 		{
 			return "";
+		}
+
+		public static ConfigNode Combine (ProtoCrewMember kerbal1, ProtoCrewMember kerbal2)
+		{
+			var genes = new GenePair[instance.traits.Length];
+			var g1 = instance.kerbal_genome[kerbal1.name];
+			var g2 = instance.kerbal_genome[kerbal2.name];
+			for (int i = 0; i < genes.Length; i++) {
+				genes[i] = GenePair.Combine (g1[i], g2[i]);
+			}
+			var node = new ConfigNode ();
+			WriteGenes (genes, node);
+			return node;
 		}
 	}
 
