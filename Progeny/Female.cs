@@ -28,6 +28,9 @@ namespace KerbalStats.Progeny {
 		ProtoCrewMember kerbal;
 		double lastUpdate;
 		double UT;
+		double interestTime;
+		double interestTC;
+		ConfigNode zygote;
 
 		KFSMState state_available_fertile;
 		KFSMState state_available_pregnant;
@@ -59,6 +62,13 @@ namespace KerbalStats.Progeny {
 		KFSMEvent event_lost;
 		KFSMEvent event_recover;
 		KFSMEvent event_die;
+
+		static string[] start_states = {
+			"Available:Fertile",
+			"Assigned:Fertile",
+			"Dead",
+			"Missing:Fertile",
+		};
 
 		KerbalFSM fsm;
 
@@ -95,13 +105,49 @@ namespace KerbalStats.Progeny {
 			return false;
 		}
 
-		bool check_assigned_conceive (KFSMState st)
+		float Interest ()
 		{
-			if (kerbal.KerbalRef == null || kerbal.KerbalRef.InPart == null
-				|| kerbal.KerbalRef.InPart.vessel == null) {
+			if (UT < interestTime) {
+				return 0;
+			}
+			double x = (UT - interestTime) / interestTC;
+			return (float) (1 - (x + 1) * Math.Exp (x));
+		}
+
+		float Fertility
+		{
+			get {
+				return 0.5f; //FIXME
+			}
+		}
+
+		Male SelectMate (List<Male> males)
+		{
+			float [] male_readiness = new float[males.Count];
+			for (int i = 0; i < males.Count; i++) {
+				male_readiness[i] = males[i].Interest (UT);
+			}
+			var dist = new Genome.DiscreteDistribution (male_readiness);
+			int ind = dist.Value (UnityEngine.Random.Range (0, 1f));
+			return males[ind];
+		}
+
+		bool Mate (Male mate)
+		{
+			interestTime = UT + 600; //FIXME
+			mate.Mate (interestTime);
+			float conceive_chance = Fertility * mate.Fertility;
+			if (UnityEngine.Random.Range (0, 1f) > conceive_chance) {
 				return false;
 			}
-			var vessel = kerbal.KerbalRef.InPart.vessel;
+			zygote = Genome.Genome.Combine (kerbal, mate.kerbal);
+			zygote.name = "zygote";
+			return true;
+		}
+
+		bool check_assigned_conceive (KFSMState st)
+		{
+			var vessel = ProgenyTracker.KerbalVessel (kerbal);
 			if (vessel.loaded) {
 				// being watched
 				return false;
@@ -111,7 +157,10 @@ namespace KerbalStats.Progeny {
 				// in that suit?
 				return false;
 			}
-			return false;
+			if (UnityEngine.Random.Range (0, 1f) > Interest ()) {
+				return false;
+			}
+			return Mate (SelectMate (ProgenyTracker.BoardedMales (vessel)));
 		}
 
 		bool check_missing_conceive (KFSMState st)
@@ -261,16 +310,46 @@ namespace KerbalStats.Progeny {
 		{
 			this.kerbal = kerbal;
 			lastUpdate = Planetarium.GetUniversalTime ();
+			CreateStateMachine ();
+			fsm.StartFSM (start_states[(int) kerbal.rosterStatus]);
+
+			interestTime = 0;
+			interestTC = 3600;	//FIXME
+			zygote = null;
 		}
 
 		public Female (ProtoCrewMember kerbal, ConfigNode progeny)
 		{
 			this.kerbal = kerbal;
 			lastUpdate = Planetarium.GetUniversalTime ();
+			CreateStateMachine ();
+			if (progeny.HasValue ("state")) {
+				fsm.StartFSM (progeny.GetValue ("state"));
+			} else {
+				fsm.StartFSM (start_states[(int) kerbal.rosterStatus]);
+			}
+			interestTime = 0;
+			interestTC = 3600;	//FIXME
+			zygote = null;
+			if (progeny.HasValue ("interestTime")) {
+				double.TryParse (progeny.GetValue ("interestTime"), out interestTime);
+			}
+			if (progeny.HasValue ("interestTC")) {
+				double.TryParse (progeny.GetValue ("interestTC"), out interestTC);
+			}
+			if (progeny.HasNode ("zygote")) {
+				zygote = progeny.GetNode ("zygote");
+			}
 		}
 
 		public void Save (ConfigNode progeny)
 		{
+			progeny.AddValue ("state", fsm.currentStateName);
+			progeny.AddValue ("interestTime", interestTime.ToString ("G17"));
+			progeny.AddValue ("interestTC", interestTC.ToString ("G17"));
+			if (zygote != null) {
+				progeny.AddNode (zygote);
+			}
 		}
 
 		public void Update ()

@@ -25,7 +25,14 @@ using KSP.IO;
 namespace KerbalStats.Progeny {
 	public class Male : IKerbal
 	{
-		ProtoCrewMember kerbal;
+		public ProtoCrewMember kerbal
+		{
+			get;
+			private set;
+		}
+
+		double interestTime;
+		double interestTC;
 
 		public string name
 		{
@@ -34,18 +41,52 @@ namespace KerbalStats.Progeny {
 			}
 		}
 
+		public float Interest (double UT)
+		{
+			if (UT < interestTime) {
+				return 0;
+			}
+			double x = (UT - interestTime) / interestTC;
+			return (float) (1 - (x + 1) * Math.Exp (x));
+		}
+
+		public float Fertility
+		{
+			get {
+				return 0.95f;//FIXME
+			}
+		}
+
+		public void Mate (double interestTime)
+		{
+			this.interestTime = interestTime;
+		}
+
 		public Male (ProtoCrewMember kerbal)
 		{
 			this.kerbal = kerbal;
+			interestTime = 0;
+			interestTC = 3600;	//FIXME
 		}
 
 		public Male (ProtoCrewMember kerbal, ConfigNode progeny)
 		{
 			this.kerbal = kerbal;
+			interestTime = 0;
+			interestTC = 3600;  //FIXME
+			if (progeny.HasValue ("interestTime")) {
+				double.TryParse (progeny.GetValue ("interestTime"), out interestTime);
+			}
+			if (progeny.HasValue ("interestTC")) {
+				double.TryParse (progeny.GetValue ("interestTC"), out interestTC);
+			}
 		}
 
 		public void Save (ConfigNode progeny)
 		{
+			progeny.AddValue ("interestTime", interestTime.ToString ("G17"));
+			progeny.AddValue ("interestTC", interestTC.ToString ("G17"));
+
 		}
 
 		public void UpdateStatus ()

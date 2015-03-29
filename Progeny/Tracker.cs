@@ -37,6 +37,16 @@ namespace KerbalStats.Progeny {
 
 		Dictionary <string, Vessel> kerbal_vessels;
 
+		public static Vessel KerbalVessel (ProtoCrewMember pcm)
+		{
+			return instance.kerbal_vessels[pcm.name];
+		}
+
+		public static List<Male> BoardedMales (Vessel vessel)
+		{
+			return instance.boarded_males[vessel.id];
+		}
+
 		public void AddKerbal (ProtoCrewMember pcm)
 		{
 			IKerbal kerbal;
