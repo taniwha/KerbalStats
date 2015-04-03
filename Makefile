@@ -33,6 +33,7 @@ KS_FILES := \
 	Progeny/Female.cs				\
 	Progeny/IKerbal.cs				\
 	Progeny/Male.cs					\
+	Progeny/Settings.cs				\
 	Progeny/Tracker.cs				\
 	IKerbalExt.cs					\
 	KerbalExt.cs					\
