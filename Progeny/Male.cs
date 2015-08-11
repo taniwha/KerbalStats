@@ -23,7 +23,7 @@ using UnityEngine;
 using KSP.IO;
 
 namespace KerbalStats.Progeny {
-	public class Male : IKerbal
+	public class Male : IKerbal, IComparable<Male>
 	{
 		public ProtoCrewMember kerbal
 		{
@@ -91,6 +91,11 @@ namespace KerbalStats.Progeny {
 
 		public void UpdateStatus ()
 		{
+		}
+
+		public int CompareTo (Male other)
+		{
+			return name.CompareTo (other.name);
 		}
 	}
 }

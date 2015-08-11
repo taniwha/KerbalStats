@@ -38,9 +38,31 @@ namespace KerbalStats.Progeny {
 
 		Dictionary <string, Vessel> kerbal_vessels;
 
+		public static List<Female> FemaleKerbals
+		{
+			get {
+				return instance.female_kerbals.Values.ToList ();
+			}
+		}
+
+		public static List<Male> MaleKerbals
+		{
+			get {
+				return instance.male_kerbals.Values.ToList ();
+			}
+		}
+
+		public static Vessel KerbalVessel (string name)
+		{
+			if (!instance.kerbal_vessels.ContainsKey (name)) {
+				return null;
+			}
+			return instance.kerbal_vessels[name];
+		}
+
 		public static Vessel KerbalVessel (ProtoCrewMember pcm)
 		{
-			return instance.kerbal_vessels[pcm.name];
+			return KerbalVessel (pcm.name);
 		}
 
 		public static List<Male> BoardedMales (Vessel vessel)

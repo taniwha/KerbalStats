@@ -23,7 +23,7 @@ using UnityEngine;
 using KSP.IO;
 
 namespace KerbalStats.Progeny {
-	public class Female : IKerbal
+	public class Female : IKerbal, IComparable<Female>
 	{
 		ProtoCrewMember kerbal;
 		double lastUpdate;
@@ -378,6 +378,11 @@ namespace KerbalStats.Progeny {
 					fsm.RunEvent (event_lost);
 					break;
 			}
+		}
+
+		public int CompareTo (Female other)
+		{
+			return name.CompareTo (other.name);
 		}
 	}
 }

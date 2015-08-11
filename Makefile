@@ -30,6 +30,7 @@ KS_FILES := \
 	Genome/Stupidity.cs				\
 	Genome/Trait.cs					\
 	Profession/Profession.cs		\
+	Progeny/DebugWindow.cs			\
 	Progeny/Female.cs				\
 	Progeny/IKerbal.cs				\
 	Progeny/Male.cs					\
@@ -40,6 +41,8 @@ KS_FILES := \
 	KerbalStats.cs					\
 	assembly/AssemblyInfo.cs		\
 	assembly/VersionReport.cs		\
+	toolbar/Toolbar.cs				\
+	toolbar/ToolbarWrapper.cs		\
 	$e
 
 RESGEN2		:= resgen2
