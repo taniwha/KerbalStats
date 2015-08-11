@@ -53,7 +53,7 @@ namespace KerbalStats.Genome {
 		public void AddKerbal (ProtoCrewMember kerbal)
 		{
 			var genes = new GenePair[traits.Length];
-			genes[0] = traits[0].CreateGene (KerbalExt.Get (kerbal, "gender"));
+			genes[0] = traits[0].CreateGene (kerbal.gender.ToString ());
 			genes[1] = traits[1].CreateGene (kerbal.stupidity.ToString ("G9"));
 			genes[2] = traits[2].CreateGene (kerbal.courage.ToString ("G9"));
 			genes[3] = traits[3].CreateGene (kerbal.isBadass.ToString ());

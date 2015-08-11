@@ -73,7 +73,7 @@ namespace KerbalStats.Progeny {
 		public void AddKerbal (ProtoCrewMember pcm)
 		{
 			IKerbal kerbal;
-			if (Gender.IsFemale (pcm)) {
+			if (pcm.gender == ProtoCrewMember.Gender.Female) {
 				kerbal = female_kerbals[pcm.name] = new Female (pcm);
 			} else {
 				kerbal = male_kerbals[pcm.name] = new Male (pcm);
@@ -104,7 +104,7 @@ namespace KerbalStats.Progeny {
 			if (node.HasNode (name)) {
 				var progeny = node.GetNode (name);
 				IKerbal kerbal;
-				if (Gender.IsFemale (pcm)) {
+				if (pcm.gender == ProtoCrewMember.Gender.Female) {
 					kerbal = female_kerbals[pcm.name] = new Female (pcm, progeny);
 				} else {
 					kerbal = male_kerbals[pcm.name] = new Male (pcm, progeny);

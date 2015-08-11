@@ -20,7 +20,6 @@ KS_FILES := \
 	Experience/SeatTasks.cs			\
 	Experience/Task.cs				\
 	Experience/Tracker.cs			\
-	Gender/Gender.cs				\
 	Genome/BadAss.cs				\
 	Genome/Courage.cs				\
 	Genome/Gender.cs				\
