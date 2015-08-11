@@ -32,6 +32,7 @@ namespace KerbalStats.Progeny {
 		enum InfoType {
 			Females,
 			Males,
+			Vessels,
 		};
 
 		InfoType infoType;
@@ -110,7 +111,7 @@ namespace KerbalStats.Progeny {
 		void InfoSelector ()
 		{
 			GUILayout.BeginHorizontal ();
-			for (var t = InfoType.Females; t <= InfoType.Males; t++) {
+			for (var t = InfoType.Females; t <= InfoType.Vessels; t++) {
 				if (GUILayout.Toggle (infoType == t, t.ToString (),
 									  GUILayout.Width (80))) {
 					infoType = t;
@@ -128,8 +129,24 @@ namespace KerbalStats.Progeny {
 			if (vessel == null) {
 				GUILayout.Label ("not boarded");
 			} else {
-				GUILayout.Label (vessel.name);
+				GUILayout.Label (vessel.vesselName);
 			}
+			GUILayout.EndHorizontal ();
+		}
+
+		void ShowKerbal (Male kerbal)
+		{
+			GUILayout.BeginHorizontal ();
+			GUILayout.FlexibleSpace ();
+			GUILayout.Label (kerbal.name);
+			GUILayout.EndHorizontal ();
+		}
+
+		void ShowVessel (Vessel vessel)
+		{
+			GUILayout.BeginHorizontal ();
+			GUILayout.Label (vessel.vesselName);
+			GUILayout.FlexibleSpace ();
 			GUILayout.EndHorizontal ();
 		}
 
@@ -153,6 +170,21 @@ namespace KerbalStats.Progeny {
 			}
 		}
 
+		void ListVessels ()
+		{
+			for (int i = 0; i < FlightGlobals.fetch.vessels.Count; i++) {
+				var vessel = FlightGlobals.fetch.vessels[i];
+				var males = ProgenyTracker.BoardedMales (vessel);
+				if (males.Count < 1) {
+					continue;
+				}
+				ShowVessel (vessel);
+				for (int j = 0; j < males.Count; j++) {
+					ShowKerbal (males[j]);
+				}
+			}
+		}
+
 		void debugWindow (int windowID)
 		{
 			GUILayout.BeginVertical ();
@@ -164,6 +196,9 @@ namespace KerbalStats.Progeny {
 					break;
 				case InfoType.Males:
 					ListMales ();
+					break;
+				case InfoType.Vessels:
+					ListVessels ();
 					break;
 			}
 
