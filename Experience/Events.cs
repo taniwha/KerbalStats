@@ -15,6 +15,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with KerbalStats.  If not, see <http://www.gnu.org/licenses/>.
 */
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
@@ -57,7 +58,7 @@ namespace KerbalStats.Experience {
 												  situation);
 		}
 
-		IEnumerator<YieldInstruction> WaitAndSeatKerbal (ProtoCrewMember kerbal)
+		IEnumerator WaitAndSeatKerbal (ProtoCrewMember kerbal)
 		{
 			yield return null;
 			Part part = kerbal.KerbalRef.InPart;
@@ -171,7 +172,7 @@ namespace KerbalStats.Experience {
 			}
 		}
 
-		IEnumerator<YieldInstruction> WaitAndScanVesselCrew (Vessel vessel)
+		IEnumerator WaitAndScanVesselCrew (Vessel vessel)
 		{
 			// Newly created vessels for launch are populated with assigned
 			// kerbals in the same frame as the vessel is created, but after
@@ -249,7 +250,7 @@ namespace KerbalStats.Experience {
 			}
 		}
 
-		IEnumerator<YieldInstruction> WaitAndSetBody (Vessel vessel)
+		IEnumerator WaitAndSetBody (Vessel vessel)
 		{
 			yield return null;
 			yield return null;

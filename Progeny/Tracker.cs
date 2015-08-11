@@ -15,6 +15,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with KerbalStats.  If not, see <http://www.gnu.org/licenses/>.
 */
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
@@ -138,7 +139,7 @@ namespace KerbalStats.Progeny {
 			GameEvents.onVesselWasModified.Remove (onVesselWasModified);
 		}
 
-		internal IEnumerator<YieldInstruction> WaitAndCheckStatus (ProtoCrewMember pcm)
+		internal IEnumerator WaitAndCheckStatus (ProtoCrewMember pcm)
 		{
 			yield return null;
 			if (pcm.rosterStatus == ProtoCrewMember.RosterStatus.Available) {
@@ -252,7 +253,7 @@ namespace KerbalStats.Progeny {
 			}
 		}
 
-		internal IEnumerator<YieldInstruction> WaitAndGetCrew (Vessel vessel)
+		internal IEnumerator WaitAndGetCrew (Vessel vessel)
 		{
 			yield return null;
 			var crew = vessel.GetVesselCrew ();
@@ -301,7 +302,7 @@ namespace KerbalStats.Progeny {
 			return shuffled;
 		}
 
-		internal IEnumerator<YieldInstruction> ScanFemales ()
+		internal IEnumerator ScanFemales ()
 		{
 			while (true) {
 				//Debug.Log(String.Format ("[KS Progeny] ScanFemales"));
