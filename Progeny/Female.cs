@@ -361,7 +361,7 @@ namespace KerbalStats.Progeny {
 			}
 			if (progeny.HasValue ("zygote")) {
 				var zid = progeny.GetValue ("zygote");
-				zygote = ProgenyScenario.current.GetZygote (id);
+				zygote = ProgenyScenario.current.GetZygote (zid);
 			}
 		}
 
@@ -371,7 +371,7 @@ namespace KerbalStats.Progeny {
 			progeny.AddValue ("interestTime", interestTime.ToString ("G17"));
 			progeny.AddValue ("interestTC", interestTC.ToString ("G17"));
 			if (zygote != null) {
-				var node = progeny.AddValue ("zygote", zygote.id);
+				progeny.AddValue ("zygote", zygote.id);
 			}
 		}
 
