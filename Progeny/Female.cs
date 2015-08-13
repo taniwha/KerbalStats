@@ -116,7 +116,7 @@ namespace KerbalStats.Progeny {
 				return 0;
 			}
 			double x = (UT - interestTime) / interestTC;
-			return (float) (1 - (x + 1) * Math.Exp (x));
+			return (float) (1 - (x + 1) * Math.Exp (-x));
 		}
 
 		float Fertility
