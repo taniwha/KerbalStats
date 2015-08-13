@@ -32,6 +32,7 @@ namespace KerbalStats.Progeny {
 		enum InfoType {
 			Females,
 			Males,
+			AvailMales,
 			Vessels,
 		};
 
@@ -134,6 +135,23 @@ namespace KerbalStats.Progeny {
 			GUILayout.EndHorizontal ();
 		}
 
+		void ShowKerbal (Female kerbal)
+		{
+			GUILayout.BeginHorizontal ();
+			GUILayout.FlexibleSpace ();
+			GUILayout.Label (kerbal.name);
+			GUILayout.FlexibleSpace ();
+			var vessel = ProgenyTracker.KerbalVessel (name);
+			if (vessel == null) {
+				GUILayout.Label ("");
+			} else {
+				GUILayout.Label (vessel.vesselName);
+			}
+			GUILayout.FlexibleSpace ();
+			GUILayout.Label (kerbal.State);
+			GUILayout.EndHorizontal ();
+		}
+
 		void ShowKerbal (Male kerbal)
 		{
 			GUILayout.BeginHorizontal ();
@@ -156,13 +174,23 @@ namespace KerbalStats.Progeny {
 			females.Sort ();
 
 			for (int i = 0; i < females.Count; i++) {
-				ShowKerbal (females[i].name);
+				ShowKerbal (females[i]);
 			}
 		}
 
 		void ListMales ()
 		{
 			var males = ProgenyTracker.MaleKerbals;
+			males.Sort ();
+
+			for (int i = 0; i < males.Count; i++) {
+				ShowKerbal (males[i].name);
+			}
+		}
+
+		void ListAvailMales ()
+		{
+			var males = ProgenyTracker.AvailableMales ();
 			males.Sort ();
 
 			for (int i = 0; i < males.Count; i++) {
@@ -196,6 +224,9 @@ namespace KerbalStats.Progeny {
 					break;
 				case InfoType.Males:
 					ListMales ();
+					break;
+				case InfoType.AvailMales:
+					ListAvailMales ();
 					break;
 				case InfoType.Vessels:
 					ListVessels ();

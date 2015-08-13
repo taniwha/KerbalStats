@@ -25,7 +25,12 @@ using KSP.IO;
 namespace KerbalStats.Progeny {
 	public class Female : IKerbal, IComparable<Female>
 	{
-		ProtoCrewMember kerbal;
+		public ProtoCrewMember kerbal
+		{
+			get;
+			private set;
+		}
+
 		double lastUpdate;
 		double UT;
 		double interestTime;
@@ -377,6 +382,13 @@ namespace KerbalStats.Progeny {
 				case ProtoCrewMember.RosterStatus.Missing:
 					fsm.RunEvent (event_lost);
 					break;
+			}
+		}
+
+		public string State
+		{
+			get {
+				return fsm.currentStateName + " " + Interest ();
 			}
 		}
 
