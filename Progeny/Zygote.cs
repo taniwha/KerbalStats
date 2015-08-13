@@ -35,10 +35,17 @@ namespace KerbalStats.Progeny {
 		double k;
 		double p;
 
+		public string id
+		{
+			get;
+			private set;
+		}
+
 		public Zygote (Female mother, Male father)
 		{
 			this.mother = mother;
 			this.father = father;
+			id = ProgenyScenario.current.NextZygoteID ();
 			genes = Genome.Combine (mother.kerbal, father.kerbal);
 			l = ProgenySettings.GestationPeriod;
 			k = 10;//FIXME make genetic
@@ -49,6 +56,7 @@ namespace KerbalStats.Progeny {
 
 		public Zygote (ConfigNode node)
 		{
+			id = node.GetValue ("id");
 			string name;
 			name = node.GetValue ("mother");
 			mother = ProgenyTracker.instance[name] as Female;
@@ -86,6 +94,7 @@ namespace KerbalStats.Progeny {
 
 		public void Save (ConfigNode node)
 		{
+			node.AddValue ("id", id);
 			node.AddValue ("l", l.ToString ("G17"));
 			node.AddValue ("k", k.ToString ("G17"));
 			node.AddValue ("p", p.ToString ("G17"));

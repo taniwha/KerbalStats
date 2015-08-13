@@ -359,8 +359,9 @@ namespace KerbalStats.Progeny {
 			if (progeny.HasValue ("interestTC")) {
 				double.TryParse (progeny.GetValue ("interestTC"), out interestTC);
 			}
-			if (progeny.HasNode ("zygote")) {
-				zygote = new Zygote (progeny.GetNode ("zygote"));
+			if (progeny.HasValue ("zygote")) {
+				var zid = progeny.GetValue ("zygote");
+				zygote = ProgenyScenario.current.GetZygote (id);
 			}
 		}
 
@@ -370,8 +371,7 @@ namespace KerbalStats.Progeny {
 			progeny.AddValue ("interestTime", interestTime.ToString ("G17"));
 			progeny.AddValue ("interestTC", interestTC.ToString ("G17"));
 			if (zygote != null) {
-				var node = progeny.AddNode ("zygote");
-				zygote.Save (node);
+				var node = progeny.AddValue ("zygote", zygote.id);
 			}
 		}
 
