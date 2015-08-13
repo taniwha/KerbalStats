@@ -35,7 +35,7 @@ namespace KerbalStats.Progeny {
 		double UT;
 		double interestTime;
 		double interestTC;
-		ConfigNode zygote;
+		Zygote zygote;
 
 		KFSMState state_available_fertile;
 		KFSMState state_available_pregnant;
@@ -162,8 +162,7 @@ namespace KerbalStats.Progeny {
 			if (UnityEngine.Random.Range (0, 1f) > conceive_chance) {
 				return false;
 			}
-			zygote = Genome.Genome.Combine (kerbal, mate.kerbal);
-			zygote.name = "zygote";
+			zygote = new Zygote (this, mate);
 			return true;
 		}
 
@@ -361,7 +360,7 @@ namespace KerbalStats.Progeny {
 				double.TryParse (progeny.GetValue ("interestTC"), out interestTC);
 			}
 			if (progeny.HasNode ("zygote")) {
-				zygote = progeny.GetNode ("zygote");
+				zygote = new Zygote (progeny.GetNode ("zygote"));
 			}
 		}
 
@@ -371,7 +370,8 @@ namespace KerbalStats.Progeny {
 			progeny.AddValue ("interestTime", interestTime.ToString ("G17"));
 			progeny.AddValue ("interestTC", interestTC.ToString ("G17"));
 			if (zygote != null) {
-				progeny.AddNode (zygote);
+				var node = progeny.AddNode ("zygote");
+				zygote.Save (node);
 			}
 		}
 

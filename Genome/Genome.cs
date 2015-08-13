@@ -68,22 +68,27 @@ namespace KerbalStats.Genome {
 		{
 			if (node.HasNode (name)) {
 				node = node.GetNode (name);
-				string[] pairs = node.GetValues ("genepair");
-				GenePair[] genes = new GenePair[pairs.Length];
-				for (int i = 0; i < pairs.Length; i++) {
-					genes[i] = new GenePair (pairs[i]);
-				}
-				kerbal_genome[kerbal.name] = genes;
+				kerbal_genome[kerbal.name] = ReadGenes (node);
 			} else {
 				AddKerbal (kerbal);
 			}
 		}
 
-		static void WriteGenes (GenePair[] genes, ConfigNode node)
+		public static void WriteGenes (GenePair[] genes, ConfigNode node)
 		{
 			for (int i = 0; i < genes.Length; i++) {
 				node.AddValue ("genepair", genes[i].ToString ());
 			}
+		}
+
+		public static GenePair[] ReadGenes (ConfigNode node)
+		{
+			string[] pairs = node.GetValues ("genepair");
+			GenePair[] genes = new GenePair[pairs.Length];
+			for (int i = 0; i < pairs.Length; i++) {
+				genes[i] = new GenePair (pairs[i]);
+			}
+			return genes;
 		}
 
 		public void Save (ProtoCrewMember kerbal, ConfigNode node)
@@ -105,7 +110,7 @@ namespace KerbalStats.Genome {
 			return "";
 		}
 
-		public static ConfigNode Combine (ProtoCrewMember kerbal1, ProtoCrewMember kerbal2)
+		public static GenePair[] Combine (ProtoCrewMember kerbal1, ProtoCrewMember kerbal2)
 		{
 			var genes = new GenePair[instance.traits.Length];
 			var g1 = instance.kerbal_genome[kerbal1.name];
@@ -113,9 +118,7 @@ namespace KerbalStats.Genome {
 			for (int i = 0; i < genes.Length; i++) {
 				genes[i] = GenePair.Combine (g1[i], g2[i]);
 			}
-			var node = new ConfigNode ();
-			WriteGenes (genes, node);
-			return node;
+			return genes;
 		}
 	}
 

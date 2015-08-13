@@ -40,25 +40,25 @@ namespace KerbalStats.Progeny {
 		static Rect windowpos;
 		private static bool gui_enabled;
 
-		public double CyclePeriod
+		public static double CyclePeriod
 		{
 			get;
 			private set;
 		}
 
-		public double GestationPeriod
+		public static double GestationPeriod
 		{
 			get;
 			private set;
 		}
 
-		public double OvulationTime
+		public static double OvulationTime
 		{
 			get;
 			private set;
 		}
 
-		public double EggLife
+		public static double EggLife
 		{
 			get;
 			private set;

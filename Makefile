@@ -35,6 +35,7 @@ KS_FILES := \
 	Progeny/Male.cs					\
 	Progeny/Settings.cs				\
 	Progeny/Tracker.cs				\
+	Progeny/Zygote.cs				\
 	IKerbalExt.cs					\
 	KerbalExt.cs					\
 	KerbalStats.cs					\

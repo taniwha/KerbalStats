@@ -38,6 +38,13 @@ namespace KerbalStats.Progeny {
 
 		Dictionary <string, Vessel> kerbal_vessels;
 
+		public IKerbal this[string name]
+		{
+			get {
+				return kerbals[name];
+			}
+		}
+
 		public static List<Female> FemaleKerbals
 		{
 			get {
