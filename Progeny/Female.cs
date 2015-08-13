@@ -107,7 +107,15 @@ namespace KerbalStats.Progeny {
 
 		bool check_available_conceive (KFSMState st)
 		{
-			return false;
+			if (!HighLogic.LoadedSceneIsFlight) {
+				// being watched
+				return false;
+			}
+			if (!isInterested ()) {
+				return false;
+			}
+			var mate = SelectMate (ProgenyTracker.AvailableMales ());
+			return mate != null ? Mate (mate) : false;
 		}
 
 		float Interest ()
@@ -119,6 +127,11 @@ namespace KerbalStats.Progeny {
 			return (float) (1 - (x + 1) * Math.Exp (-x));
 		}
 
+		bool isInterested ()
+		{
+			return UnityEngine.Random.Range (0, 1f) < Interest ();
+		}
+
 		float Fertility
 		{
 			get {
@@ -128,12 +141,16 @@ namespace KerbalStats.Progeny {
 
 		Male SelectMate (List<Male> males)
 		{
-			float [] male_readiness = new float[males.Count];
+			float [] male_readiness = new float[males.Count + 1];
+			male_readiness[0] = 2; //FIXME
 			for (int i = 0; i < males.Count; i++) {
-				male_readiness[i] = males[i].Interest (UT);
+				male_readiness[i + 1] = males[i].Interest (UT);
 			}
 			var dist = new Genome.DiscreteDistribution (male_readiness);
-			int ind = dist.Value (UnityEngine.Random.Range (0, 1f));
+			int ind = dist.Value (UnityEngine.Random.Range (0, 1f)) - 1;
+			if (ind < 0) {
+				return null;
+			}
 			return males[ind];
 		}
 
@@ -162,10 +179,11 @@ namespace KerbalStats.Progeny {
 				// in that suit?
 				return false;
 			}
-			if (UnityEngine.Random.Range (0, 1f) > Interest ()) {
+			if (!isInterested ()) {
 				return false;
 			}
-			return Mate (SelectMate (ProgenyTracker.BoardedMales (vessel)));
+			var mate = SelectMate (ProgenyTracker.BoardedMales (vessel));
+			return mate != null ? Mate (mate) : false;
 		}
 
 		bool check_missing_conceive (KFSMState st)

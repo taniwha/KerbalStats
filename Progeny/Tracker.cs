@@ -70,6 +70,32 @@ namespace KerbalStats.Progeny {
 			return instance.boarded_males[vessel.id];
 		}
 
+		public static List<Male> AvailableMales ()
+		{
+			return instance.available_males.Values.ToList ();
+		}
+
+		void AddKerbal (IKerbal kerbal)
+		{
+			if (kerbal is Male) {
+				switch (kerbal.kerbal.rosterStatus) {
+					case ProtoCrewMember.RosterStatus.Available:
+						available_males[kerbal.name] = kerbal as Male;
+						break;
+					case ProtoCrewMember.RosterStatus.Assigned:
+						// vessel creation will take care of this
+						break;
+					case ProtoCrewMember.RosterStatus.Dead:
+						// he's dead, Jim.
+						break;
+					case ProtoCrewMember.RosterStatus.Missing:
+						missing_males[kerbal.name] = kerbal as Male;
+						break;
+				}
+			}
+			kerbals[kerbal.name] = kerbal;
+		}
+
 		public void AddKerbal (ProtoCrewMember pcm)
 		{
 			IKerbal kerbal;
@@ -78,7 +104,7 @@ namespace KerbalStats.Progeny {
 			} else {
 				kerbal = male_kerbals[pcm.name] = new Male (pcm);
 			}
-			kerbals[pcm.name] = kerbal;
+			AddKerbal (kerbal);
 		}
 
 		public void RemoveKerbal (ProtoCrewMember pcm)
@@ -89,6 +115,12 @@ namespace KerbalStats.Progeny {
 				female_kerbals.Remove (pcm.name);
 			} else {
 				male_kerbals.Remove (pcm.name);
+			}
+			if (missing_males.ContainsKey (pcm.name)) {
+				missing_males.Remove (pcm.name);
+			}
+			if (available_males.ContainsKey (pcm.name)) {
+				available_males.Remove (pcm.name);
 			}
 		}
 
@@ -109,7 +141,7 @@ namespace KerbalStats.Progeny {
 				} else {
 					kerbal = male_kerbals[pcm.name] = new Male (pcm, progeny);
 				}
-				kerbals[pcm.name] = kerbal;
+				AddKerbal (kerbal);
 			} else {
 				AddKerbal (pcm);
 			}
