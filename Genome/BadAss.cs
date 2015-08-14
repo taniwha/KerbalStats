@@ -56,6 +56,13 @@ namespace KerbalStats.Genome {
 			new int[]{7, 7, 7},
 		};
 
+		public string name
+		{
+			get {
+				return "BadAss";
+			}
+		}
+
 		public int GeneSize
 		{
 			get {

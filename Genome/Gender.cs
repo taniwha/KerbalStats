@@ -25,6 +25,13 @@ namespace KerbalStats.Genome {
 		// make that male and never generate it.
 		static string[] genders = { "M", "M", "F" };
 
+		public string name
+		{
+			get {
+				return "Gender";
+			}
+		}
+
 		public int GeneSize
 		{
 			get {

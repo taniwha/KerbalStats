@@ -23,10 +23,9 @@ namespace KerbalStats.Genome {
 	{
 		GenePair CreateGene (string value);
 		string CreateValue (GenePair gene);
+		string name { get; }
 
 		// The number of bits in a single gene of a gene pair.
-		int GeneSize {
-			get;
-		}
+		int GeneSize { get; }
 	}
 }

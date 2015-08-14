@@ -67,6 +67,13 @@ namespace KerbalStats.Genome {
 			},
 		};
 
+		public string name
+		{
+			get {
+				return "Courage";
+			}
+		}
+
 		public int GeneSize
 		{
 			get {
