@@ -46,6 +46,14 @@ namespace KerbalStats.Progeny {
 			genes = Genome.Combine (mother.kerbal, father.kerbal);
 		}
 
+		public Zygote (Zygote prevStage)
+		{
+			mother = prevStage.mother;
+			father = prevStage.father;
+			id = prevStage.id;
+			genes = prevStage.genes;
+		}
+
 		public Zygote (ConfigNode node)
 		{
 			id = node.GetValue ("id");

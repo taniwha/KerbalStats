@@ -33,6 +33,7 @@ KS_FILES := \
 	Progeny/Embryo.cs				\
 	Progeny/Female.cs				\
 	Progeny/IKerbal.cs				\
+	Progeny/Juvenile.cs				\
 	Progeny/Male.cs					\
 	Progeny/Progeny.cs				\
 	Progeny/Settings.cs				\
