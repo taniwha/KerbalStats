@@ -21,19 +21,23 @@ namespace KerbalStats.Genome {
 
 	public struct GenePair
 	{
-		public int a, b;
+		public Trait trait;
+		public uint a;
+		public uint b;
 
-		public GenePair (int a, int b)
+		public GenePair (Trait trait, uint a, uint b)
 		{
+			this.trait = trait;
 			this.a = a;
 			this.b = b;
 		}
 
-		public GenePair (string pair)
+		public GenePair (Trait trait, string pair)
 		{
+			this.trait = trait;
 			string[] genes = pair.Split (',');
-			int.TryParse (genes[0], out this.a);
-			int.TryParse (genes[1], out this.b);
+			uint.TryParse (genes[0], out a);
+			uint.TryParse (genes[1], out b);
 		}
 
 		public override string ToString ()
@@ -43,7 +47,8 @@ namespace KerbalStats.Genome {
 
 		public static GenePair Combine (GenePair g1, GenePair g2)
 		{
-			int a, b;
+			uint a, b;
+			Trait trait = g1.trait;
 
 			if (UnityEngine.Random.Range (0, 2) != 0) {
 				a = g1.a;
@@ -58,9 +63,9 @@ namespace KerbalStats.Genome {
 			}
 
 			if (UnityEngine.Random.Range (0, 2) != 0) {
-				return new GenePair (a, b);
+				return new GenePair (trait, a, b);
 			} else {
-				return new GenePair (b, a);
+				return new GenePair (trait, b, a);
 			}
 		}
 	}

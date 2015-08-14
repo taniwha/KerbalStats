@@ -43,16 +43,16 @@ namespace KerbalStats.Genome {
 		{
 			if (gender[0] == 'f' || gender[0] == 'F') {
 				// female: XX
-				return new GenePair (1, 1);
+				return new GenePair (this, 1, 1);
 			}
 			// male: either XY or YX
-			int y = UnityEngine.Random.Range (0, 2);
-			return new GenePair (y, 1 - y);
+			uint y = (uint) UnityEngine.Random.Range (0, 2);
+			return new GenePair (this, y, 1 - y);
 		}
 
 		public string CreateValue (GenePair gene)
 		{
-			int index = (gene.a & 1) + (gene.b & 1);
+			uint index = (gene.a & 1) + (gene.b & 1);
 			return genders[index];
 		}
 	}

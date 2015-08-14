@@ -98,7 +98,7 @@ namespace KerbalStats.Genome {
 			string[] pairs = node.GetValues ("genepair");
 			GenePair[] genes = new GenePair[pairs.Length];
 			for (int i = 0; i < pairs.Length; i++) {
-				genes[i] = new GenePair (pairs[i]);
+				genes[i] = new GenePair (instance.traits[i], pairs[i]);
 			}
 			return genes;
 		}

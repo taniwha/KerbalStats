@@ -49,11 +49,11 @@ namespace KerbalStats.Genome {
 		};
 
 		// Outer index is the number of desired bits, the inner is random
-		static int[][] codes = {
-			new int[]{0, 0, 0},
-			new int[]{1, 2, 4},
-			new int[]{3, 5, 6},
-			new int[]{7, 7, 7},
+		static uint[][] codes = {
+			new uint[]{0, 0, 0},
+			new uint[]{1, 2, 4},
+			new uint[]{3, 5, 6},
+			new uint[]{7, 7, 7},
 		};
 
 		public string name
@@ -70,14 +70,14 @@ namespace KerbalStats.Genome {
 			}
 		}
 
-		int CountBits (int x)
+		int CountBits (uint x)
 		{
-			int count = 0;
+			uint count = 0;
 			while (x > 0) {
 				count += x & 1;
 				x >>= 1;
 			}
-			return count;
+			return (int) count;
 		}
 
 		DiscreteDistribution ChooseDistribution (GenePair gene)
@@ -98,7 +98,7 @@ namespace KerbalStats.Genome {
 			int a = UnityEngine.Random.Range (0, 3);
 			int b = UnityEngine.Random.Range (0, 3);
 			//Console.WriteLine(String.Format ("{0} {1} {2} {3} {4} {5}", numBits, min, max, first, a, b));
-			return new GenePair (codes[first][a], codes[numBits - first][b]);
+			return new GenePair (this, codes[first][a], codes[numBits - first][b]);
 		}
 
 		public string CreateValue (GenePair gene)

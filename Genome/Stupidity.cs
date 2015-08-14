@@ -54,16 +54,17 @@ namespace KerbalStats.Genome {
 			new ContinuousDistribution (pdf0,  0, 1, cdf0),
 		};
 
-		static GenePair[][] genes = {
-			new GenePair[]{
-				new GenePair(0, 0),
-				new GenePair(0, 1),
-				new GenePair(1, 1),
+
+		static uint[][][] genes = {
+			new uint[][]{
+				new uint[] {0, 0},
+				new uint[] {0, 1},
+				new uint[] {1, 1},
 			},
-			new GenePair[]{
-				new GenePair(0, 0),
-				new GenePair(1, 0),
-				new GenePair(1, 1),
+			new uint[][]{
+				new uint[] {0, 0},
+				new uint[] {1, 0},
+				new uint[] {1, 1},
 			},
 		};
 
@@ -83,7 +84,7 @@ namespace KerbalStats.Genome {
 
 		ContinuousDistribution ChooseDistribution (GenePair gene)
 		{
-			int index = (gene.a & 1) + (gene.b & 1);
+			uint index = (gene.a & 1) + (gene.b & 1);
 			return distributions[index];
 		}
 
@@ -100,7 +101,8 @@ namespace KerbalStats.Genome {
 			//}
 			var dist = new DiscreteDistribution (probabilities);
 			int index = dist.Value (UnityEngine.Random.Range (0, 1f));
-			return genes[UnityEngine.Random.Range (0, 2)][index];
+			var gene = genes[UnityEngine.Random.Range (0, 2)][index];
+			return new GenePair (this, gene[0], gene[1]);
 		}
 
 		public string CreateValue (GenePair gene)
