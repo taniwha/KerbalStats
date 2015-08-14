@@ -163,6 +163,7 @@ namespace KerbalStats.Progeny {
 				return false;
 			}
 			zygote = new Zygote (this, mate);
+			ProgenyScenario.current.AddZygote (zygote);
 			return true;
 		}
 

@@ -54,9 +54,14 @@ namespace KerbalStats.Progeny {
 			return zygotes[id];
 		}
 
+		public void AddZygote (Zygote zygote)
+		{
+			zygotes[zygote.id] = zygote;
+		}
+
 		public string NextZygoteID ()
 		{
-			var id = bit_reverse (grey (zygote_id++));
+			var id = bit_reverse (grey (++zygote_id));
 			return id.ToString("x");
 		}
 
