@@ -24,21 +24,9 @@ using UnityEngine;
 using KSP.IO;
 
 namespace KerbalStats.Progeny {
-	[KSPScenario(ScenarioCreationOptions.AddToAllGames, new GameScenes[] {
-			GameScenes.SPACECENTER,
-			GameScenes.EDITOR,
-			GameScenes.FLIGHT,
-			GameScenes.TRACKSTATION,
-		})
-	]
-	public class ProgenySettings : ScenarioModule
+	public static class ProgenySettings
 	{
 		static bool settings_loaded;
-
-		static string version = null;
-
-		static Rect windowpos;
-		private static bool gui_enabled;
 
 		public static double CyclePeriod
 		{
@@ -64,48 +52,29 @@ namespace KerbalStats.Progeny {
 			private set;
 		}
 
-		public static string GetVersion ()
+		public static void Load (ConfigNode config)
 		{
-			if (version != null) {
-				return version;
-			}
-
-			var asm = Assembly.GetCallingAssembly ();
-			version =  KSVersionReport.GetAssemblyVersionString (asm);
-
-			return version;
-		}
-
-		public static ProgenySettings current
-		{
-			get {
-				var game = HighLogic.CurrentGame;
-				return game.scenarios.Select (s => s.moduleRef).OfType<ProgenySettings> ().SingleOrDefault ();
-			}
-		}
-
-		public override void OnLoad (ConfigNode config)
-		{
-			//Debug.Log (String.Format ("[KS:Progeny] Settings load"));
-			//var settings = config.GetNode ("Settings");
-			//if (settings == null) {
-			//	settings = new ConfigNode ("Settings");
+			LoadGlobalSettings ();
+			Debug.Log (String.Format ("[KS:Progeny] Settings load"));
+			var settings = config.GetNode ("Settings");
+			if (settings == null) {
+				settings = new ConfigNode ("Settings");
 			//	gui_enabled = true; // Show settings window on first startup
-			//}
+			}
 
 			//if (HighLogic.LoadedScene == GameScenes.SPACECENTER) {
 			//	enabled = true;
 			//}
 		}
 
-		public override void OnSave(ConfigNode config)
+		public static void Save (ConfigNode config)
 		{
-			//Debug.Log (String.Format ("[KS:Progeny] Settings save: {0}", config));
-			//var settings = new ConfigNode ("Settings");
-			//config.AddNode (settings);
+			Debug.Log (String.Format ("[KS:Progeny] Settings save: {0}", config));
+			var settings = new ConfigNode ("Settings");
+			config.AddNode (settings);
 		}
 
-		void LoadGlobalSettings ()
+		static void LoadGlobalSettings ()
 		{
 			if (settings_loaded) {
 				return;
@@ -121,56 +90,6 @@ namespace KerbalStats.Progeny {
 
 			if (settings == null) {
 				return;
-			}
-		}
-		
-		public override void OnAwake ()
-		{
-			LoadGlobalSettings ();
-
-			enabled = false;
-		}
-
-		public static void ToggleGUI ()
-		{
-			gui_enabled = !gui_enabled;
-		}
-
-		void WindowGUI (int windowID)
-		{
-			GUILayout.BeginVertical ();
-
-			if (GUILayout.Button ("OK")) {
-				gui_enabled = false;
-				InputLockManager.RemoveControlLock ("KS:Progeny_Settings_window_lock");
-			}
-			GUILayout.EndVertical ();
-			GUI.DragWindow (new Rect (0, 0, 10000, 20));
-		}
-
-		void OnGUI ()
-		{
-			if (enabled) { // don't do any work at all unless we're enabled
-				if (gui_enabled) { // don't create windows unless we're going to show them
-					GUI.skin = HighLogic.Skin;
-					if (windowpos.x == 0) {
-						windowpos = new Rect (Screen.width / 2 - 250,
-							Screen.height / 2 - 30, 0, 0);
-					}
-					string name = "KerbalStats:Progeny";
-					string ver = GetVersion ();
-					windowpos = GUILayout.Window (GetInstanceID (),
-						windowpos, WindowGUI,
-						name + " " + ver,
-						GUILayout.Width (500));
-					if (windowpos.Contains (new Vector2 (Input.mousePosition.x, Screen.height - Input.mousePosition.y))) {
-						InputLockManager.SetControlLock ("KS:Progeny_Settings_window_lock");
-					} else {
-						InputLockManager.RemoveControlLock ("KS:Progeny_Settings_window_lock");
-					}
-				} else {
-					InputLockManager.RemoveControlLock ("KS:Progeny_Settings_window_lock");
-				}
 			}
 		}
 	}

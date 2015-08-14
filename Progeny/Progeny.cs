@@ -76,6 +76,7 @@ namespace KerbalStats.Progeny {
 
 		public override void OnLoad (ConfigNode config)
 		{
+			ProgenySettings.Load (config);
 			var ids = config.GetValue ("zygote_id");
 			uint id = 0;
 			uint.TryParse (ids, out id);
@@ -89,6 +90,7 @@ namespace KerbalStats.Progeny {
 
 		public override void OnSave (ConfigNode config)
 		{
+			ProgenySettings.Save (config);
 			var id = bit_reverse (grey (zygote_id));
 			config.AddValue ("zygote_id", id);
 			foreach (var zygote in zygotes.Values) {
