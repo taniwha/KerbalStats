@@ -30,6 +30,7 @@ KS_FILES := \
 	Genome/Trait.cs					\
 	Profession/Profession.cs		\
 	Progeny/DebugWindow.cs			\
+	Progeny/Embryo.cs				\
 	Progeny/Female.cs				\
 	Progeny/IKerbal.cs				\
 	Progeny/Male.cs					\

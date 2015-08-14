@@ -29,7 +29,7 @@ namespace KerbalStats.Progeny {
 	]
 	public class ProgenyScenario : ScenarioModule
 	{
-		Dictionary<string, Zygote> zygotes;
+		Dictionary<string, Embryo> embryos;
 		uint zygote_id;
 
 		public static uint bit_reverse (uint x)
@@ -57,14 +57,14 @@ namespace KerbalStats.Progeny {
 			return x;
 		}
 
-		public Zygote GetZygote (string id)
+		public Embryo GetEmbryo (string id)
 		{
-			return zygotes[id];
+			return embryos[id];
 		}
 
-		public void AddZygote (Zygote zygote)
+		public void AddEmbryo (Embryo embryo)
 		{
-			zygotes[zygote.id] = zygote;
+			embryos[embryo.id] = embryo;
 		}
 
 		public string NextZygoteID ()
@@ -89,10 +89,10 @@ namespace KerbalStats.Progeny {
 			uint id = 0;
 			uint.TryParse (ids, out id);
 			zygote_id = rgrey (bit_reverse (id));
-			var zygote_list = config.GetNodes ("zygote");
-			foreach (var z in zygote_list) {
-				var zygote = new Zygote (z);
-				zygotes[zygote.id] = zygote;
+			var embryo_list = config.GetNodes ("embryo");
+			foreach (var z in embryo_list) {
+				var embryo = new Embryo (z);
+				embryos[embryo.id] = embryo;
 			}
 		}
 
@@ -101,15 +101,15 @@ namespace KerbalStats.Progeny {
 			ProgenySettings.Save (config);
 			var id = bit_reverse (grey (zygote_id));
 			config.AddValue ("zygote_id", id);
-			foreach (var zygote in zygotes.Values) {
-				var node = config.AddNode ("zygote");
-				zygote.Save (node);
+			foreach (var embryo in embryos.Values) {
+				var node = config.AddNode ("embryo");
+				embryo.Save (node);
 			}
 		}
 
 		public override void OnAwake ()
 		{
-			zygotes = new Dictionary<string, Zygote> ();
+			embryos = new Dictionary<string, Embryo> ();
 			enabled = false;
 		}
 

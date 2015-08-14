@@ -35,7 +35,7 @@ namespace KerbalStats.Progeny {
 		double UT;
 		double interestTime;
 		double interestTC;
-		Zygote zygote;
+		Embryo embryo;
 
 		KFSMState state_available_fertile;
 		KFSMState state_available_pregnant;
@@ -162,8 +162,8 @@ namespace KerbalStats.Progeny {
 			if (UnityEngine.Random.Range (0, 1f) > conceive_chance) {
 				return false;
 			}
-			zygote = new Zygote (this, mate);
-			ProgenyScenario.current.AddZygote (zygote);
+			embryo = new Embryo (this, mate);
+			ProgenyScenario.current.AddEmbryo (embryo);
 			return true;
 		}
 
@@ -338,7 +338,7 @@ namespace KerbalStats.Progeny {
 
 			interestTime = 0;
 			interestTC = 3600;	//FIXME
-			zygote = null;
+			embryo = null;
 		}
 
 		public Female (ProtoCrewMember kerbal, ConfigNode progeny)
@@ -353,16 +353,16 @@ namespace KerbalStats.Progeny {
 			}
 			interestTime = 0;
 			interestTC = 3600;	//FIXME
-			zygote = null;
+			embryo = null;
 			if (progeny.HasValue ("interestTime")) {
 				double.TryParse (progeny.GetValue ("interestTime"), out interestTime);
 			}
 			if (progeny.HasValue ("interestTC")) {
 				double.TryParse (progeny.GetValue ("interestTC"), out interestTC);
 			}
-			if (progeny.HasValue ("zygote")) {
-				var zid = progeny.GetValue ("zygote");
-				zygote = ProgenyScenario.current.GetZygote (zid);
+			if (progeny.HasValue ("embryo")) {
+				var zid = progeny.GetValue ("embryo");
+				embryo = ProgenyScenario.current.GetEmbryo (zid);
 			}
 		}
 
@@ -371,8 +371,8 @@ namespace KerbalStats.Progeny {
 			progeny.AddValue ("state", fsm.currentStateName);
 			progeny.AddValue ("interestTime", interestTime.ToString ("G17"));
 			progeny.AddValue ("interestTC", interestTC.ToString ("G17"));
-			if (zygote != null) {
-				progeny.AddValue ("zygote", zygote.id);
+			if (embryo != null) {
+				progeny.AddValue ("embryo", embryo.id);
 			}
 		}
 
