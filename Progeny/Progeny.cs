@@ -49,6 +49,14 @@ namespace KerbalStats.Progeny {
 			return x ^ (x >> 1);
 		}
 
+		public static uint rgrey (uint x)
+		{
+			for (var m = x; m != 0; m >>= 1) {
+				x ^= m;
+			}
+			return x;
+		}
+
 		public Zygote GetZygote (string id)
 		{
 			return zygotes[id];
@@ -80,7 +88,7 @@ namespace KerbalStats.Progeny {
 			var ids = config.GetValue ("zygote_id");
 			uint id = 0;
 			uint.TryParse (ids, out id);
-			zygote_id = grey (bit_reverse (id));
+			zygote_id = rgrey (bit_reverse (id));
 			var zygote_list = config.GetNodes ("zygote");
 			foreach (var z in zygote_list) {
 				var zygote = new Zygote (z);
