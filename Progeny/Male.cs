@@ -23,7 +23,7 @@ using UnityEngine;
 using KSP.IO;
 
 namespace KerbalStats.Progeny {
-	public class Male : IKerbal, IComparable<Male>
+	public class Male : Zygote, IKerbal, IComparable<Male>
 	{
 		public ProtoCrewMember kerbal
 		{
@@ -62,30 +62,41 @@ namespace KerbalStats.Progeny {
 			this.interestTime = interestTime;
 		}
 
-		public Male (ProtoCrewMember kerbal)
+		void initialize ()
 		{
-			this.kerbal = kerbal;
 			interestTime = 0;
 			interestTC = 3600;	//FIXME
 		}
 
-		public Male (ProtoCrewMember kerbal, ConfigNode progeny)
+		public Male (Juvenile juvenile) : base (juvenile)
+		{
+			kerbal = null;		// not yet recruited
+			initialize ();
+		}
+
+		public Male (ProtoCrewMember kerbal) : base (kerbal)
 		{
 			this.kerbal = kerbal;
-			interestTime = 0;
-			interestTC = 3600;  //FIXME
-			if (progeny.HasValue ("interestTime")) {
-				double.TryParse (progeny.GetValue ("interestTime"), out interestTime);
+			initialize ();
+		}
+
+		public Male (ProtoCrewMember kerbal, ConfigNode node) : base (node)
+		{
+			this.kerbal = kerbal;
+			initialize ();
+			if (node.HasValue ("interestTime")) {
+				double.TryParse (node.GetValue ("interestTime"), out interestTime);
 			}
-			if (progeny.HasValue ("interestTC")) {
-				double.TryParse (progeny.GetValue ("interestTC"), out interestTC);
+			if (node.HasValue ("interestTC")) {
+				double.TryParse (node.GetValue ("interestTC"), out interestTC);
 			}
 		}
 
-		public void Save (ConfigNode progeny)
+		public override void Save (ConfigNode node)
 		{
-			progeny.AddValue ("interestTime", interestTime.ToString ("G17"));
-			progeny.AddValue ("interestTC", interestTC.ToString ("G17"));
+			base.Save (node);
+			node.AddValue ("interestTime", interestTime.ToString ("G17"));
+			node.AddValue ("interestTC", interestTC.ToString ("G17"));
 
 		}
 

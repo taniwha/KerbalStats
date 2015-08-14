@@ -30,6 +30,9 @@ namespace KerbalStats.Progeny {
 	public class ProgenyScenario : ScenarioModule
 	{
 		Dictionary<string, Embryo> embryos;
+		Dictionary<string, Juvenile> juveniles;
+		Dictionary<string, Male> males;
+		Dictionary<string, Female> females;
 		uint zygote_id;
 
 		public static uint bit_reverse (uint x)
@@ -55,6 +58,25 @@ namespace KerbalStats.Progeny {
 				x ^= m;
 			}
 			return x;
+		}
+
+		public void Mature (Embryo embryo)
+		{
+			embryos.Remove (embryo.id);
+			var juvenile = new Juvenile (embryo);
+			juveniles[juvenile.id] = juvenile;
+		}
+
+		public void Mature (Juvenile juvenile)
+		{
+			juveniles.Remove (juvenile.id);
+			if (juvenile.isFemale) {
+				var female = new Female (juvenile);
+				females[female.id] = female;
+			} else {
+				var male = new Male (juvenile);
+				males[male.id] = male;
+			}
 		}
 
 		public Embryo GetEmbryo (string id)
@@ -110,6 +132,9 @@ namespace KerbalStats.Progeny {
 		public override void OnAwake ()
 		{
 			embryos = new Dictionary<string, Embryo> ();
+			juveniles = new Dictionary<string, Juvenile> ();
+			males = new Dictionary<string, Male> ();
+			females = new Dictionary<string, Female> ();
 			enabled = false;
 		}
 

@@ -31,6 +31,12 @@ namespace KerbalStats.Progeny {
 		double k;
 		double p;
 
+		public bool isFemale
+		{
+			get;
+			private set;
+		}
+
 		public Juvenile (Embryo embro) : base (embro)
 		{
 		}

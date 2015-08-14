@@ -23,7 +23,7 @@ using UnityEngine;
 using KSP.IO;
 
 namespace KerbalStats.Progeny {
-	public class Female : IKerbal, IComparable<Female>
+	public class Female : Zygote, IKerbal, IComparable<Female>
 	{
 		public ProtoCrewMember kerbal
 		{
@@ -329,9 +329,8 @@ namespace KerbalStats.Progeny {
 			});
 		}
 
-		public Female (ProtoCrewMember kerbal)
+		void initialize ()
 		{
-			this.kerbal = kerbal;
 			lastUpdate = Planetarium.GetUniversalTime ();
 			CreateStateMachine ();
 			fsm.StartFSM (start_states[(int) kerbal.rosterStatus]);
@@ -341,38 +340,47 @@ namespace KerbalStats.Progeny {
 			embryo = null;
 		}
 
-		public Female (ProtoCrewMember kerbal, ConfigNode progeny)
+		public Female (Juvenile juvenile) : base (juvenile)
+		{
+			kerbal = null;	// not yet recruited
+			initialize ();
+		}
+
+		public Female (ProtoCrewMember kerbal) : base (kerbal)
 		{
 			this.kerbal = kerbal;
-			lastUpdate = Planetarium.GetUniversalTime ();
-			CreateStateMachine ();
-			if (progeny.HasValue ("state")) {
-				fsm.StartFSM (progeny.GetValue ("state"));
+			initialize ();
+		}
+
+		public Female (ProtoCrewMember kerbal, ConfigNode node) : base (node)
+		{
+			this.kerbal = kerbal;
+			initialize ();
+			if (node.HasValue ("state")) {
+				fsm.StartFSM (node.GetValue ("state"));
 			} else {
 				fsm.StartFSM (start_states[(int) kerbal.rosterStatus]);
 			}
-			interestTime = 0;
-			interestTC = 3600;	//FIXME
-			embryo = null;
-			if (progeny.HasValue ("interestTime")) {
-				double.TryParse (progeny.GetValue ("interestTime"), out interestTime);
+			if (node.HasValue ("interestTime")) {
+				double.TryParse (node.GetValue ("interestTime"), out interestTime);
 			}
-			if (progeny.HasValue ("interestTC")) {
-				double.TryParse (progeny.GetValue ("interestTC"), out interestTC);
+			if (node.HasValue ("interestTC")) {
+				double.TryParse (node.GetValue ("interestTC"), out interestTC);
 			}
-			if (progeny.HasValue ("embryo")) {
-				var zid = progeny.GetValue ("embryo");
+			if (node.HasValue ("embryo")) {
+				var zid = node.GetValue ("embryo");
 				embryo = ProgenyScenario.current.GetEmbryo (zid);
 			}
 		}
 
-		public void Save (ConfigNode progeny)
+		public override void Save (ConfigNode node)
 		{
-			progeny.AddValue ("state", fsm.currentStateName);
-			progeny.AddValue ("interestTime", interestTime.ToString ("G17"));
-			progeny.AddValue ("interestTC", interestTC.ToString ("G17"));
+			base.Save (node);
+			node.AddValue ("state", fsm.currentStateName);
+			node.AddValue ("interestTime", interestTime.ToString ("G17"));
+			node.AddValue ("interestTC", interestTC.ToString ("G17"));
 			if (embryo != null) {
-				progeny.AddValue ("embryo", embryo.id);
+				node.AddValue ("embryo", embryo.id);
 			}
 		}
 

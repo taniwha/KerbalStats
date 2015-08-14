@@ -52,12 +52,24 @@ namespace KerbalStats.Genome {
 
 		public void AddKerbal (ProtoCrewMember kerbal)
 		{
+			if (kerbal_genome.ContainsKey (kerbal.name)) {
+				// already added via an initialization race
+				return;
+			}
 			var genes = new GenePair[traits.Length];
 			genes[0] = traits[0].CreateGene (kerbal.gender.ToString ());
 			genes[1] = traits[1].CreateGene (kerbal.stupidity.ToString ("G9"));
 			genes[2] = traits[2].CreateGene (kerbal.courage.ToString ("G9"));
 			genes[3] = traits[3].CreateGene (kerbal.isBadass.ToString ());
 			kerbal_genome[kerbal.name] = genes;
+		}
+
+		public static GenePair[] GetGenes (ProtoCrewMember kerbal)
+		{
+			if (!instance.kerbal_genome.ContainsKey (kerbal.name)) {
+				instance.AddKerbal (kerbal);
+			}
+			return instance.kerbal_genome[kerbal.name];
 		}
 
 		public void RemoveKerbal (ProtoCrewMember kerbal)
@@ -110,13 +122,11 @@ namespace KerbalStats.Genome {
 			return "";
 		}
 
-		public static GenePair[] Combine (ProtoCrewMember kerbal1, ProtoCrewMember kerbal2)
+		public static GenePair[] Combine (GenePair[] kerbal1, GenePair[] kerbal2)
 		{
 			var genes = new GenePair[instance.traits.Length];
-			var g1 = instance.kerbal_genome[kerbal1.name];
-			var g2 = instance.kerbal_genome[kerbal2.name];
 			for (int i = 0; i < genes.Length; i++) {
-				genes[i] = GenePair.Combine (g1[i], g2[i]);
+				genes[i] = GenePair.Combine (kerbal1[i], kerbal2[i]);
 			}
 			return genes;
 		}

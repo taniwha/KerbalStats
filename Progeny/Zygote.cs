@@ -28,8 +28,8 @@ namespace KerbalStats.Progeny {
 	{
 		// This is an abstraction for all stages of kerbal development, from
 		// conception to death.
-		Female mother;
-		Male father;
+		string mother_id;
+		string father_id;
 		GenePair[] genes;
 
 		public string id
@@ -38,18 +38,26 @@ namespace KerbalStats.Progeny {
 			private set;
 		}
 
+		public Zygote (ProtoCrewMember kerbal)
+		{
+			mother_id = "";
+			father_id = "";
+			id = ProgenyScenario.current.NextZygoteID ();
+			genes = Genome.GetGenes (kerbal);
+		}
+
 		public Zygote (Female mother, Male father)
 		{
-			this.mother = mother;
-			this.father = father;
+			mother_id = mother.id;
+			father_id = father.id;
 			id = ProgenyScenario.current.NextZygoteID ();
-			genes = Genome.Combine (mother.kerbal, father.kerbal);
+			genes = Genome.Combine (mother.genes, father.genes);
 		}
 
 		public Zygote (Zygote prevStage)
 		{
-			mother = prevStage.mother;
-			father = prevStage.father;
+			mother_id = prevStage.mother_id;
+			father_id = prevStage.father_id;
 			id = prevStage.id;
 			genes = prevStage.genes;
 		}
@@ -57,19 +65,16 @@ namespace KerbalStats.Progeny {
 		public Zygote (ConfigNode node)
 		{
 			id = node.GetValue ("id");
-			string name;
-			name = node.GetValue ("mother");
-			mother = ProgenyTracker.instance[name] as Female;
-			name = node.GetValue ("father");
-			father = ProgenyTracker.instance[name] as Male;
+			mother_id = node.GetValue ("mother");
+			father_id = node.GetValue ("father");
 			genes = Genome.ReadGenes (node);
 		}
 
 		public virtual void Save (ConfigNode node)
 		{
 			node.AddValue ("id", id);
-			node.AddValue ("mother", mother.name);
-			node.AddValue ("father", father.name);
+			node.AddValue ("mother", mother_id);
+			node.AddValue ("father", father_id);
 			Genome.WriteGenes (genes, node);
 		}
 	}
