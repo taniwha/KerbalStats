@@ -35,6 +35,8 @@ namespace KerbalStats.Progeny {
 		Dictionary<string, Female> females;
 		uint zygote_id;
 
+		public static ProgenyScenario current { get; private set; }
+
 		public static uint bit_reverse (uint x)
 		{
 			uint y = 0;
@@ -89,19 +91,29 @@ namespace KerbalStats.Progeny {
 			embryos[embryo.id] = embryo;
 		}
 
+		public void AddKerbal (IKerbal kerbal)
+		{
+			if (kerbal is Female) {
+				females[kerbal.id] = kerbal as Female;
+			} else {
+				males[kerbal.id] = kerbal as Male;
+			}
+		}
+
+		public IKerbal GetKerbal (string id)
+		{
+			if (females.ContainsKey (id)) {
+				return females[id];
+			} else if (males.ContainsKey (id)) {
+				return males[id];
+			}
+			return null;
+		}
+
 		public string NextZygoteID ()
 		{
 			var id = bit_reverse (grey (++zygote_id));
 			return id.ToString("x");
-		}
-
-		public static ProgenyScenario current
-		{
-			get {
-				var game = HighLogic.CurrentGame;
-				return game.scenarios.Select (s => s.moduleRef).OfType<ProgenyScenario> ().SingleOrDefault ();
-
-			}
 		}
 
 		public override void OnLoad (ConfigNode config)
@@ -111,10 +123,27 @@ namespace KerbalStats.Progeny {
 			uint id = 0;
 			uint.TryParse (ids, out id);
 			zygote_id = rgrey (bit_reverse (id));
-			var embryo_list = config.GetNodes ("embryo");
-			foreach (var z in embryo_list) {
-				var embryo = new Embryo (z);
-				embryos[embryo.id] = embryo;
+
+			var zygote_list = config.nodes;
+			foreach (ConfigNode z in zygote_list) {
+				switch (z.name) {
+					case "embryo":
+						var embryo = new Embryo (z);
+						embryos[embryo.id] = embryo;
+						break;
+					case "juvenile":
+						var juvenile = new Juvenile (z);
+						juveniles[juvenile.id] = juvenile;
+						break;
+					case "female":
+						var female = new Female (z);
+						females[female.id] = female;
+						break;
+					case "male":
+						var male = new Male (z);
+						males[male.id] = male;
+						break;
+				}
 			}
 		}
 
@@ -123,14 +152,32 @@ namespace KerbalStats.Progeny {
 			ProgenySettings.Save (config);
 			var id = bit_reverse (grey (zygote_id));
 			config.AddValue ("zygote_id", id);
+
 			foreach (var embryo in embryos.Values) {
 				var node = config.AddNode ("embryo");
 				embryo.Save (node);
+			}
+
+			foreach (var juvenile in juveniles.Values) {
+				var node = config.AddNode ("juvenile");
+				juvenile.Save (node);
+			}
+
+			foreach (var female in females.Values) {
+				var node = config.AddNode ("female");
+				female.Save (node);
+			}
+
+			foreach (var male in males.Values) {
+				var node = config.AddNode ("male");
+				male.Save (node);
 			}
 		}
 
 		public override void OnAwake ()
 		{
+			current = this;
+
 			embryos = new Dictionary<string, Embryo> ();
 			juveniles = new Dictionary<string, Juvenile> ();
 			males = new Dictionary<string, Male> ();
@@ -140,6 +187,7 @@ namespace KerbalStats.Progeny {
 
 		void OnDestroy ()
 		{
+			current = null;
 		}
 	}
 }

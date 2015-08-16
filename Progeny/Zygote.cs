@@ -30,7 +30,7 @@ namespace KerbalStats.Progeny {
 		// conception to death.
 		string mother_id;
 		string father_id;
-		GenePair[] genes;
+		protected GenePair[] genes;
 
 		public string id
 		{

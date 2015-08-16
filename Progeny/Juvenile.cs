@@ -39,6 +39,13 @@ namespace KerbalStats.Progeny {
 
 		public Juvenile (Embryo embro) : base (embro)
 		{
+			for (int i = 0; i < genes.Length; i++) {
+				if (genes[i].trait.name == "Gender") {
+					var g = genes[i].trait.CreateValue (genes[i]);
+					isFemale = (g == "F");
+					break;
+				}
+			}
 		}
 
 		public Juvenile (ConfigNode node) : base (node)

@@ -38,13 +38,6 @@ namespace KerbalStats.Progeny {
 
 		Dictionary <string, Vessel> kerbal_vessels;
 
-		public IKerbal this[string name]
-		{
-			get {
-				return kerbals[name];
-			}
-		}
-
 		public static List<Female> FemaleKerbals
 		{
 			get {
@@ -111,6 +104,7 @@ namespace KerbalStats.Progeny {
 			} else {
 				kerbal = male_kerbals[pcm.name] = new Male (pcm);
 			}
+			ProgenyScenario.current.AddKerbal (kerbal);
 			AddKerbal (kerbal);
 		}
 
@@ -138,27 +132,27 @@ namespace KerbalStats.Progeny {
 			}
 		}
 
-		public void Load (ProtoCrewMember pcm, ConfigNode node)
+		IEnumerator WaitAndLoad (ProtoCrewMember pcm, ConfigNode node)
 		{
-			if (node.HasNode (name)) {
-				var progeny = node.GetNode (name);
-				IKerbal kerbal;
-				if (pcm.gender == ProtoCrewMember.Gender.Female) {
-					kerbal = female_kerbals[pcm.name] = new Female (pcm, progeny);
-				} else {
-					kerbal = male_kerbals[pcm.name] = new Male (pcm, progeny);
-				}
+			yield return null;
+			if (node.HasValue (name)) {
+				var id = node.GetValue (name);
+				var kerbal = ProgenyScenario.current.GetKerbal (id);
 				AddKerbal (kerbal);
 			} else {
 				AddKerbal (pcm);
 			}
 		}
 
+		public void Load (ProtoCrewMember pcm, ConfigNode node)
+		{
+			KSProgenyRunner.instance.StartCoroutine (WaitAndLoad (pcm, node));
+		}
+
 		public void Save (ProtoCrewMember pcm, ConfigNode node)
 		{
-			var progeny = new ConfigNode (name);
-			node.AddNode (progeny);
-			kerbals[pcm.name].Save (progeny);
+			var kerbal = kerbals[pcm.name];
+			node.AddValue (name, kerbal.id);
 		}
 
 		public void Clear ()

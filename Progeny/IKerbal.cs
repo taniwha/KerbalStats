@@ -30,5 +30,6 @@ namespace KerbalStats.Progeny {
 
 		ProtoCrewMember kerbal { get; }
 		string name { get; }
+		string id { get; }
 	}
 }

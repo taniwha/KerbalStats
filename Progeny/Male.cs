@@ -80,7 +80,7 @@ namespace KerbalStats.Progeny {
 			initialize ();
 		}
 
-		public Male (ProtoCrewMember kerbal, ConfigNode node) : base (node)
+		public Male (ConfigNode node) : base (node)
 		{
 			this.kerbal = kerbal;
 			initialize ();

@@ -352,7 +352,7 @@ namespace KerbalStats.Progeny {
 			initialize ();
 		}
 
-		public Female (ProtoCrewMember kerbal, ConfigNode node) : base (node)
+		public Female (ConfigNode node) : base (node)
 		{
 			this.kerbal = kerbal;
 			initialize ();
