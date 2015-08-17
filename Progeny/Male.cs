@@ -100,10 +100,6 @@ namespace KerbalStats.Progeny {
 
 		}
 
-		public void UpdateStatus ()
-		{
-		}
-
 		public int CompareTo (Male other)
 		{
 			return name.CompareTo (other.name);

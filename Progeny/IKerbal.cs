@@ -26,7 +26,6 @@ namespace KerbalStats.Progeny {
 	public interface IKerbal
 	{
 		void Save (ConfigNode node);
-		void UpdateStatus ();
 
 		ProtoCrewMember kerbal { get; }
 		string name { get; }

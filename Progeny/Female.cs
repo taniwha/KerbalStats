@@ -37,43 +37,14 @@ namespace KerbalStats.Progeny {
 		double interestTC;
 		Embryo embryo;
 
-		KFSMState state_available_fertile;
-		KFSMState state_available_pregnant;
-		KFSMState state_available_resting;
-
-		KFSMState state_assigned_fertile;
-		KFSMState state_assigned_pregnant;
-		KFSMState state_assigned_resting;
-
-		KFSMState state_missing_fertile;
-		KFSMState state_missing_pregnant;
-		KFSMState state_missing_resting;
-
+		KFSMState state_fertile;
+		KFSMState state_pregnant;
+		KFSMState state_resting;
 		KFSMState state_dead;
 
-		KFSMEvent event_available_conceive;
-		KFSMEvent event_available_birthe;
-		KFSMEvent event_available_rested;
-
-		KFSMEvent event_assigned_conceive;
-		KFSMEvent event_assigned_birthe;
-		KFSMEvent event_assigned_rested;
-
-		KFSMEvent event_missing_conceive;
-		KFSMEvent event_missing_birthe;
-		KFSMEvent event_missing_rested;
-
-		KFSMEvent event_assigned;
-		KFSMEvent event_lost;
-		KFSMEvent event_recover;
-		KFSMEvent event_die;
-
-		static string[] start_states = {
-			"Available:Fertile",
-			"Assigned:Fertile",
-			"Dead",
-			"Missing:Fertile",
-		};
+		KFSMEvent event_conceive;
+		KFSMEvent event_birthe;
+		KFSMEvent event_rested;
 
 		KerbalFSM fsm;
 
@@ -84,31 +55,14 @@ namespace KerbalStats.Progeny {
 			}
 		}
 
-		void enter_fertile_states (KFSMState st)
+		bool isWatched ()
 		{
-			event_assigned.GoToStateOnEvent = state_assigned_fertile;
-			event_recover.GoToStateOnEvent = state_available_fertile;
-			event_lost.GoToStateOnEvent = state_missing_fertile;
 		}
 
-		void enter_pregnant_states (KFSMState st)
+		bool check_conceive (KFSMState st)
 		{
-			event_assigned.GoToStateOnEvent = state_assigned_pregnant;
-			event_recover.GoToStateOnEvent = state_available_pregnant;
-			event_lost.GoToStateOnEvent = state_missing_pregnant;
-		}
-
-		void enter_resting_states (KFSMState st)
-		{
-			event_assigned.GoToStateOnEvent = state_assigned_resting;
-			event_recover.GoToStateOnEvent = state_available_resting;
-			event_lost.GoToStateOnEvent = state_missing_resting;
-		}
-
-		bool check_available_conceive (KFSMState st)
-		{
-			if (!HighLogic.LoadedSceneIsFlight) {
-				// being watched
+			//if (!HighLogic.LoadedSceneIsFlight) {
+			if (isWatched ()) {
 				return false;
 			}
 			if (!isInterested ()) {
@@ -186,11 +140,6 @@ namespace KerbalStats.Progeny {
 			return mate != null ? Mate (mate) : false;
 		}
 
-		bool check_missing_conceive (KFSMState st)
-		{
-			return false;
-		}
-
 		bool check_birthe (KFSMState st)
 		{
 			return false;
@@ -205,135 +154,38 @@ namespace KerbalStats.Progeny {
 		{
 			fsm = new KerbalFSM ();
 
-			state_available_fertile = new KFSMState ("Available:Fertile");
-			state_available_fertile.OnEnter = enter_fertile_states;
+			state_fertile = new KFSMState ("Fertile");
 
-			state_available_pregnant = new KFSMState ("Available:Pregnant");
-			state_available_pregnant.OnEnter = enter_pregnant_states;
+			state_pregnant = new KFSMState ("Pregnant");
 
-			state_available_resting = new KFSMState ("Available:Resting");
-			state_available_resting.OnEnter = enter_resting_states;
-
-
-			state_assigned_fertile = new KFSMState ("Assigned:Fertile");
-			state_assigned_fertile.OnEnter = enter_fertile_states;
-
-			state_assigned_pregnant = new KFSMState ("Assigned:Pregnant");
-			state_assigned_pregnant.OnEnter = enter_pregnant_states;
-
-			state_assigned_resting = new KFSMState ("Assigned:Resting");
-			state_assigned_resting.OnEnter = enter_resting_states;
-
-
-			state_missing_fertile = new KFSMState ("Missing:Fertile");
-			state_missing_fertile.OnEnter = enter_fertile_states;
-
-			state_missing_pregnant = new KFSMState ("Missing:Pregnant");
-			state_missing_pregnant.OnEnter = enter_pregnant_states;
-
-			state_missing_resting = new KFSMState ("Missing:Resting");
-			state_missing_resting.OnEnter = enter_resting_states;
-
+			state_resting = new KFSMState ("Resting");
 
 			state_dead = new KFSMState ("Dead");
 
-			event_available_conceive = new KFSMEvent ("Available:Conceive");
-			event_available_conceive.GoToStateOnEvent = state_available_pregnant;
-			event_available_conceive.OnCheckCondition = check_available_conceive;
-			event_available_birthe = new KFSMEvent ("Available:Birthe");
-			event_available_birthe.GoToStateOnEvent = state_available_resting;
-			event_available_birthe.OnCheckCondition = check_birthe;
-			event_available_rested = new KFSMEvent ("Available:Conceive");
-			event_available_rested.GoToStateOnEvent = state_available_fertile;
-			event_available_rested.OnCheckCondition = check_rested;
+			event_conceive = new KFSMEvent ("Conceive");
+			event_conceive.GoToStateOnEvent = state_pregnant;
+			event_conceive.OnCheckCondition = check_conceive;
+			event_birthe = new KFSMEvent ("Birthe");
+			event_birthe.GoToStateOnEvent = state_resting;
+			event_birthe.OnCheckCondition = check_birthe;
+			event_rested = new KFSMEvent ("Conceive");
+			event_rested.GoToStateOnEvent = state_fertile;
+			event_rested.OnCheckCondition = check_rested;
 
-			event_assigned_conceive = new KFSMEvent ("Assigned:Conceive");
-			event_assigned_conceive.GoToStateOnEvent = state_assigned_pregnant;
-			event_assigned_conceive.OnCheckCondition = check_assigned_conceive;
-			event_assigned_birthe = new KFSMEvent ("Assigned:Birthe");
-			event_assigned_birthe.GoToStateOnEvent = state_assigned_resting;
-			event_assigned_birthe.OnCheckCondition = check_birthe;
-			event_assigned_rested = new KFSMEvent ("Assigned:Conceive");
-			event_assigned_rested.GoToStateOnEvent = state_assigned_fertile;
-			event_assigned_rested.OnCheckCondition = check_rested;
-
-			event_missing_conceive = new KFSMEvent ("Missing:Conceive");
-			event_missing_conceive.GoToStateOnEvent = state_missing_pregnant;
-			event_missing_conceive.OnCheckCondition = check_missing_conceive;
-			event_missing_birthe = new KFSMEvent ("Missing:Birthe");
-			event_missing_birthe.GoToStateOnEvent = state_missing_resting;
-			event_missing_birthe.OnCheckCondition = check_birthe;
-			event_missing_rested = new KFSMEvent ("Missing:Conceive");
-			event_missing_rested.GoToStateOnEvent = state_missing_fertile;
-			event_missing_rested.OnCheckCondition = check_rested;
-
-			event_assigned = new KFSMEvent ("Assigned");
-			event_recover = new KFSMEvent ("Recover");
-			event_lost = new KFSMEvent ("Lost");
-			event_die = new KFSMEvent ("Die");
-
-			fsm.AddState (state_available_fertile);
-			fsm.AddState (state_available_pregnant);
-			fsm.AddState (state_available_resting);
-			fsm.AddState (state_assigned_fertile);
-			fsm.AddState (state_assigned_pregnant);
-			fsm.AddState (state_assigned_resting);
-			fsm.AddState (state_missing_fertile);
-			fsm.AddState (state_missing_pregnant);
-			fsm.AddState (state_missing_resting);
+			fsm.AddState (state_fertile);
+			fsm.AddState (state_pregnant);
+			fsm.AddState (state_resting);
 			fsm.AddState (state_dead);
 
-			fsm.AddEvent (event_available_conceive, new KFSMState [] { state_available_fertile, });
-			fsm.AddEvent (event_available_birthe, new KFSMState [] { state_available_pregnant, });
-			fsm.AddEvent (event_available_rested, new KFSMState [] { state_available_resting, });
-
-			fsm.AddEvent (event_assigned_conceive, new KFSMState [] { state_assigned_fertile, });
-			fsm.AddEvent (event_assigned_birthe, new KFSMState [] { state_assigned_pregnant, });
-			fsm.AddEvent (event_assigned_rested, new KFSMState [] { state_assigned_resting, });
-
-			fsm.AddEvent (event_missing_conceive, new KFSMState [] { state_missing_fertile, });
-			fsm.AddEvent (event_missing_birthe, new KFSMState [] { state_missing_pregnant, });
-			fsm.AddEvent (event_missing_rested, new KFSMState [] { state_missing_resting, });
-
-			fsm.AddEvent (event_assigned, new KFSMState [] {
-				state_available_fertile,
-				state_available_pregnant,
-				state_available_resting,
-			});
-
-			fsm.AddEvent (event_recover, new KFSMState [] {
-				state_assigned_fertile,
-				state_assigned_pregnant,
-				state_assigned_resting,
-				state_missing_fertile,
-				state_missing_pregnant,
-				state_missing_resting,
-			});
-
-			fsm.AddEvent (event_lost, new KFSMState [] {
-				state_assigned_fertile,
-				state_assigned_pregnant,
-				state_assigned_resting,
-			});
-
-			fsm.AddEvent (event_die, new KFSMState [] {
-				state_available_fertile,
-				state_available_pregnant,
-				state_available_resting,
-				state_assigned_fertile,
-				state_assigned_pregnant,
-				state_assigned_resting,
-				state_missing_fertile,
-				state_missing_pregnant,
-				state_missing_resting,
-			});
+			fsm.AddEvent (event_conceive, new KFSMState [] { state_fertile, });
+			fsm.AddEvent (event_birthe, new KFSMState [] { state_pregnant, });
+			fsm.AddEvent (event_rested, new KFSMState [] { state_resting, });
 		}
 
 		void initialize ()
 		{
 			lastUpdate = Planetarium.GetUniversalTime ();
 			CreateStateMachine ();
-			fsm.StartFSM (start_states[(int) kerbal.rosterStatus]);
 
 			interestTime = 0;
 			interestTC = 3600;	//FIXME
@@ -344,22 +196,24 @@ namespace KerbalStats.Progeny {
 		{
 			kerbal = null;	// not yet recruited
 			initialize ();
+			fsm.StartFSM ("Fertile");
 		}
 
 		public Female (ProtoCrewMember kerbal) : base (kerbal)
 		{
 			this.kerbal = kerbal;
 			initialize ();
+			fsm.StartFSM ("Fertile");
 		}
 
 		public Female (ConfigNode node) : base (node)
 		{
-			this.kerbal = kerbal;
+			this.kerbal = null;
 			initialize ();
 			if (node.HasValue ("state")) {
 				fsm.StartFSM (node.GetValue ("state"));
 			} else {
-				fsm.StartFSM (start_states[(int) kerbal.rosterStatus]);
+				fsm.StartFSM ("Fertile");
 			}
 			if (node.HasValue ("interestTime")) {
 				double.TryParse (node.GetValue ("interestTime"), out interestTime);
@@ -392,24 +246,6 @@ namespace KerbalStats.Progeny {
 			}
 			fsm.UpdateFSM ();
 			lastUpdate = UT;
-		}
-
-		public void UpdateStatus ()
-		{
-			switch (kerbal.rosterStatus) {
-				case ProtoCrewMember.RosterStatus.Available:
-					fsm.RunEvent (event_recover);
-					break;
-				case ProtoCrewMember.RosterStatus.Assigned:
-					fsm.RunEvent (event_assigned);
-					break;
-				case ProtoCrewMember.RosterStatus.Dead:
-					fsm.RunEvent (event_die);
-					break;
-				case ProtoCrewMember.RosterStatus.Missing:
-					fsm.RunEvent (event_lost);
-					break;
-			}
 		}
 
 		public string State
