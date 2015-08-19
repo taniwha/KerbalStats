@@ -33,6 +33,7 @@ namespace KerbalStats.Progeny {
 
 		double interestTime;
 		double interestTC;
+		public ILocation location { get; set; }
 
 		public string name
 		{

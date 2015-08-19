@@ -29,15 +29,19 @@ KS_FILES := \
 	Genome/Stupidity.cs				\
 	Genome/Trait.cs					\
 	Profession/Profession.cs		\
+	Progeny/AstronautComplex.cs		\
 	Progeny/DebugWindow.cs			\
 	Progeny/Embryo.cs				\
 	Progeny/Female.cs				\
 	Progeny/IKerbal.cs				\
+	Progeny/ILocation.cs			\
 	Progeny/Juvenile.cs				\
 	Progeny/Male.cs					\
 	Progeny/Progeny.cs				\
 	Progeny/Settings.cs				\
 	Progeny/Tracker.cs				\
+	Progeny/VesselPart.cs			\
+	Progeny/Wilds.cs				\
 	Progeny/Zygote.cs				\
 	IKerbalExt.cs					\
 	KerbalExt.cs					\

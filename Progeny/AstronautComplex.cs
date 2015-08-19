@@ -23,13 +23,26 @@ using UnityEngine;
 using KSP.IO;
 
 namespace KerbalStats.Progeny {
-	public interface IKerbal
+	public class AstronautComplex : ILocation
 	{
-		void Save (ConfigNode node);
+		public void Load (ConfigNode node)
+		{
+		}
 
-		ILocation location { get; set; }
-		ProtoCrewMember kerbal { get; }
-		string name { get; }
-		string id { get; }
+		public void Save (ConfigNode node)
+		{
+		}
+
+		public string name { get { return "AstronautComplex"; } }
+
+		public bool isWatched ()
+		{
+			return !HighLogic.LoadedSceneIsFlight;
+		}
+
+		public List<Male> Males ()
+		{
+			return ProgenyTracker.AvailableMales ();
+		}
 	}
 }

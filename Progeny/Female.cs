@@ -37,6 +37,8 @@ namespace KerbalStats.Progeny {
 		double interestTC;
 		Embryo embryo;
 
+		public ILocation location { get; set; }
+
 		KFSMState state_fertile;
 		KFSMState state_pregnant;
 		KFSMState state_resting;
@@ -55,20 +57,15 @@ namespace KerbalStats.Progeny {
 			}
 		}
 
-		bool isWatched ()
-		{
-		}
-
 		bool check_conceive (KFSMState st)
 		{
-			//if (!HighLogic.LoadedSceneIsFlight) {
-			if (isWatched ()) {
+			if (location.isWatched ()) {
 				return false;
 			}
 			if (!isInterested ()) {
 				return false;
 			}
-			var mate = SelectMate (ProgenyTracker.AvailableMales ());
+			var mate = SelectMate (location.Males ());
 			return mate != null ? Mate (mate) : false;
 		}
 
@@ -119,25 +116,6 @@ namespace KerbalStats.Progeny {
 			embryo = new Embryo (this, mate);
 			ProgenyScenario.current.AddEmbryo (embryo);
 			return true;
-		}
-
-		bool check_assigned_conceive (KFSMState st)
-		{
-			var vessel = ProgenyTracker.KerbalVessel (kerbal);
-			if (vessel.loaded) {
-				// being watched
-				return false;
-			}
-			if (vessel.isEVA) {
-				//FIXME figure out command seats
-				// in that suit?
-				return false;
-			}
-			if (!isInterested ()) {
-				return false;
-			}
-			var mate = SelectMate (ProgenyTracker.BoardedMales (vessel));
-			return mate != null ? Mate (mate) : false;
 		}
 
 		bool check_birthe (KFSMState st)

@@ -23,13 +23,14 @@ using UnityEngine;
 using KSP.IO;
 
 namespace KerbalStats.Progeny {
-	public interface IKerbal
+	public interface ILocation
 	{
+		void Load (ConfigNode node);
 		void Save (ConfigNode node);
 
-		ILocation location { get; set; }
-		ProtoCrewMember kerbal { get; }
 		string name { get; }
-		string id { get; }
+
+		bool isWatched ();
+		List<Male> Males ();
 	}
 }
