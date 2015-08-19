@@ -15,6 +15,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with KerbalStats.  If not, see <http://www.gnu.org/licenses/>.
 */
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -188,6 +189,44 @@ namespace KerbalStats.Progeny {
 		void OnDestroy ()
 		{
 			current = null;
+		}
+
+		static string[] ShuffledIds (string[] ids)
+		{
+			int len = ids.Length;
+			var kv = new List<KeyValuePair<float, string>> ();
+			for (int i = 0; i < len; i++) {
+				kv.Add (new KeyValuePair<float, string>(UnityEngine.Random.Range(0, 1f), ids[i]));
+			}
+			var skv = (from item in kv orderby item.Key select item).ToArray ();
+			string [] shuffled = new string[len];
+			for (int i = 0; i < len; i++) {
+				shuffled[i] = skv[i].Value;
+			}
+			return shuffled;
+		}
+
+		internal IEnumerator ScanFemales ()
+		{
+			while (true) {
+				//Debug.Log(String.Format ("[KS Progeny] ScanFemales"));
+				string[] ids = ShuffledIds (females.Keys.ToArray ());
+				yield return null;
+				for (int i = 0; i < ids.Length; i++) {
+					if (!females.ContainsKey (ids[i])) {
+						// the kerbal was removed so just skip to the next one
+						continue;
+					}
+					//Debug.Log(String.Format ("[KS Progeny] ScanFemales: {0}", ids[i]));
+					females[ids[i]].Update ();
+					yield return null;
+				}
+			}
+		}
+
+		void Start ()
+		{
+			StartCoroutine (ScanFemales ());
 		}
 	}
 }

@@ -146,7 +146,7 @@ namespace KerbalStats.Progeny {
 
 		public void Load (ProtoCrewMember pcm, ConfigNode node)
 		{
-			KSProgenyRunner.instance.StartCoroutine (WaitAndLoad (pcm, node));
+			ProgenyScenario.current.StartCoroutine (WaitAndLoad (pcm, node));
 		}
 
 		public void Save (ProtoCrewMember pcm, ConfigNode node)
@@ -237,7 +237,7 @@ namespace KerbalStats.Progeny {
 						// Check the kerbal's status again next frame. If it
 						// is still Available, then the kerbal has been
 						// recovered
-						KSProgenyRunner.instance.StartCoroutine (WaitAndCheckStatus (pcm));
+						ProgenyScenario.current.StartCoroutine (WaitAndCheckStatus (pcm));
 						return;
 					}
 					// Look what the cat dragged in.
@@ -327,7 +327,7 @@ namespace KerbalStats.Progeny {
 		void onVesselCreate (Vessel vessel)
 		{
 			Debug.Log(String.Format ("[KS Progeny] onVesselCreate"));
-			KSProgenyRunner.instance.StartCoroutine (WaitAndGetCrew (vessel));
+			ProgenyScenario.current.StartCoroutine (WaitAndGetCrew (vessel));
 		}
 
 		void onVesselDestroy (Vessel vessel)
@@ -339,66 +339,7 @@ namespace KerbalStats.Progeny {
 		void onVesselWasModified (Vessel vessel)
 		{
 			Debug.Log(String.Format ("[KS Progeny] onVesselWasModified"));
-			KSProgenyRunner.instance.StartCoroutine (WaitAndGetCrew (vessel));
-		}
-
-		string[] ShuffledNames (string[] names)
-		{
-			int len = names.Length;
-			var kv = new List<KeyValuePair<float, string>> ();
-			for (int i = 0; i < len; i++) {
-				kv.Add (new KeyValuePair<float, string>(UnityEngine.Random.Range(0, 1f), names[i]));
-			}
-			var skv = (from item in kv orderby item.Key select item).ToArray ();
-			string [] shuffled = new string[len];
-			for (int i = 0; i < len; i++) {
-				shuffled[i] = skv[i].Value;
-			}
-			return shuffled;
-		}
-
-		internal IEnumerator ScanFemales ()
-		{
-			while (true) {
-				//Debug.Log(String.Format ("[KS Progeny] ScanFemales"));
-				string[] females = ShuffledNames (female_kerbals.Keys.ToArray ());
-				yield return null;
-				for (int i = 0; i < females.Length; i++) {
-					if (!female_kerbals.ContainsKey (females[i])) {
-						// the kerbal was removed so just skip to the next one
-						continue;
-					}
-					//Debug.Log(String.Format ("[KS Progeny] ScanFemales: {0}", females[i]));
-					female_kerbals[females[i]].Update ();
-					yield return null;
-				}
-			}
-		}
-	}
-
-	[KSPAddon (KSPAddon.Startup.EveryScene, false)]
-	public class KSProgenyRunner : MonoBehaviour
-	{
-		internal static KSProgenyRunner instance;
-		void Awake ()
-		{
-			if (!HighLogic.LoadedSceneIsGame || HighLogic.LoadedSceneIsEditor) {
-				instance = null;
-				return;
-			}
-			instance = this;
-		}
-
-		void OnDestroy ()
-		{
-			instance = null;
-		}
-
-		void Start ()
-		{
-			if (instance != null && ProgenyTracker.instance != null) {
-				StartCoroutine (ProgenyTracker.instance.ScanFemales ());
-			}
+			ProgenyScenario.current.StartCoroutine (WaitAndGetCrew (vessel));
 		}
 	}
 
