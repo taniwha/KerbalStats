@@ -23,13 +23,10 @@ using UnityEngine;
 using KSP.IO;
 
 namespace KerbalStats.Progeny {
-	public class VesselPart : ILocation
+	public class EVA : ILocation
 	{
-		Vessel vessel;
-
-		public VesselPart (Vessel v)
+		public EVA ()
 		{
-			vessel = v;
 		}
 
 		public void Load (ConfigNode node)
@@ -40,16 +37,16 @@ namespace KerbalStats.Progeny {
 		{
 		}
 
-		public string name { get { return "VesselPart"; } }
+		public string name { get { return "EVA"; } }
 
 		public bool isWatched ()
 		{
-			return vessel.loaded;
+			return true;
 		}
 
 		public List<Male> Males ()
 		{
-			return ProgenyTracker.BoardedMales (vessel);
+			return new List<Male> ();
 		}
 	}
 }

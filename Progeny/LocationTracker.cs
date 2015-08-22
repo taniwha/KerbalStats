@@ -15,6 +15,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with KerbalStats.  If not, see <http://www.gnu.org/licenses/>.
 */
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
@@ -23,33 +24,39 @@ using UnityEngine;
 using KSP.IO;
 
 namespace KerbalStats.Progeny {
-	public class VesselPart : ILocation
+	public class LocationTracker
 	{
-		Vessel vessel;
+		Dictionary<Guid, VesselPart> vessel_parts;
 
-		public VesselPart (Vessel v)
+		AstronautComplex astronaut_complex;
+		EVA eva;
+		Wilds wilds;
+
+		public ILocation Location (string loc, object parm)
 		{
-			vessel = v;
+			switch (loc) {
+				case "Vessel":
+					Vessel v = parm as Vessel;
+					if (!vessel_parts.ContainsKey (v.id)) {
+						vessel_parts[v.id] = new VesselPart (v);
+					}
+					return vessel_parts[v.id];
+				case "EVA":
+					return eva;
+				case "Wilds":
+					return wilds;
+				case "AstronautComplex":
+					return astronaut_complex;
+			}
+			return null;
 		}
 
-		public void Load (ConfigNode node)
+		public LocationTracker ()
 		{
-		}
-
-		public void Save (ConfigNode node)
-		{
-		}
-
-		public string name { get { return "VesselPart"; } }
-
-		public bool isWatched ()
-		{
-			return vessel.loaded;
-		}
-
-		public List<Male> Males ()
-		{
-			return ProgenyTracker.BoardedMales (vessel);
+			vessel_parts = new Dictionary<Guid, VesselPart> ();
+			astronaut_complex = new AstronautComplex ();
+			eva = new EVA ();
+			wilds = new Wilds ();
 		}
 	}
 }

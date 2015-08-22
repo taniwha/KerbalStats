@@ -32,10 +32,12 @@ KS_FILES := \
 	Progeny/AstronautComplex.cs		\
 	Progeny/DebugWindow.cs			\
 	Progeny/Embryo.cs				\
+	Progeny/EVA.cs					\
 	Progeny/Female.cs				\
 	Progeny/IKerbal.cs				\
 	Progeny/ILocation.cs			\
 	Progeny/Juvenile.cs				\
+	Progeny/LocationTracker.cs		\
 	Progeny/Male.cs					\
 	Progeny/Progeny.cs				\
 	Progeny/Settings.cs				\
