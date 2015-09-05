@@ -29,25 +29,25 @@ KS_FILES := \
 	Genome/Stupidity.cs				\
 	Genome/Trait.cs					\
 	Profession/Profession.cs		\
-	Progeny/AstronautComplex.cs		\
+	Progeny/Location/AstronautComplex.cs	\
+	Progeny/Location/EVA.cs					\
+	Progeny/Location/ILocation.cs			\
+	Progeny/Location/LocationTracker.cs		\
+	Progeny/Location/Tomb.cs				\
+	Progeny/Location/VesselPart.cs			\
+	Progeny/Location/Wilds.cs				\
+	Progeny/Location/Womb.cs				\
+	Progeny/Zygote/Embryo.cs				\
+	Progeny/Zygote/Female.cs				\
+	Progeny/Zygote/Juvenile.cs				\
+	Progeny/Zygote/Male.cs					\
+	Progeny/Zygote/Zygote.cs				\
 	Progeny/DebugWindow.cs			\
-	Progeny/Embryo.cs				\
-	Progeny/EVA.cs					\
-	Progeny/Female.cs				\
 	Progeny/IKerbal.cs				\
-	Progeny/ILocation.cs			\
 	Progeny/Init.cs					\
-	Progeny/Juvenile.cs				\
-	Progeny/LocationTracker.cs		\
-	Progeny/Male.cs					\
 	Progeny/Progeny.cs				\
 	Progeny/Settings.cs				\
-	Progeny/Tomb.cs					\
 	Progeny/Tracker.cs				\
-	Progeny/VesselPart.cs			\
-	Progeny/Wilds.cs				\
-	Progeny/Womb.cs					\
-	Progeny/Zygote.cs				\
 	IKerbalExt.cs					\
 	KerbalExt.cs					\
 	KerbalStats.cs					\
