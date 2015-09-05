@@ -42,9 +42,11 @@ KS_FILES := \
 	Progeny/Male.cs					\
 	Progeny/Progeny.cs				\
 	Progeny/Settings.cs				\
+	Progeny/Tomb.cs					\
 	Progeny/Tracker.cs				\
 	Progeny/VesselPart.cs			\
 	Progeny/Wilds.cs				\
+	Progeny/Womb.cs					\
 	Progeny/Zygote.cs				\
 	IKerbalExt.cs					\
 	KerbalExt.cs					\
