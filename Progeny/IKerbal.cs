@@ -27,7 +27,6 @@ namespace KerbalStats.Progeny {
 	{
 		void Save (ConfigNode node);
 
-		ILocation location { get; set; }
 		ProtoCrewMember kerbal { get; }
 		string name { get; }
 		string id { get; }

@@ -37,8 +37,6 @@ namespace KerbalStats.Progeny {
 		double interestTC;
 		Embryo embryo;
 
-		public ILocation location { get; set; }
-
 		KFSMState state_fertile;
 		KFSMState state_pregnant;
 		KFSMState state_resting;

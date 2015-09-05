@@ -28,8 +28,9 @@ namespace KerbalStats.Progeny {
 	{
 		// This is an abstraction for all stages of kerbal development, from
 		// conception to death.
-		string mother_id;
-		string father_id;
+		public string mother_id;
+		public string father_id;
+		public ILocation location;
 		protected GenePair[] genes;
 
 		public string id
