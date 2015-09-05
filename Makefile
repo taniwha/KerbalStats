@@ -36,6 +36,7 @@ KS_FILES := \
 	Progeny/Female.cs				\
 	Progeny/IKerbal.cs				\
 	Progeny/ILocation.cs			\
+	Progeny/Init.cs					\
 	Progeny/Juvenile.cs				\
 	Progeny/LocationTracker.cs		\
 	Progeny/Male.cs					\

@@ -342,13 +342,4 @@ namespace KerbalStats.Progeny {
 			ProgenyScenario.current.StartCoroutine (WaitAndGetCrew (vessel));
 		}
 	}
-
-	[KSPAddon (KSPAddon.Startup.MainMenu, true)]
-	public class KSProgenyInit : MonoBehaviour
-	{
-		void Awake ()
-		{
-			KerbalExt.AddModule (new ProgenyTracker ());
-		}
-	}
 }
