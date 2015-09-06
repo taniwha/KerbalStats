@@ -23,26 +23,16 @@ using UnityEngine;
 using KSP.IO;
 
 namespace KerbalStats.Progeny {
-	public class Womb : ILocation
+	public class Womb : Location
 	{
-		public void Load (ConfigNode node)
+		public Womb ()
 		{
+			name = "Womb";
 		}
 
-		public void Save (ConfigNode node)
-		{
-		}
-
-		public string name { get { return "Womb"; } }
-
-		public bool isWatched ()
+		public override bool isWatched ()
 		{
 			return false;
-		}
-
-		public List<Male> Males ()
-		{
-			return new List<Male> ();
 		}
 	}
 }

@@ -31,7 +31,7 @@ KS_FILES := \
 	Profession/Profession.cs		\
 	Progeny/Location/AstronautComplex.cs	\
 	Progeny/Location/EVA.cs					\
-	Progeny/Location/ILocation.cs			\
+	Progeny/Location/Location.cs			\
 	Progeny/Location/LocationTracker.cs		\
 	Progeny/Location/Tomb.cs				\
 	Progeny/Location/VesselPart.cs			\

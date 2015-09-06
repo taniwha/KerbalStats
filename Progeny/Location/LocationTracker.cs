@@ -31,8 +31,10 @@ namespace KerbalStats.Progeny {
 		AstronautComplex astronaut_complex;
 		EVA eva;
 		Wilds wilds;
+		Womb womb;
+		Tomb tomb;
 
-		public ILocation Location (string loc, object parm)
+		public Location location (string loc, object parm)
 		{
 			switch (loc) {
 				case "Vessel":
@@ -45,6 +47,10 @@ namespace KerbalStats.Progeny {
 					return eva;
 				case "Wilds":
 					return wilds;
+				case "Womb":
+					return womb;
+				case "Tomb":
+					return tomb;
 				case "AstronautComplex":
 					return astronaut_complex;
 			}
@@ -57,6 +63,8 @@ namespace KerbalStats.Progeny {
 			astronaut_complex = new AstronautComplex ();
 			eva = new EVA ();
 			wilds = new Wilds ();
+			womb = new Womb ();
+			tomb = new Tomb ();
 		}
 	}
 }

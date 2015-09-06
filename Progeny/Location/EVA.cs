@@ -23,30 +23,16 @@ using UnityEngine;
 using KSP.IO;
 
 namespace KerbalStats.Progeny {
-	public class EVA : ILocation
+	public class EVA : Location
 	{
 		public EVA ()
 		{
+			name = "EVA";
 		}
 
-		public void Load (ConfigNode node)
-		{
-		}
-
-		public void Save (ConfigNode node)
-		{
-		}
-
-		public string name { get { return "EVA"; } }
-
-		public bool isWatched ()
+		public override bool isWatched ()
 		{
 			return true;
-		}
-
-		public List<Male> Males ()
-		{
-			return new List<Male> ();
 		}
 	}
 }

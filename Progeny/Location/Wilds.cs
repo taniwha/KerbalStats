@@ -23,26 +23,16 @@ using UnityEngine;
 using KSP.IO;
 
 namespace KerbalStats.Progeny {
-	public class Wilds : ILocation
+	public class Wilds : Location
 	{
-		public void Load (ConfigNode node)
+		public Wilds ()
 		{
+			name = "Wilds";
 		}
 
-		public void Save (ConfigNode node)
-		{
-		}
-
-		public string name { get { return "Wilds"; } }
-
-		public bool isWatched ()
+		public override bool isWatched ()
 		{
 			return false;
-		}
-
-		public List<Male> Males ()
-		{
-			return new List<Male> ();
 		}
 	}
 }

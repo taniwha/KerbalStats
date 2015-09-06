@@ -23,33 +23,19 @@ using UnityEngine;
 using KSP.IO;
 
 namespace KerbalStats.Progeny {
-	public class VesselPart : ILocation
+	public class VesselPart : Location
 	{
 		Vessel vessel;
 
 		public VesselPart (Vessel v)
 		{
 			vessel = v;
+			name = "VesselPart";
 		}
 
-		public void Load (ConfigNode node)
-		{
-		}
-
-		public void Save (ConfigNode node)
-		{
-		}
-
-		public string name { get { return "VesselPart"; } }
-
-		public bool isWatched ()
+		public override bool isWatched ()
 		{
 			return vessel.loaded;
-		}
-
-		public List<Male> Males ()
-		{
-			return ProgenyTracker.BoardedMales (vessel);
 		}
 	}
 }
