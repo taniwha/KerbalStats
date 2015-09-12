@@ -121,98 +121,6 @@ namespace KerbalStats.Progeny {
 			GUILayout.EndHorizontal ();
 		}
 
-		void ShowKerbal (string name)
-		{
-			GUILayout.BeginHorizontal ();
-			GUILayout.Label (name + ":");
-			GUILayout.FlexibleSpace ();
-			var vessel = ProgenyTracker.KerbalVessel (name);
-			if (vessel == null) {
-				GUILayout.Label ("not boarded");
-			} else {
-				GUILayout.Label (vessel.vesselName);
-			}
-			GUILayout.EndHorizontal ();
-		}
-
-		void ShowKerbal (Female kerbal)
-		{
-			GUILayout.BeginHorizontal ();
-			GUILayout.FlexibleSpace ();
-			GUILayout.Label (kerbal.name);
-			GUILayout.FlexibleSpace ();
-			var vessel = ProgenyTracker.KerbalVessel (name);
-			if (vessel == null) {
-				GUILayout.Label ("");
-			} else {
-				GUILayout.Label (vessel.vesselName);
-			}
-			GUILayout.FlexibleSpace ();
-			GUILayout.Label (kerbal.State);
-			GUILayout.EndHorizontal ();
-		}
-
-		void ShowKerbal (Male kerbal)
-		{
-			GUILayout.BeginHorizontal ();
-			GUILayout.FlexibleSpace ();
-			GUILayout.Label (kerbal.name);
-			GUILayout.EndHorizontal ();
-		}
-
-		void ShowVessel (Vessel vessel)
-		{
-			GUILayout.BeginHorizontal ();
-			GUILayout.Label (vessel.vesselName);
-			GUILayout.FlexibleSpace ();
-			GUILayout.EndHorizontal ();
-		}
-
-		void ListFemales ()
-		{
-			var females = ProgenyTracker.FemaleKerbals;
-			females.Sort ();
-
-			for (int i = 0; i < females.Count; i++) {
-				ShowKerbal (females[i]);
-			}
-		}
-
-		void ListMales ()
-		{
-			var males = ProgenyTracker.MaleKerbals;
-			males.Sort ();
-
-			for (int i = 0; i < males.Count; i++) {
-				ShowKerbal (males[i].name);
-			}
-		}
-
-		void ListAvailMales ()
-		{
-			var males = ProgenyTracker.AvailableMales ();
-			males.Sort ();
-
-			for (int i = 0; i < males.Count; i++) {
-				ShowKerbal (males[i].name);
-			}
-		}
-
-		void ListVessels ()
-		{
-			for (int i = 0; i < FlightGlobals.fetch.vessels.Count; i++) {
-				var vessel = FlightGlobals.fetch.vessels[i];
-				var males = ProgenyTracker.BoardedMales (vessel);
-				if (males.Count < 1) {
-					continue;
-				}
-				ShowVessel (vessel);
-				for (int j = 0; j < males.Count; j++) {
-					ShowKerbal (males[j]);
-				}
-			}
-		}
-
 		void debugWindow (int windowID)
 		{
 			GUILayout.BeginVertical ();
@@ -220,16 +128,12 @@ namespace KerbalStats.Progeny {
 			InfoSelector ();
 			switch (infoType) {
 				case InfoType.Females:
-					ListFemales ();
 					break;
 				case InfoType.Males:
-					ListMales ();
 					break;
 				case InfoType.AvailMales:
-					ListAvailMales ();
 					break;
 				case InfoType.Vessels:
-					ListVessels ();
 					break;
 			}
 

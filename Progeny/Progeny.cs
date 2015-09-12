@@ -36,6 +36,18 @@ namespace KerbalStats.Progeny {
 		Dictionary<string, Female> females;
 		uint zygote_id;
 
+		LocationTracker locations;
+
+		public Location GetLocation (string location, object parm = null)
+		{
+			return locations.location (location, parm);
+		}
+
+		public Location ParseLocation (string locstring)
+		{
+			return locations.Parse (locstring);
+		}
+
 		public static ProgenyScenario current { get; private set; }
 
 		public static uint bit_reverse (uint x)
@@ -92,7 +104,7 @@ namespace KerbalStats.Progeny {
 			embryos[embryo.id] = embryo;
 		}
 
-		public void AddKerbal (IKerbal kerbal)
+		public void AddKerbal (Zygote kerbal)
 		{
 			if (kerbal is Female) {
 				females[kerbal.id] = kerbal as Female;
@@ -101,7 +113,21 @@ namespace KerbalStats.Progeny {
 			}
 		}
 
-		public IKerbal GetKerbal (string id)
+		public Zygote GetZygote (string id)
+		{
+			if (embryos.ContainsKey (id)) {
+				return embryos[id];
+			} else if (juveniles.ContainsKey (id)) {
+				return juveniles[id];
+			} else if (females.ContainsKey (id)) {
+				return females[id];
+			} else if (males.ContainsKey (id)) {
+				return males[id];
+			}
+			return null;
+		}
+
+		public Zygote GetKerbal (string id)
 		{
 			if (females.ContainsKey (id)) {
 				return females[id];
@@ -178,6 +204,8 @@ namespace KerbalStats.Progeny {
 		public override void OnAwake ()
 		{
 			current = this;
+
+			locations = new LocationTracker ();
 
 			embryos = new Dictionary<string, Embryo> ();
 			juveniles = new Dictionary<string, Juvenile> ();

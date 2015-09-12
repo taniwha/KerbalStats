@@ -41,6 +41,7 @@ namespace KerbalStats.Progeny {
 			p = UnityEngine.Random.Range (0, 1f);
 			birth = CalcBirth ();
 			conceived = Planetarium.GetUniversalTime ();
+			location = ProgenyScenario.current.GetLocation ("Womb");
 		}
 
 		public Embryo (ConfigNode node) : base (node)

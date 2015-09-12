@@ -66,5 +66,30 @@ namespace KerbalStats.Progeny {
 			womb = new Womb ();
 			tomb = new Tomb ();
 		}
+
+		public Location Parse (string locstr)
+		{
+			string []parms = locstr.Split (',');
+			switch (parms[0]) {
+				case "Vessel":
+					Guid id = new Guid (parms[1]);
+					if (!vessel_parts.ContainsKey (id)) {
+						Vessel vessel = FlightGlobals.Vessels.Where (v => v.id == id).FirstOrDefault ();
+						vessel_parts[vessel.id] = new VesselPart (vessel);
+					}
+					return vessel_parts[id];
+				case "EVA":
+					return eva;
+				case "Wilds":
+					return wilds;
+				case "Womb":
+					return womb;
+				case "Tomb":
+					return tomb;
+				case "AstronautComplex":
+					return astronaut_complex;
+			}
+			return null;
+		}
 	}
 }
