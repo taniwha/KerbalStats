@@ -29,6 +29,15 @@ namespace KerbalStats.Progeny {
 		internal static ProgenyTracker instance;
 
 		Dictionary<string, string> kerbal_ids;
+		Dictionary<Guid, Vessel> vessels;
+
+		Vessel vessel (Guid id)
+		{
+			if (!vessels.ContainsKey (id)) {
+				return null;
+			}
+			return vessels[id];
+		}
 
 		public void AddKerbal (ProtoCrewMember pcm)
 		{
@@ -66,7 +75,7 @@ namespace KerbalStats.Progeny {
 
 		public void Load (ProtoCrewMember pcm, ConfigNode node)
 		{
-			ProgenyScenario.current.StartCoroutine (WaitAndLoad (pcm, node));
+			KerbalStats.current.StartCoroutine (WaitAndLoad (pcm, node));
 		}
 
 		public void Save (ProtoCrewMember pcm, ConfigNode node)
@@ -77,6 +86,7 @@ namespace KerbalStats.Progeny {
 		public void Clear ()
 		{
 			kerbal_ids = new Dictionary<string, string> ();
+			vessels = new Dictionary<Guid, Vessel> ();
 		}
 
 		public string Get (ProtoCrewMember kerbal, string parms)
@@ -142,7 +152,7 @@ namespace KerbalStats.Progeny {
 						// Check the kerbal's status again next frame. If it
 						// is still Available, then the kerbal has been
 						// recovered
-						ProgenyScenario.current.StartCoroutine (WaitAndCheckStatus (pcm));
+						KerbalStats.current.StartCoroutine (WaitAndCheckStatus (pcm));
 						return;
 					}
 					// Look what the cat dragged in.
@@ -204,18 +214,21 @@ namespace KerbalStats.Progeny {
 		void onVesselCreate (Vessel vessel)
 		{
 			Debug.Log(String.Format ("[KS Progeny] onVesselCreate"));
-			ProgenyScenario.current.StartCoroutine (WaitAndGetCrew (vessel));
+			KerbalStats.current.StartCoroutine (WaitAndGetCrew (vessel));
+			Debug.Log(String.Format ("[KS Progeny] onVesselCreate a"));
+			vessels[vessel.id] = vessel;
 		}
 
 		void onVesselDestroy (Vessel vessel)
 		{
 			Debug.Log(String.Format ("[KS Progeny] onVesselDestroy"));
+			vessels.Remove (vessel.id);
 		}
 
 		void onVesselWasModified (Vessel vessel)
 		{
 			Debug.Log(String.Format ("[KS Progeny] onVesselWasModified"));
-			ProgenyScenario.current.StartCoroutine (WaitAndGetCrew (vessel));
+			KerbalStats.current.StartCoroutine (WaitAndGetCrew (vessel));
 		}
 	}
 }
