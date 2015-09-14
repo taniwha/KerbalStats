@@ -143,12 +143,12 @@ namespace KerbalStats {
 			kerbalext_modules = new Dictionary<string, IKerbalExt> ();
 			foreach (var loaded in AssemblyLoader.loadedAssemblies) {
 				var assembly = loaded.assembly;
-				Debug.Log (String.Format ("[KS] LoadModules {0}", loaded.name));
+				//Debug.Log (String.Format ("[KS] LoadModules {0}", loaded.name));
 				var types = assembly.GetTypes ();
 				for (int i = 0; i < types.Length; i++) {
 					var type = types[i];
 					if (type.GetInterfaces ().Contains (typeof (IKerbalExt))) {
-						Debug.Log (String.Format ("[KS] LoadModules type:{0}", type.Name));
+						//Debug.Log (String.Format ("[KS] LoadModules type:{0}", type.Name));
 						var parm_types = new Type[] {typeof (KerbalStats)};
 						var constructor = type.GetConstructor (parm_types);
 						if (constructor != null) {
