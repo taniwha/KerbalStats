@@ -30,10 +30,10 @@ namespace KerbalStats.Progeny {
 		static DebugWindow instance;
 
 		enum InfoType {
+			Embryos,
+			Juveniles,
 			Females,
 			Males,
-			AvailMales,
-			Vessels,
 		};
 
 		InfoType infoType;
@@ -109,10 +109,22 @@ namespace KerbalStats.Progeny {
 			}
 		}
 
+		void ShowZygotes (IEnumerable<Zygote> zygotes)
+		{
+			foreach (var z in zygotes) {
+				GUILayout.BeginHorizontal ();
+				GUILayout.Label (z.id + ":");
+				GUILayout.FlexibleSpace ();
+				GUILayout.Label (z.location.name);
+				GUILayout.EndHorizontal ();
+			}
+		}
+
 		void InfoSelector ()
 		{
+			var infotype_list = EnumUtil.GetValues<InfoType>();
 			GUILayout.BeginHorizontal ();
-			for (var t = InfoType.Females; t <= InfoType.Vessels; t++) {
+			foreach (var t in infotype_list) {
 				if (GUILayout.Toggle (infoType == t, t.ToString (),
 									  GUILayout.Width (80))) {
 					infoType = t;
@@ -127,13 +139,17 @@ namespace KerbalStats.Progeny {
 
 			InfoSelector ();
 			switch (infoType) {
+				case InfoType.Embryos:
+					ShowZygotes (ProgenyScenario.current.Embryos.Cast<Zygote>());
+					break;
+				case InfoType.Juveniles:
+					ShowZygotes (ProgenyScenario.current.Juveniles.Cast<Zygote>());
+					break;
 				case InfoType.Females:
+					ShowZygotes (ProgenyScenario.current.Females.Cast<Zygote>());
 					break;
 				case InfoType.Males:
-					break;
-				case InfoType.AvailMales:
-					break;
-				case InfoType.Vessels:
+					ShowZygotes (ProgenyScenario.current.Males.Cast<Zygote>());
 					break;
 			}
 

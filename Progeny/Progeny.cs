@@ -38,6 +38,34 @@ namespace KerbalStats.Progeny {
 
 		LocationTracker locations;
 
+		public List<Embryo> Embryos
+		{
+			get {
+				return embryos.Values.ToList ();
+			}
+		}
+
+		public List<Juvenile> Juveniles
+		{
+			get {
+				return juveniles.Values.ToList ();
+			}
+		}
+
+		public List<Male> Males
+		{
+			get {
+				return males.Values.ToList ();
+			}
+		}
+
+		public List<Female> Females
+		{
+			get {
+				return females.Values.ToList ();
+			}
+		}
+
 		public Location GetLocation (string location, object parm = null)
 		{
 			return locations.location (location, parm);

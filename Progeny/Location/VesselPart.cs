@@ -30,7 +30,7 @@ namespace KerbalStats.Progeny {
 		public VesselPart (Vessel v)
 		{
 			vessel = v;
-			name = "VesselPart";
+			name = "VesselPart" + v.name;
 		}
 
 		public override bool isWatched ()
