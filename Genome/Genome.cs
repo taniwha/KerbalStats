@@ -31,7 +31,7 @@ namespace KerbalStats.Genome {
 
 		static Genome instance;
 
-		public Genome ()
+		public Genome (KerbalStats ks)
 		{
 			instance = this;
 			traits = new Trait[] {
@@ -41,6 +41,11 @@ namespace KerbalStats.Genome {
 				new BadAss (),
 			};
 			Clear ();
+		}
+
+		~Genome ()
+		{
+			instance = null;
 		}
 			
 		public string name
@@ -129,15 +134,6 @@ namespace KerbalStats.Genome {
 				genes[i] = GenePair.Combine (kerbal1[i], kerbal2[i]);
 			}
 			return genes;
-		}
-	}
-
-	[KSPAddon (KSPAddon.Startup.MainMenu, true)]
-	public class KSGenomeInit : MonoBehaviour
-	{
-		void Awake ()
-		{
-			KerbalExt.AddModule (new Genome ());
 		}
 	}
 }

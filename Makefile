@@ -44,7 +44,6 @@ KS_FILES := \
 	Progeny/Zygote/Zygote.cs				\
 	Progeny/DebugWindow.cs			\
 	Progeny/IKerbal.cs				\
-	Progeny/Init.cs					\
 	Progeny/Progeny.cs				\
 	Progeny/Settings.cs				\
 	Progeny/Tracker.cs				\

@@ -84,7 +84,7 @@ namespace KerbalStats.Progeny {
 			return null;
 		}
 
-		public ProgenyTracker ()
+		public ProgenyTracker (KerbalStats ks)
 		{
 			instance = this;
 			Clear ();

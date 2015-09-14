@@ -37,14 +37,8 @@ namespace KerbalStats {
 	{
 		List<KerbalExt> Roster;
 
-		public static KerbalStats current
-		{
-			get {
-				var game = HighLogic.CurrentGame;
-				return game.scenarios.Select (s => s.moduleRef).OfType<KerbalStats> ().SingleOrDefault ();
-
-			}
-		}
+		public static KerbalStats current { get; private set; }
+		internal Dictionary<string, IKerbalExt> kerbalext_modules;
 
 		public KerbalExt this[ProtoCrewMember kerbal]
 		{
@@ -144,9 +138,37 @@ namespace KerbalStats {
 			}
 		}
 
+		void LoadModules ()
+		{
+			kerbalext_modules = new Dictionary<string, IKerbalExt> ();
+			foreach (var loaded in AssemblyLoader.loadedAssemblies) {
+				var assembly = loaded.assembly;
+				Debug.Log (String.Format ("[KS] LoadModules {0}", loaded.name));
+				var types = assembly.GetTypes ();
+				for (int i = 0; i < types.Length; i++) {
+					var type = types[i];
+					if (type.GetInterfaces ().Contains (typeof (IKerbalExt))) {
+						Debug.Log (String.Format ("[KS] LoadModules type:{0}", type.Name));
+						var parm_types = new Type[] {typeof (KerbalStats)};
+						var constructor = type.GetConstructor (parm_types);
+						if (constructor != null) {
+							Debug.Log (String.Format ("[KS] found module {0}",
+													  type.Name));
+							var parms = new object[] {this};
+							IKerbalExt kext;
+							kext = (IKerbalExt) constructor.Invoke (parms);
+							kerbalext_modules[kext.name] = kext;
+						}
+					}
+				}
+			}
+		}
+
 		public override void OnAwake ()
 		{
+			current = this;
 			enabled = false;
+			LoadModules ();
 			Roster = new List<KerbalExt> ();
 			GameEvents.onKerbalAdded.Add (onKerbalAdded);
 			GameEvents.onKerbalRemoved.Add (onKerbalRemoved);

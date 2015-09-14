@@ -25,6 +25,10 @@ using KSP.IO;
 namespace KerbalStats.Profession {
 	public class ProfessionTracker : IKerbalExt
 	{
+		public ProfessionTracker (KerbalStats ks)
+		{
+		}
+
 		public void AddKerbal (ProtoCrewMember kerbal)
 		{
 		}
@@ -65,15 +69,6 @@ namespace KerbalStats.Profession {
 		{
 			Debug.LogError ("[KS] ProfessionTracker.Get: stock feature enhancement");
 			return null;
-		}
-	}
-
-	[KSPAddon (KSPAddon.Startup.MainMenu, true)]
-	public class KSProfessionInit : MonoBehaviour
-	{
-		void Awake ()
-		{
-			KerbalExt.AddModule (new ProfessionTracker ());
 		}
 	}
 }

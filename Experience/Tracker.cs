@@ -30,13 +30,18 @@ namespace KerbalStats.Experience {
 
 		public static ExperienceTracker instance;
 
-		public ExperienceTracker ()
+		public ExperienceTracker (KerbalStats ks)
 		{
 			instance = this;
 			if (partSeatTasks == null) {
 				partSeatTasks = new PartSeatTasks ();
 			}
 			Clear ();
+		}
+
+		~ExperienceTracker ()
+		{
+			instance = null;
 		}
 
 		public void AddKerbal (ProtoCrewMember kerbal)
@@ -152,15 +157,6 @@ namespace KerbalStats.Experience {
 			foreach (var task in exp.Current) {
 				exp.FinishTask (UT, task);
 			}
-		}
-	}
-
-	[KSPAddon (KSPAddon.Startup.MainMenu, true)]
-	public class KSExperienceInit : MonoBehaviour
-	{
-		void Awake ()
-		{
-			KerbalExt.AddModule (new ExperienceTracker ());
 		}
 	}
 }
