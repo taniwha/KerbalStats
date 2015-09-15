@@ -48,6 +48,7 @@ namespace KerbalStats.Progeny {
 				kerbal = new Male (pcm);
 			}
 			ProgenyScenario.current.AddKerbal (kerbal);
+			kerbal_ids[pcm.name] = kerbal.id;
 		}
 
 		public void RemoveKerbal (ProtoCrewMember pcm)
