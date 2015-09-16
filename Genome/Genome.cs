@@ -122,6 +122,11 @@ namespace KerbalStats.Genome {
 			kerbal_genome = new Dictionary<string, GenePair[]>();
 		}
 
+		public void Shutdown ()
+		{
+			instance = null;
+		}
+
 		public string Get (ProtoCrewMember kerbal, string parms)
 		{
 			return "";

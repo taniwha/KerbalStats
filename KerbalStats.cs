@@ -178,6 +178,10 @@ namespace KerbalStats {
 		{
 			GameEvents.onKerbalAdded.Remove (onKerbalAdded);
 			GameEvents.onKerbalRemoved.Remove (onKerbalRemoved);
+			var modules = kerbalext_modules.Values.ToList ();
+			foreach (var m in modules) {
+				m.Shutdown ();
+			}
 		}
 	}
 

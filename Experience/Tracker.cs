@@ -86,6 +86,11 @@ namespace KerbalStats.Experience {
 			kerbal_experience = new Dictionary<string,Experience> ();
 		}
 
+		public void Shutdown ()
+		{
+			instance = null;
+		}
+
 		public string Get (ProtoCrewMember kerbal, string parms)
 		{
 			if (!kerbal_experience.ContainsKey (kerbal.name)) {

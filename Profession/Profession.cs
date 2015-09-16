@@ -65,6 +65,10 @@ namespace KerbalStats.Profession {
 			// nothing to clear
 		}
 
+		public void Shutdown ()
+		{
+		}
+
 		public string Get (ProtoCrewMember kerbal, string parms)
 		{
 			Debug.LogError ("[KS] ProfessionTracker.Get: stock feature enhancement");

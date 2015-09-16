@@ -28,6 +28,7 @@ namespace KerbalStats {
 		void Load (ProtoCrewMember kerbal, ConfigNode node);
 		void Save (ProtoCrewMember kerbal, ConfigNode node);
 		void Clear ();
+		void Shutdown ();
 
 		string Get (ProtoCrewMember kerbal, string parms);
 	}

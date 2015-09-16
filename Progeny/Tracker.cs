@@ -106,7 +106,7 @@ namespace KerbalStats.Progeny {
 			GameEvents.onVesselWasModified.Add (onVesselWasModified);
 		}
 
-		~ProgenyTracker ()
+		public void Shutdown ()
 		{
 			instance = null;
 			GameEvents.onKerbalStatusChange.Remove (onKerbalStatusChange);
