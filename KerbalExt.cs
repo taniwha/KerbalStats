@@ -14,6 +14,7 @@ GNU Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with KerbalStats.  If not, see <http://www.gnu.org/licenses/>.
 */
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -38,6 +39,13 @@ namespace KerbalStats {
 		public void Load (ProtoCrewMember kerbal, ConfigNode ext)
 		{
 			var modules = KerbalStats.current.kerbalext_modules;
+			if (ext.HasValue ("name")) {
+				var name = ext.GetValue ("name");
+				ext.RemoveValue ("name");
+				if (name != kerbal.name) {
+					Debug.LogWarning (String.Format ("kerbal name mismatch: pcm = '{0}' ext = '{1}'", kerbal.name, name));
+				}
+			}
 			ext.CopyTo (node, "KerbalExt");
 			foreach (var mod in modules.Values) {
 				mod.Load (kerbal, node);
@@ -61,6 +69,7 @@ namespace KerbalStats {
 		public void Save (ProtoCrewMember kerbal, ConfigNode ext)
 		{
 			var modules = KerbalStats.current.kerbalext_modules;
+			ext.AddValue ("name", kerbal.name);
 			node.CopyTo (ext, "KerbalExt");
 			foreach (var mod in modules.Values) {
 				mod.Save (kerbal, ext);
