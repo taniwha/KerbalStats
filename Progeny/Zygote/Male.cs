@@ -28,7 +28,7 @@ namespace KerbalStats.Progeny {
 		public ProtoCrewMember kerbal
 		{
 			get;
-			private set;
+			set;
 		}
 
 		double interestTime;
@@ -82,7 +82,7 @@ namespace KerbalStats.Progeny {
 
 		public Male (ConfigNode node) : base (node)
 		{
-			this.kerbal = kerbal;
+			this.kerbal = null;
 			initialize ();
 			if (node.HasValue ("interestTime")) {
 				double.TryParse (node.GetValue ("interestTime"), out interestTime);
@@ -94,6 +94,7 @@ namespace KerbalStats.Progeny {
 
 		public override void Save (ConfigNode node)
 		{
+			Debug.Log(String.Format ("[KS Male] Save: '{0}' '{1}' '{2}'", kerbal.name, interestTime, interestTC));
 			base.Save (node);
 			node.AddValue ("interestTime", interestTime.ToString ("G17"));
 			node.AddValue ("interestTC", interestTC.ToString ("G17"));

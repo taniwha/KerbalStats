@@ -28,7 +28,7 @@ namespace KerbalStats.Progeny {
 		public ProtoCrewMember kerbal
 		{
 			get;
-			private set;
+			set;
 		}
 
 		double lastUpdate;

@@ -37,5 +37,10 @@ namespace KerbalStats.Progeny {
 		{
 			return vessel.loaded;
 		}
+
+		public override string ToString ()
+		{
+			return "VesselPart," + vessel.id;
+		}
 	}
 }

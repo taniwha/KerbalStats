@@ -95,7 +95,7 @@ namespace KerbalStats.Progeny {
 			if (winpos.x == 0 && winpos.y == 0) {
 				winpos.x = Screen.width / 2;
 				winpos.y = Screen.height / 2;
-				winpos.width = 300;
+				winpos.width = 600;
 				winpos.height = 100;
 			}
 			string ver = KSVersionReport.GetVersion ();
@@ -115,7 +115,17 @@ namespace KerbalStats.Progeny {
 				GUILayout.BeginHorizontal ();
 				GUILayout.Label (z.id + ":");
 				GUILayout.FlexibleSpace ();
-				GUILayout.Label (z.location.name);
+				if (z is IKerbal && (z as IKerbal).kerbal != null) {
+					GUILayout.Label ((z as IKerbal).kerbal.name);
+				} else {
+					GUILayout.Label ("null kerbal");
+				}
+				GUILayout.FlexibleSpace ();
+				if (z.location != null) {
+					GUILayout.Label (z.location.name);
+				} else {
+					GUILayout.Label ("null location");
+				}
 				GUILayout.EndHorizontal ();
 			}
 		}
@@ -135,6 +145,9 @@ namespace KerbalStats.Progeny {
 
 		void debugWindow (int windowID)
 		{
+			if (ProgenyScenario.current == null) {
+				return;
+			}
 			GUILayout.BeginVertical ();
 
 			InfoSelector ();

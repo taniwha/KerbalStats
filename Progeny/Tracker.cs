@@ -63,20 +63,23 @@ namespace KerbalStats.Progeny {
 			}
 		}
 
-		IEnumerator WaitAndLoad (ProtoCrewMember pcm, ConfigNode node)
+		IEnumerator WaitAndAddKerbal (ProtoCrewMember pcm)
 		{
 			yield return null;
-			if (node.HasValue (name)) {
-				var id = node.GetValue (name);
-				kerbal_ids[pcm.name] = id;
-			} else {
-				AddKerbal (pcm);
-			}
+			yield return null;
+			AddKerbal (pcm);
 		}
 
 		public void Load (ProtoCrewMember pcm, ConfigNode node)
 		{
-			KerbalStats.current.StartCoroutine (WaitAndLoad (pcm, node));
+			if (node.HasValue (name)) {
+				var id = node.GetValue (name);
+				kerbal_ids[pcm.name] = id;
+			} else {
+				if (!HighLogic.LoadedSceneIsEditor) {
+					KerbalStats.current.StartCoroutine (WaitAndAddKerbal (pcm));
+				}
+			}
 		}
 
 		public void Save (ProtoCrewMember pcm, ConfigNode node)
@@ -104,6 +107,10 @@ namespace KerbalStats.Progeny {
 			GameEvents.onVesselCreate.Add (onVesselCreate);
 			GameEvents.onVesselDestroy.Add (onVesselDestroy);
 			GameEvents.onVesselWasModified.Add (onVesselWasModified);
+
+			if (!HighLogic.LoadedSceneIsEditor) {
+				KerbalStats.current.StartCoroutine (WaitAndCheckLocations ());
+			}
 		}
 
 		public void Shutdown ()
@@ -114,6 +121,43 @@ namespace KerbalStats.Progeny {
 			GameEvents.onVesselCreate.Remove (onVesselCreate);
 			GameEvents.onVesselDestroy.Remove (onVesselDestroy);
 			GameEvents.onVesselWasModified.Remove (onVesselWasModified);
+		}
+
+		internal IEnumerator WaitAndCheckLocations ()
+		{
+			yield return null;
+			yield return null;
+			yield return null;
+			Debug.Log(String.Format ("[KS Progeny] WaitAndCheckLocations"));
+			var game = HighLogic.CurrentGame;
+			var roster = game.CrewRoster;
+			for (int i = 0; i < roster.Count; i++) {
+				var kerbal = roster[i];
+				var zygote = ProgenyScenario.current.GetKerbal (kerbal_ids[kerbal.name]);
+				(zygote as IKerbal).kerbal = kerbal;
+				Location location = null;
+				switch (kerbal.rosterStatus) {
+					case ProtoCrewMember.RosterStatus.Available:
+						location = ProgenyScenario.current.GetLocation ("AstronautComplex");
+						break;
+					case ProtoCrewMember.RosterStatus.Assigned:
+						//handled by the vessel scan
+						break;
+					case ProtoCrewMember.RosterStatus.Missing:
+						location = ProgenyScenario.current.GetLocation ("Wilds");
+						break;
+					case ProtoCrewMember.RosterStatus.Dead:
+						location = ProgenyScenario.current.GetLocation ("Tomb");
+						break;
+				}
+				if (location != null) {
+					zygote.SetLocation (location);
+				}
+				Debug.Log(String.Format ("[KS P] WACL {0} '{1}'", kerbal.name, location));
+			}
+			for (int i = 0; i < FlightGlobals.Vessels.Count; i++) {
+				GetCrew (FlightGlobals.Vessels[i]);
+			}
 		}
 
 		internal IEnumerator WaitAndCheckStatus (ProtoCrewMember pcm)
@@ -200,16 +244,21 @@ namespace KerbalStats.Progeny {
 			}
 		}
 
-		internal IEnumerator WaitAndGetCrew (Vessel vessel)
+		internal void GetCrew (Vessel vessel)
 		{
-			yield return null;
 			var location = ProgenyScenario.current.GetLocation ("Vessel", vessel);
 			var crew = vessel.GetVesselCrew ();
 			for (int i = 0; i < crew.Count; i++) {
-				Debug.Log(String.Format ("[KS Progeny] {0}", crew[i].name));
+				Debug.Log(String.Format ("[KS Progeny] {0} {1}", crew[i].name, location));
 				var kerbal = ProgenyScenario.current.GetKerbal (kerbal_ids[crew[i].name]);
 				kerbal.SetLocation (location);
 			}
+		}
+
+		internal IEnumerator WaitAndGetCrew (Vessel vessel)
+		{
+			yield return null;
+			GetCrew (vessel);
 		}
 
 		void onVesselCreate (Vessel vessel)

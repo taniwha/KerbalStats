@@ -39,6 +39,11 @@ namespace KerbalStats.Progeny {
 		}
 		public abstract bool isWatched ();
 
+		public override string ToString ()
+		{
+			return name;
+		}
+
 		public void Add (Zygote zygote)
 		{
 			zygotes[zygote.id] = zygote;

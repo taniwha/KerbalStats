@@ -23,7 +23,6 @@ using UnityEngine;
 namespace KerbalStats.Progeny {
 	[KSPScenario(ScenarioCreationOptions.AddToAllGames, new GameScenes[] {
 			GameScenes.SPACECENTER,
-			GameScenes.EDITOR,
 			GameScenes.FLIGHT,
 			GameScenes.TRACKSTATION,
 		})
@@ -171,13 +170,9 @@ namespace KerbalStats.Progeny {
 			return id.ToString("x");
 		}
 
-		public override void OnLoad (ConfigNode config)
+		IEnumerator WaitAndLoadZygotes (ConfigNode config)
 		{
-			ProgenySettings.Load (config);
-			var ids = config.GetValue ("zygote_id");
-			uint id = 0;
-			uint.TryParse (ids, out id);
-			zygote_id = rgrey (bit_reverse (id));
+			yield return null;
 
 			var zygote_list = config.nodes;
 			foreach (ConfigNode z in zygote_list) {
@@ -200,6 +195,17 @@ namespace KerbalStats.Progeny {
 						break;
 				}
 			}
+		}
+
+		public override void OnLoad (ConfigNode config)
+		{
+			ProgenySettings.Load (config);
+			var ids = config.GetValue ("zygote_id");
+			uint id = 0;
+			uint.TryParse (ids, out id);
+			zygote_id = rgrey (bit_reverse (id));
+
+			StartCoroutine (WaitAndLoadZygotes (config));
 		}
 
 		public override void OnSave (ConfigNode config)

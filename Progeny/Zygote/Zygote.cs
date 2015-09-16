@@ -74,10 +74,12 @@ namespace KerbalStats.Progeny {
 
 		public virtual void Save (ConfigNode node)
 		{
+			Debug.Log(String.Format ("[KS Zygote] Save: '{0}' '{1}' '{2}' '{3}'", id, mother_id, father_id, location));
 			node.AddValue ("id", id);
 			node.AddValue ("mother", mother_id);
 			node.AddValue ("father", father_id);
 			Genome.WriteGenes (genes, node);
+			node.AddValue ("location", location.ToString ());
 		}
 
 		public void SetLocation (Location newLocation)

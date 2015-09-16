@@ -70,26 +70,33 @@ namespace KerbalStats.Progeny {
 		public Location Parse (string locstr)
 		{
 			string []parms = locstr.Split (',');
+			Location location = null;
 			switch (parms[0]) {
-				case "Vessel":
+				case "VesselPart":
 					Guid id = new Guid (parms[1]);
 					if (!vessel_parts.ContainsKey (id)) {
 						Vessel vessel = FlightGlobals.Vessels.Where (v => v.id == id).FirstOrDefault ();
 						vessel_parts[vessel.id] = new VesselPart (vessel);
 					}
-					return vessel_parts[id];
+					location = vessel_parts[id];
+					break;
 				case "EVA":
-					return eva;
+					location = eva;
+					break;
 				case "Wilds":
-					return wilds;
+					location = wilds;
+					break;
 				case "Womb":
-					return womb;
+					location = womb;
+					break;
 				case "Tomb":
-					return tomb;
+					location = tomb;
+					break;
 				case "AstronautComplex":
-					return astronaut_complex;
+					location = astronaut_complex;
+					break;
 			}
-			return null;
+			return location;
 		}
 	}
 }
