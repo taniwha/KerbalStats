@@ -107,6 +107,8 @@ namespace KerbalStats.Progeny {
 			embryos.Remove (embryo.id);
 			var juvenile = new Juvenile (embryo);
 			juveniles[juvenile.id] = juvenile;
+			var mother = females[juvenile.mother_id];
+			juvenile.SetLocation (mother.location);
 		}
 
 		public void Mature (Juvenile juvenile)
