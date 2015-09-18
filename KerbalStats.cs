@@ -20,12 +20,6 @@ using System.Linq;
 using UnityEngine;
 
 namespace KerbalStats {
-	public static class EnumUtil {
-		public static T[] GetValues<T>() {
-			return (T[])Enum.GetValues(typeof(T));
-		}
-	}
-
 	[KSPScenario(ScenarioCreationOptions.AddToAllGames, new GameScenes[] {
 			GameScenes.SPACECENTER,
 			GameScenes.EDITOR,

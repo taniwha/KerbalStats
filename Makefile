@@ -47,6 +47,7 @@ KS_FILES := \
 	Progeny/Progeny.cs				\
 	Progeny/Settings.cs				\
 	Progeny/Tracker.cs				\
+	Utils/EnumUtil.cs				\
 	IKerbalExt.cs					\
 	KerbalExt.cs					\
 	KerbalStats.cs					\
