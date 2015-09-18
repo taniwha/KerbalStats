@@ -45,7 +45,7 @@ namespace KerbalStats.Genome {
 		// the 2x3-bit genetic code.
 		static DiscreteDistribution[] reverse = {
 			new DiscreteDistribution (new float[]{29f/90f, 37f/90f, 24f/90f}),
-			new DiscreteDistribution (new float[]{ 9f/90f, 27f/90f, 64f/90f}),
+			new DiscreteDistribution (new float[]{ 9f/90f, 27f/90f, 54f/90f}),
 		};
 
 		// Outer index is the number of desired bits, the inner is random
