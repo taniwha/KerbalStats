@@ -87,10 +87,8 @@ namespace KerbalStats.Genome {
 			return distributions[index];
 		}
 
-		public GenePair CreateGene (string courageS)
+		public GenePair CreateGene (float courage)
 		{
-			float courage = 0;
-			float.TryParse (courageS, out courage);
 			float[] probabilities = new float[distributions.Length];
 			for (int i = 0; i < distributions.Length; i++) {
 				probabilities[i] = distributions[i].Density (courage);
@@ -102,6 +100,18 @@ namespace KerbalStats.Genome {
 			int index = dist.Value (UnityEngine.Random.Range (0, 1f));
 			var gene = genes[UnityEngine.Random.Range (0, 2)][index];
 			return new GenePair (this, gene[0], gene[1]);
+		}
+
+		public GenePair CreateGene (string courageS)
+		{
+			float courage = 0;
+			float.TryParse (courageS, out courage);
+			return CreateGene (courage);
+		}
+
+		public GenePair CreateGene (ProtoCrewMember pcm)
+		{
+			return CreateGene (pcm.courage);
 		}
 
 		public string CreateValue (GenePair gene)

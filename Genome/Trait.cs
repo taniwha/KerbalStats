@@ -21,7 +21,7 @@ namespace KerbalStats.Genome {
 
 	public interface Trait
 	{
-		GenePair CreateGene (string value);
+		GenePair CreateGene (ProtoCrewMember kerbal);
 		string CreateValue (GenePair gene);
 		string name { get; }
 

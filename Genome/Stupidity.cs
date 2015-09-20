@@ -88,10 +88,8 @@ namespace KerbalStats.Genome {
 			return distributions[index];
 		}
 
-		public GenePair CreateGene (string stupidityS)
+		public GenePair CreateGene (float stupidity)
 		{
-			float stupidity = 0;
-			float.TryParse (stupidityS, out stupidity);
 			float[] probabilities = new float[distributions.Length];
 			for (int i = 0; i < distributions.Length; i++) {
 				probabilities[i] = distributions[i].Density (stupidity);
@@ -103,6 +101,18 @@ namespace KerbalStats.Genome {
 			int index = dist.Value (UnityEngine.Random.Range (0, 1f));
 			var gene = genes[UnityEngine.Random.Range (0, 2)][index];
 			return new GenePair (this, gene[0], gene[1]);
+		}
+
+		public GenePair CreateGene (string stupidityS)
+		{
+			float stupidity = 0;
+			float.TryParse (stupidityS, out stupidity);
+			return CreateGene (stupidity);
+		}
+
+		public GenePair CreateGene (ProtoCrewMember pcm)
+		{
+			return CreateGene (pcm.stupidity);
 		}
 
 		public string CreateValue (GenePair gene)

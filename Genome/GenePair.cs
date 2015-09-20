@@ -19,7 +19,7 @@ using System.Linq;
 
 namespace KerbalStats.Genome {
 
-	public struct GenePair
+	public class GenePair
 	{
 		public Trait trait;
 		public uint a;

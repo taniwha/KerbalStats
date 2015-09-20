@@ -39,15 +39,26 @@ namespace KerbalStats.Genome {
 			}
 		}
 
-		public GenePair CreateGene (string gender)
+		public GenePair CreateGene (bool isFemale)
 		{
-			if (gender[0] == 'f' || gender[0] == 'F') {
+			if (isFemale) {
 				// female: XX
 				return new GenePair (this, 1, 1);
 			}
 			// male: either XY or YX
 			uint y = (uint) UnityEngine.Random.Range (0, 2);
 			return new GenePair (this, y, 1 - y);
+		}
+
+		public GenePair CreateGene (string gender)
+		{
+			bool isFemale = gender[0] == 'f' || gender[0] == 'F';
+			return CreateGene (isFemale);
+		}
+
+		public GenePair CreateGene (ProtoCrewMember pcm)
+		{
+			return CreateGene (pcm.gender == ProtoCrewMember.Gender.Female);
 		}
 
 		public string CreateValue (GenePair gene)

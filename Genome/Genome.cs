@@ -27,6 +27,7 @@ namespace KerbalStats.Genome {
 	public class Genome: IKerbalExt
 	{
 		Dictionary<string, GenePair[]> kerbal_genome;
+		Dictionary<string, int> trait_map;
 		Trait[] traits;
 
 		static Genome instance;
@@ -34,12 +35,14 @@ namespace KerbalStats.Genome {
 		public Genome (KerbalStats ks)
 		{
 			instance = this;
-			traits = new Trait[] {
-				new Gender (),
-				new Stupidity (),
-				new Courage (),
-				new BadAss (),
-			};
+			var trait_modules = ModuleLoader.LoadModules (typeof (Trait), new Type []{});
+			traits = new Trait[trait_modules.Count];
+			trait_map = new Dictionary<string, int> ();
+			var parms = new object[] {};
+			for (int i = 0; i < trait_modules.Count; i++) {
+				traits[i] = (Trait) trait_modules[i].Invoke (parms);
+				trait_map[traits[i].name] = i;
+			}
 			Clear ();
 		}
 
@@ -55,6 +58,15 @@ namespace KerbalStats.Genome {
 			}
 		}
 
+		public void RebuildGenes (ProtoCrewMember kerbal, GenePair[] genes)
+		{
+			for (int i = 0; i < traits.Length; i++) {
+				if (genes[i] == null) {
+					genes[i] = traits[i].CreateGene (kerbal);
+				}
+			}
+		}
+
 		public void AddKerbal (ProtoCrewMember kerbal)
 		{
 			if (kerbal_genome.ContainsKey (kerbal.name)) {
@@ -62,10 +74,7 @@ namespace KerbalStats.Genome {
 				return;
 			}
 			var genes = new GenePair[traits.Length];
-			genes[0] = traits[0].CreateGene (kerbal.gender.ToString ());
-			genes[1] = traits[1].CreateGene (kerbal.stupidity.ToString ("G9"));
-			genes[2] = traits[2].CreateGene (kerbal.courage.ToString ("G9"));
-			genes[3] = traits[3].CreateGene (kerbal.isBadass.ToString ());
+			RebuildGenes (kerbal, genes);
 			kerbal_genome[kerbal.name] = genes;
 		}
 
@@ -86,6 +95,7 @@ namespace KerbalStats.Genome {
 			if (node.HasNode (name)) {
 				node = node.GetNode (name);
 				kerbal_genome[kerbal.name] = ReadGenes (node);
+				RebuildGenes (kerbal, kerbal_genome[kerbal.name]);
 			} else {
 				AddKerbal (kerbal);
 			}
@@ -94,16 +104,22 @@ namespace KerbalStats.Genome {
 		public static void WriteGenes (GenePair[] genes, ConfigNode node)
 		{
 			for (int i = 0; i < genes.Length; i++) {
-				node.AddValue ("genepair", genes[i].ToString ());
+				node.AddValue (genes[i].trait.name, genes[i].ToString ());
 			}
 		}
 
 		public static GenePair[] ReadGenes (ConfigNode node)
 		{
-			string[] pairs = node.GetValues ("genepair");
-			GenePair[] genes = new GenePair[pairs.Length];
-			for (int i = 0; i < pairs.Length; i++) {
-				genes[i] = new GenePair (instance.traits[i], pairs[i]);
+			var pairs = node.values;
+			GenePair[] genes = new GenePair[instance.traits.Length];
+			for (int i = 0; i < pairs.Count; i++) {
+				var trait_name = pairs[i].name;
+				var trait_value = pairs[i].value;
+				if (instance.trait_map.ContainsKey (trait_name)) {
+					var ind = instance.trait_map[trait_name];
+					var trait = instance.traits[ind];
+					genes[ind] = new GenePair (trait, trait_value);
+				}
 			}
 			return genes;
 		}

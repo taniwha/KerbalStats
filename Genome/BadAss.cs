@@ -86,10 +86,8 @@ namespace KerbalStats.Genome {
 			return distributions[index];
 		}
 
-		public GenePair CreateGene (string isBadS)
+		public GenePair CreateGene (bool isBad)
 		{
-			bool isBad = false;
-			bool.TryParse (isBadS, out isBad);
 			DiscreteDistribution dist = reverse[isBad ? 1 : 0];
 			int numBits = 2 + dist.Value (UnityEngine.Random.Range (0, 1f));
 			int max = numBits > 3 ? 4 : numBits + 1;
@@ -99,6 +97,18 @@ namespace KerbalStats.Genome {
 			int b = UnityEngine.Random.Range (0, 3);
 			//Console.WriteLine(String.Format ("{0} {1} {2} {3} {4} {5}", numBits, min, max, first, a, b));
 			return new GenePair (this, codes[first][a], codes[numBits - first][b]);
+		}
+
+		public GenePair CreateGene (string isBadS)
+		{
+			bool isBad = false;
+			bool.TryParse (isBadS, out isBad);
+			return CreateGene (isBad);
+		}
+
+		public GenePair CreateGene (ProtoCrewMember pcm)
+		{
+			return CreateGene (pcm.isBadass);
 		}
 
 		public string CreateValue (GenePair gene)
