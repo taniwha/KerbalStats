@@ -68,7 +68,7 @@ namespace KerbalStats.Progeny {
 			id = node.GetValue ("id");
 			mother_id = node.GetValue ("mother");
 			father_id = node.GetValue ("father");
-			genes = Genome.ReadGenes (node);
+			genes = Genome.ReadGenes (node.GetNode ("genome"));
 			location = ProgenyScenario.current.ParseLocation (node.GetValue ("location"));
 		}
 
@@ -78,7 +78,7 @@ namespace KerbalStats.Progeny {
 			node.AddValue ("id", id);
 			node.AddValue ("mother", mother_id);
 			node.AddValue ("father", father_id);
-			Genome.WriteGenes (genes, node);
+			Genome.WriteGenes (genes, node.AddNode ("genome"));
 			node.AddValue ("location", location.ToString ());
 		}
 
