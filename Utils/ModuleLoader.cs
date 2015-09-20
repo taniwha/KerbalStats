@@ -39,7 +39,7 @@ namespace KerbalStats {
 				var types = assembly.GetTypes ();
 				for (int i = 0; i < types.Length; i++) {
 					var type = types[i];
-					if (type.GetInterfaces ().Contains (typeof (IKerbalExt))) {
+					if (type.GetInterfaces ().Contains (ofType)) {
 						//Debug.Log (String.Format ("[KS] LoadModules type:{0}", type.Name));
 						var constructor = type.GetConstructor (param_types);
 						if (constructor != null) {
