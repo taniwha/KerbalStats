@@ -32,11 +32,27 @@ namespace KerbalStats.Progeny {
 		public string father_id;
 		public Location location;
 		protected GenePair[] genes;
+		protected GenePair bioClock;
+		protected GenePair bioClockInverse;
 
 		public string id
 		{
 			get;
 			private set;
+		}
+
+		void init ()
+		{
+			for (int i = 0; i < genes.Length; i++) {
+				switch (genes[i].trait.name) {
+					case "BioClock":
+						bioClock = genes[i];
+						break;
+					case "BioClockInverse":
+						bioClockInverse = genes[i];
+						break;
+				}
+			}
 		}
 
 		public Zygote (ProtoCrewMember kerbal)
@@ -45,6 +61,7 @@ namespace KerbalStats.Progeny {
 			father_id = "";
 			id = ProgenyScenario.current.NextZygoteID ();
 			genes = Genome.GetGenes (kerbal);
+			init ();
 		}
 
 		public Zygote (Female mother, Male father)
@@ -53,6 +70,7 @@ namespace KerbalStats.Progeny {
 			father_id = father.id;
 			id = ProgenyScenario.current.NextZygoteID ();
 			genes = Genome.Combine (mother.genes, father.genes);
+			init ();
 		}
 
 		public Zygote (Zygote prevStage)
@@ -61,6 +79,7 @@ namespace KerbalStats.Progeny {
 			father_id = prevStage.father_id;
 			id = prevStage.id;
 			genes = prevStage.genes;
+			init ();
 		}
 
 		public Zygote (ConfigNode node)
@@ -69,6 +88,7 @@ namespace KerbalStats.Progeny {
 			mother_id = node.GetValue ("mother");
 			father_id = node.GetValue ("father");
 			genes = Genome.ReadGenes (node.GetNode ("genome"));
+			init ();
 			location = ProgenyScenario.current.ParseLocation (node.GetValue ("location"));
 		}
 
