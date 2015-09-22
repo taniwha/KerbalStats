@@ -112,6 +112,10 @@ namespace KerbalStats.Genome {
 
 		public GenePair CreateGene (ProtoCrewMember pcm)
 		{
+			if (pcm == null) {
+				var s = UnityEngine.Random.Range (0, 1f);
+				return CreateGene (s);
+			}
 			return CreateGene (pcm.stupidity);
 		}
 

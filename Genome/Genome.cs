@@ -58,11 +58,11 @@ namespace KerbalStats.Genome {
 			}
 		}
 
-		public void RebuildGenes (ProtoCrewMember kerbal, GenePair[] genes)
+		public static void RebuildGenes (ProtoCrewMember kerbal, GenePair[] genes)
 		{
-			for (int i = 0; i < traits.Length; i++) {
+			for (int i = 0; i < instance.traits.Length; i++) {
 				if (genes[i] == null) {
-					genes[i] = traits[i].CreateGene (kerbal);
+					genes[i] = instance.traits[i].CreateGene (kerbal);
 				}
 			}
 		}
