@@ -69,8 +69,9 @@ namespace KerbalStats.Progeny {
 			maturation = l * Math.Pow (-Math.Log (1 - p), 1/k);
 		}
 
-		public Juvenile (Embryo embro) : base (embro)
+		public Juvenile (Embryo embryo) : base (embryo)
 		{
+			birthUT = embryo.Birth;
 			init ();
 		}
 
@@ -90,6 +91,11 @@ namespace KerbalStats.Progeny {
 		{
 			node.AddValue ("birthUT", birthUT.ToString ("G17"));
 			node.AddValue ("p", subp.ToString ("G17"));
+		}
+
+		public double Birth ()
+		{
+			return birthUT;
 		}
 
 		public double Maturation ()
