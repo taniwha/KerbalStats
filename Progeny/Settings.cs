@@ -67,11 +67,11 @@ namespace KerbalStats.Progeny {
 
 			// defining the kerbal "Julian" year to 426.09 21600s days makes
 			// it about 1s short of Kerbin's orbital period
-			AgingTime = 40 * 426.09 * 21600;	// a bit over 11.6 Earth years
+			AgingTime = 70 * 426.09 * 21600;	// a bit over 20.4 Earth years
 			MaturationTime = 14 * 426.09 * 21600;	// a bit over 4 Earth years
 			CyclePeriod = 56 * 21600;	// about one Minmus phase cycle
 			GestationPeriod = 265 * 21600;	// close to a dog's
-			OvulationTime = 0.5;	// 0..1, phase of cycle
+			OvulationTime = 0.5 * CyclePeriod;	// mid cycle
 			EggLife = 3 * 21600;
 			SpermLife = 3 * 3600;
 			var dbase = GameDatabase.Instance;
@@ -82,37 +82,37 @@ namespace KerbalStats.Progeny {
 			}
 			double val;
 			if (settings.HasValue ("AgingTime")) {
-				if (double.TryParse (node.GetValue ("AgingTime", out val))) {
+				if (double.TryParse (settings.GetValue ("AgingTime"), out val)) {
 					AgingTime = val;
 				}
 			}
 			if (settings.HasValue ("MaturationTime")) {
-				if (double.TryParse (node.GetValue ("MaturationTime", out val))) {
+				if (double.TryParse (settings.GetValue ("MaturationTime"), out val)) {
 					MaturationTime = val;
 				}
 			}
 			if (settings.HasValue ("CyclePeriod")) {
-				if (double.TryParse (node.GetValue ("CyclePeriod", out val))) {
+				if (double.TryParse (settings.GetValue ("CyclePeriod"), out val)) {
 					CyclePeriod = val;
 				}
 			}
 			if (settings.HasValue ("GestationPeriod")) {
-				if (double.TryParse (node.GetValue ("GestationPeriod", out val))) {
+				if (double.TryParse (settings.GetValue ("GestationPeriod"), out val)) {
 					GestationPeriod = val;
 				}
 			}
 			if (settings.HasValue ("OvulationTime")) {
-				if (double.TryParse (node.GetValue ("OvulationTime", out val))) {
+				if (double.TryParse (settings.GetValue ("OvulationTime"), out val)) {
 					OvulationTime = val;
 				}
 			}
 			if (settings.HasValue ("EggLife")) {
-				if (double.TryParse (node.GetValue ("EggLife", out val))) {
+				if (double.TryParse (settings.GetValue ("EggLife"), out val)) {
 					EggLife = val;
 				}
 			}
 			if (settings.HasValue ("SpermLife")) {
-				if (double.TryParse (node.GetValue ("SpermLife", out val))) {
+				if (double.TryParse (settings.GetValue ("SpermLife"), out val)) {
 					SpermLife = val;
 				}
 			}
