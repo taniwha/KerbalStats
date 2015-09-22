@@ -30,18 +30,14 @@ namespace KerbalStats.Progeny {
 		// birth (zygote, proembryo, embryo, fetus).
 		double conceived;
 		double birth;
-		double l;
-		double k;
-		double p;
+		double subp;
 
 		public Embryo (Female mother, Male father) : base (mother, father)
 		{
-			l = ProgenySettings.GestationPeriod;
-			k = 10;//FIXME make genetic
-			p = UnityEngine.Random.Range (0, 1f);
-			birth = CalcBirth ();
+			subp = UnityEngine.Random.Range (0, 1f);
 			conceived = Planetarium.GetUniversalTime ();
-			location = ProgenyScenario.current.GetLocation ("Womb");
+			birth = CalcBirth ();
+			SetLocation (ProgenyScenario.current.GetLocation ("Womb"));
 		}
 
 		public Embryo (ConfigNode node) : base (node)
@@ -49,26 +45,33 @@ namespace KerbalStats.Progeny {
 			if (node.HasValue ("conceived")) {
 				double.TryParse (node.GetValue ("conceived"), out conceived);
 			}
-			if (node.HasValue ("l")) {
-				double.TryParse (node.GetValue ("l"), out l);
-			} else {
-				l = ProgenySettings.GestationPeriod;
-			}
-			if (node.HasValue ("k")) {
-				double.TryParse (node.GetValue ("k"), out k);
-			} else {
-				k = 10;//FIXME make genetic
-			}
 			if (node.HasValue ("p")) {
-				double.TryParse (node.GetValue ("p"), out p);
+				double.TryParse (node.GetValue ("p"), out subp);
 			} else {
-				p = UnityEngine.Random.Range (0, 1f);
+				subp = UnityEngine.Random.Range (0, 1f);
 			}
 			birth = CalcBirth ();
 		}
 
 		double CalcBirth ()
 		{
+			double k = 1;
+			PRange pRange = null;
+
+			for (int i = 0; i < genes.Length; i++) {
+				switch (genes[i].trait.name) {
+					case "GestationPeriodK":
+						k = (genes[i].trait as GestationPeriodK).K (genes[i]);
+						break;
+					case "GestationPeriodP":
+						pRange = (genes[i].trait as GestationPeriodP).P (genes[i]);
+						break;
+				}
+			}
+			var p = pRange.P (subp);
+			BioClock bc_trait = bioClock.trait as BioClock;
+			var l = bc_trait.GestationPeriod (bioClock, bioClockInverse);
+
 			// t = l * (-ln(1-p)) ^ 1/k
 			//ugh, why does .net not have log1p? Not that I expect the
 			// random number generator to give that small a p
@@ -78,9 +81,7 @@ namespace KerbalStats.Progeny {
 		public override void Save (ConfigNode node)
 		{
 			base.Save (node);
-			node.AddValue ("l", l.ToString ("G17"));
-			node.AddValue ("k", k.ToString ("G17"));
-			node.AddValue ("p", p.ToString ("G17"));
+			node.AddValue ("p", subp.ToString ("G17"));
 			node.AddValue ("conceived", conceived.ToString ("G17"));
 		}
 
