@@ -35,6 +35,7 @@ namespace KerbalStats.Progeny {
 		public static double OvulationTime		{ get; private set; }
 		public static double EggLife			{ get; private set; }
 		public static double SpermLife			{ get; private set; }
+		public static double InterestTC			{ get; private set; }
 
 		public static void Load (ConfigNode config)
 		{
@@ -74,6 +75,7 @@ namespace KerbalStats.Progeny {
 			OvulationTime = 0.5 * CyclePeriod;	// mid cycle
 			EggLife = 3 * 21600;
 			SpermLife = 3 * 3600;
+			InterestTC = 3600;
 			var dbase = GameDatabase.Instance;
 			var settings = dbase.GetConfigNodes ("ProgenyGlobalSettings").LastOrDefault ();
 
@@ -114,6 +116,11 @@ namespace KerbalStats.Progeny {
 			if (settings.HasValue ("SpermLife")) {
 				if (double.TryParse (settings.GetValue ("SpermLife"), out val)) {
 					SpermLife = val;
+				}
+			}
+			if (settings.HasValue ("InterestTC")) {
+				if (double.TryParse (settings.GetValue ("InterestTC"), out val)) {
+					InterestTC = val;
 				}
 			}
 		}

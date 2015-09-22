@@ -27,24 +27,15 @@ namespace KerbalStats.Progeny {
 	{
 		double lastUpdate;
 		double UT;
-		double interestTime;
-		double interestTC;
 		Embryo embryo;
+		Interest interest;
 
 		FemaleFSM fsm;
 
-		public float Interest ()
-		{
-			if (UT < interestTime) {
-				return 0;
-			}
-			double x = (UT - interestTime) / interestTC;
-			return (float) (1 - (x + 1) * Math.Exp (-x));
-		}
-
 		public bool isInterested ()
 		{
-			return UnityEngine.Random.Range (0, 1f) < Interest ();
+			var p = UnityEngine.Random.Range (0, 1f);
+			return p < interest.isInterested (UT);
 		}
 
 		public float Fertility
@@ -59,7 +50,7 @@ namespace KerbalStats.Progeny {
 			float [] male_readiness = new float[males.Count + 1];
 			male_readiness[0] = 2; //FIXME
 			for (int i = 0; i < males.Count; i++) {
-				male_readiness[i + 1] = males[i].Interest (UT);
+				male_readiness[i + 1] = males[i].isInterested (UT);
 			}
 			var dist = new Genome.DiscreteDistribution (male_readiness);
 			int ind = dist.Value (UnityEngine.Random.Range (0, 1f)) - 1;
@@ -71,8 +62,8 @@ namespace KerbalStats.Progeny {
 
 		public bool Mate (Male mate)
 		{
-			interestTime = UT + 600; //FIXME
-			mate.Mate (interestTime);
+			mate.Mate (UT);
+			interest.Mate (UT);
 			float conceive_chance = Fertility * mate.Fertility;
 			if (UnityEngine.Random.Range (0, 1f) > conceive_chance) {
 				return false;
@@ -87,8 +78,7 @@ namespace KerbalStats.Progeny {
 			lastUpdate = Planetarium.GetUniversalTime ();
 			fsm = new FemaleFSM (this);
 
-			interestTime = 0;
-			interestTC = 3600;	//FIXME
+			interest = new Interest (genes);
 			embryo = null;
 		}
 
@@ -107,16 +97,11 @@ namespace KerbalStats.Progeny {
 		public Female (ConfigNode node) : base (node)
 		{
 			initialize ();
+			interest.Load (node);
 			if (node.HasValue ("state")) {
 				fsm.StartFSM (node.GetValue ("state"));
 			} else {
 				fsm.StartFSM ("Fertile");
-			}
-			if (node.HasValue ("interestTime")) {
-				double.TryParse (node.GetValue ("interestTime"), out interestTime);
-			}
-			if (node.HasValue ("interestTC")) {
-				double.TryParse (node.GetValue ("interestTC"), out interestTC);
 			}
 			if (node.HasValue ("embryo")) {
 				var zid = node.GetValue ("embryo");
@@ -127,9 +112,8 @@ namespace KerbalStats.Progeny {
 		public override void Save (ConfigNode node)
 		{
 			base.Save (node);
+			interest.Save (node);
 			node.AddValue ("state", fsm.currentStateName);
-			node.AddValue ("interestTime", interestTime.ToString ("G17"));
-			node.AddValue ("interestTC", interestTC.ToString ("G17"));
 			if (embryo != null) {
 				node.AddValue ("embryo", embryo.id);
 			}
@@ -148,7 +132,8 @@ namespace KerbalStats.Progeny {
 		public string State
 		{
 			get {
-				return fsm.currentStateName + " " + Interest ();
+				UT = Planetarium.GetUniversalTime ();
+				return fsm.currentStateName + " " + interest.isInterested (UT);
 			}
 		}
 

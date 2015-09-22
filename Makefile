@@ -45,6 +45,8 @@ KS_FILES := \
 	Progeny/Traits/CyclePeriodP.cs			\
 	Progeny/Traits/GestationPeriodK.cs		\
 	Progeny/Traits/GestationPeriodP.cs		\
+	Progeny/Traits/InterestK.cs				\
+	Progeny/Traits/InterestTC.cs			\
 	Progeny/Traits/MaturationTimeK.cs		\
 	Progeny/Traits/MaturationTimeP.cs		\
 	Progeny/Traits/OvulationTimeK.cs		\
@@ -59,6 +61,7 @@ KS_FILES := \
 	Progeny/Zygote/Embryo.cs				\
 	Progeny/Zygote/Female.cs				\
 	Progeny/Zygote/FemaleFSM.cs				\
+	Progeny/Zygote/Interest.cs				\
 	Progeny/Zygote/Juvenile.cs				\
 	Progeny/Zygote/Male.cs					\
 	Progeny/Zygote/Zygote.cs				\

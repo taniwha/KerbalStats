@@ -27,17 +27,7 @@ namespace KerbalStats.Progeny {
 
 	public class Male : Adult, IComparable<Male>
 	{
-		double interestTime;
-		double interestTC;
-
-		public float Interest (double UT)
-		{
-			if (UT < interestTime) {
-				return 0;
-			}
-			double x = (UT - interestTime) / interestTC;
-			return (float) (1 - (x + 1) * Math.Exp (-x));
-		}
+		Interest interest;
 
 		public float Fertility
 		{
@@ -46,15 +36,19 @@ namespace KerbalStats.Progeny {
 			}
 		}
 
-		public void Mate (double interestTime)
+		public float isInterested (double UT)
 		{
-			this.interestTime = interestTime;
+			return interest.isInterested (UT);
+		}
+
+		public void Mate (double UT)
+		{
+			interest.Mate (UT);
 		}
 
 		void initialize ()
 		{
-			interestTime = 0;
-			interestTC = 3600;	//FIXME
+			interest = new Interest (genes);
 		}
 
 		public Male (Juvenile juvenile) : base (juvenile)
@@ -71,20 +65,13 @@ namespace KerbalStats.Progeny {
 		{
 			this.kerbal = null;
 			initialize ();
-			if (node.HasValue ("interestTime")) {
-				double.TryParse (node.GetValue ("interestTime"), out interestTime);
-			}
-			if (node.HasValue ("interestTC")) {
-				double.TryParse (node.GetValue ("interestTC"), out interestTC);
-			}
+			interest.Load (node);
 		}
 
 		public override void Save (ConfigNode node)
 		{
 			base.Save (node);
-			node.AddValue ("interestTime", interestTime.ToString ("G17"));
-			node.AddValue ("interestTC", interestTC.ToString ("G17"));
-
+			interest.Save (node);
 		}
 
 		public int CompareTo (Male other)
