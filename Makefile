@@ -43,6 +43,8 @@ KS_FILES := \
 	Progeny/Traits/BioClockInverse.cs		\
 	Progeny/Traits/CyclePeriodK.cs			\
 	Progeny/Traits/CyclePeriodP.cs			\
+	Progeny/Traits/EggLifeK.cs				\
+	Progeny/Traits/EggLifeP.cs				\
 	Progeny/Traits/GestationPeriodK.cs		\
 	Progeny/Traits/GestationPeriodP.cs		\
 	Progeny/Traits/InterestK.cs				\
