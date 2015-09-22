@@ -27,9 +27,11 @@ namespace KerbalStats.Progeny {
 	public class Juvenile : Zygote
 	{
 		double birthUT;
-		double l;
-		double k;
-		double p;
+		double maturation;
+		double subp;
+		GenePair gender;
+		GenePair maturationK;
+		GenePair maturationP;
 
 		public bool isFemale
 		{
@@ -37,15 +39,39 @@ namespace KerbalStats.Progeny {
 			private set;
 		}
 
-		public Juvenile (Embryo embro) : base (embro)
+		void init ()
 		{
 			for (int i = 0; i < genes.Length; i++) {
-				if (genes[i].trait.name == "Gender") {
-					var g = genes[i].trait.CreateValue (genes[i]);
-					isFemale = (g == "F");
-					break;
+				switch (genes[i].trait.name) {
+					case "Gender":
+						gender = genes[i];
+						break;
+					case "MaturationTimeK":
+						maturationK = genes[i];
+						break;
+					case "MaturationTimeP":
+						maturationP = genes[i];
+						break;
 				}
 			}
+
+			var g = gender.trait.CreateValue (gender);
+			isFemale = (g == "F");
+
+			var k = (maturationK.trait as MaturationTimeK).K (maturationK);
+			var pRange = (maturationP.trait as MaturationTimeP).P (maturationP);
+			var p = pRange.P (subp);
+			BioClock bc_trait = bioClock.trait as BioClock;
+			var l = bc_trait.MaturationTime (bioClock, bioClockInverse);
+			// t = l * (-ln(1-p)) ^ 1/k
+			//ugh, why does .net not have log1p? Not that I expect the
+			// random number generator to give that small a p
+			maturation = l * Math.Pow (-Math.Log (1 - p), 1/k);
+		}
+
+		public Juvenile (Embryo embro) : base (embro)
+		{
+			init ();
 		}
 
 		public Juvenile (ConfigNode node) : base (node)
@@ -53,29 +79,22 @@ namespace KerbalStats.Progeny {
 			if (node.HasValue ("birthUT")) {
 				double.TryParse (node.GetValue ("birthUT"), out birthUT);
 			}
-			if (node.HasValue ("l")) {
-				double.TryParse (node.GetValue ("l"), out l);
-			} else {
-				l = ProgenySettings.GestationPeriod;
-			}
-			if (node.HasValue ("k")) {
-				double.TryParse (node.GetValue ("k"), out k);
-			} else {
-				k = 10;//FIXME make genetic
-			}
 			if (node.HasValue ("p")) {
-				double.TryParse (node.GetValue ("p"), out p);
+				double.TryParse (node.GetValue ("p"), out subp);
 			} else {
-				p = UnityEngine.Random.Range (0, 1f);
+				subp = UnityEngine.Random.Range (0, 1f);
 			}
 		}
 
 		public override void Save (ConfigNode node)
 		{
 			node.AddValue ("birthUT", birthUT.ToString ("G17"));
-			node.AddValue ("l", l.ToString ("G17"));
-			node.AddValue ("k", k.ToString ("G17"));
-			node.AddValue ("p", p.ToString ("G17"));
+			node.AddValue ("p", subp.ToString ("G17"));
+		}
+
+		public double Maturation ()
+		{
+			return maturation;
 		}
 	}
 }
