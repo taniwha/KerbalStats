@@ -23,14 +23,8 @@ using UnityEngine;
 using KSP.IO;
 
 namespace KerbalStats.Progeny {
-	public class Female : Zygote, IKerbal, IComparable<Female>
+	public class Female : Adult, IComparable<Female>
 	{
-		public ProtoCrewMember kerbal
-		{
-			get;
-			set;
-		}
-
 		double lastUpdate;
 		double UT;
 		double interestTime;
@@ -47,13 +41,6 @@ namespace KerbalStats.Progeny {
 		KFSMEvent event_rested;
 
 		KerbalFSM fsm;
-
-		public string name
-		{
-			get {
-				return kerbal.name;
-			}
-		}
 
 		bool check_conceive (KFSMState st)
 		{
@@ -170,21 +157,18 @@ namespace KerbalStats.Progeny {
 
 		public Female (Juvenile juvenile) : base (juvenile)
 		{
-			kerbal = null;	// not yet recruited
 			initialize ();
 			fsm.StartFSM ("Fertile");
 		}
 
 		public Female (ProtoCrewMember kerbal) : base (kerbal)
 		{
-			this.kerbal = kerbal;
 			initialize ();
 			fsm.StartFSM ("Fertile");
 		}
 
 		public Female (ConfigNode node) : base (node)
 		{
-			this.kerbal = null;
 			initialize ();
 			if (node.HasValue ("state")) {
 				fsm.StartFSM (node.GetValue ("state"));
