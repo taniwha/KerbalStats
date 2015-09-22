@@ -38,15 +38,23 @@ KS_FILES := \
 	Progeny/Location/Wilds.cs				\
 	Progeny/Location/Womb.cs				\
 	Progeny/Traits/AgingTimeK.cs			\
+	Progeny/Traits/AgingTimeP.cs			\
 	Progeny/Traits/BioClock.cs				\
 	Progeny/Traits/BioClockInverse.cs		\
 	Progeny/Traits/CyclePeriodK.cs			\
+	Progeny/Traits/CyclePeriodP.cs			\
 	Progeny/Traits/GestationPeriodK.cs		\
+	Progeny/Traits/GestationPeriodP.cs		\
 	Progeny/Traits/MaturationTimeK.cs		\
+	Progeny/Traits/MaturationTimeP.cs		\
 	Progeny/Traits/OvulationTimeK.cs		\
+	Progeny/Traits/OvulationTimeP.cs		\
 	Progeny/Traits/SpermLifeK.cs			\
+	Progeny/Traits/SpermLifeP.cs			\
 	Progeny/Traits/BioClockInverse.cs		\
+	Progeny/Traits/PRange.cs				\
 	Progeny/Traits/TimeK.cs					\
+	Progeny/Traits/TimeP.cs					\
 	Progeny/Zygote/Embryo.cs				\
 	Progeny/Zygote/Female.cs				\
 	Progeny/Zygote/Juvenile.cs				\
