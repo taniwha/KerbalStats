@@ -58,6 +58,7 @@ KS_FILES := \
 	Progeny/Zygote/Adult.cs					\
 	Progeny/Zygote/Embryo.cs				\
 	Progeny/Zygote/Female.cs				\
+	Progeny/Zygote/FemaleFSM.cs				\
 	Progeny/Zygote/Juvenile.cs				\
 	Progeny/Zygote/Male.cs					\
 	Progeny/Zygote/Zygote.cs				\
