@@ -23,8 +23,8 @@ namespace KerbalStats.Progeny {
 
 	public class PRange
 	{
-		double min;
-		double max;
+		public double min { get; private set; }
+		public double max { get; private set; }
 
 		public PRange (double min, double max)
 		{
@@ -35,6 +35,17 @@ namespace KerbalStats.Progeny {
 		public double P (double p)
 		{
 			return min * (1 - p) + max * p;
+		}
+
+		public double RevP (double p)
+		{
+			if (p <= min) {
+				return 0;
+			}
+			if (p >= max) {
+				return 1;
+			}
+			return (p - min) / (max - min);
 		}
 	}
 }

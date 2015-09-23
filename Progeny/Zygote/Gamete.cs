@@ -30,6 +30,7 @@ namespace KerbalStats.Progeny {
 		GenePair gameteK;
 		GenePair gameteP;
 		double gameteL;
+		PRange pRange;
 
 		public Gamete (GenePair[] genes, bool isFemale, Zygote zygote)
 		{
@@ -46,6 +47,7 @@ namespace KerbalStats.Progeny {
 			GenePair bioClock = zygote.bioClock;
 			GenePair bioClockInverse = zygote.bioClockInverse;
 			BioClock bc_trait = bioClock.trait as BioClock;
+			pRange = (gameteP.trait as GameteLifeP).P (gameteP);
 			if (isFemale) {
 				gameteL = bc_trait.EggLife (bioClock, bioClockInverse);
 			} else {
@@ -55,10 +57,17 @@ namespace KerbalStats.Progeny {
 
 		public double Life (double p)
 		{
-			var pRange = (gameteP.trait as GameteLifeP).P (gameteP);
 			var k = (gameteK.trait as GameteLifeK).K (gameteK);
 			p = pRange.P (p);
 			return MathUtil.WeibullQF (gameteL, k, p);
+		}
+
+		public double Viability (double time)
+		{
+			var k = (gameteK.trait as GameteLifeK).K (gameteK);
+			double p = MathUtil.WeibullCDF (gameteL, k, time);
+			p = pRange.RevP (p);
+			return 1 - p;
 		}
 	}
 }
