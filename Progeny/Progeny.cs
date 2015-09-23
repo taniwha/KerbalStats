@@ -35,7 +35,7 @@ namespace KerbalStats.Progeny {
 		Dictionary<string, Female> females;
 		uint zygote_id;
 
-		LocationTracker locations;
+		public LocationTracker locations { get; private set; }
 
 		public List<Embryo> Embryos
 		{

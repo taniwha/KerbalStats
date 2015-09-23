@@ -26,13 +26,13 @@ using KSP.IO;
 namespace KerbalStats.Progeny {
 	public class LocationTracker
 	{
-		Dictionary<Guid, VesselPart> vessel_parts;
+		public Dictionary<Guid, VesselPart> vessel_parts;
 
-		AstronautComplex astronaut_complex;
-		EVA eva;
-		Wilds wilds;
-		Womb womb;
-		Tomb tomb;
+		public AstronautComplex astronaut_complex;
+		public EVA eva;
+		public Wilds wilds;
+		public Womb womb;
+		public Tomb tomb;
 
 		public Location location (string loc, object parm)
 		{

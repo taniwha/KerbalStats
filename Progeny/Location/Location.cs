@@ -74,5 +74,9 @@ namespace KerbalStats.Progeny {
 			return females.Values.ToList ();
 		}
 
+		public List<Zygote> Zygotes ()
+		{
+			return zygotes.Values.ToList ();
+		}
 	}
 }

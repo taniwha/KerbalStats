@@ -34,9 +34,20 @@ namespace KerbalStats.Progeny {
 			Juveniles,
 			Females,
 			Males,
+			Locations,
+		};
+
+		enum Locations {
+			AstronautComplex,
+			EVA,
+			Tomb,
+			Wilds,
+			Womb,
+			Vessel,
 		};
 
 		InfoType infoType;
+		Locations location;
 
 		public static void ToggleGUI ()
 		{
@@ -127,6 +138,67 @@ namespace KerbalStats.Progeny {
 					GUILayout.Label ("null location");
 				}
 				GUILayout.EndHorizontal ();
+				if (z is Female) {
+					GUILayout.BeginHorizontal ();
+					GUILayout.FlexibleSpace ();
+					GUILayout.Label ((z as Female).State);
+					GUILayout.EndHorizontal ();
+				}
+			}
+		}
+
+		void LocationSelector ()
+		{
+			var location_list = EnumUtil.GetValues<Locations>();
+			GUILayout.BeginHorizontal ();
+			foreach (var t in location_list) {
+				if (GUILayout.Toggle (location == t, t.ToString (),
+									  GUILayout.Width (80))) {
+					location = t;
+				}
+			}
+			GUILayout.EndHorizontal ();
+		}
+
+		void ShowLocation (Location loc)
+		{
+			GUILayout.BeginHorizontal ();
+			GUILayout.Label (loc.name + ":");
+			GUILayout.FlexibleSpace ();
+			GUILayout.Label (loc.isWatched ().ToString ());
+			GUILayout.EndHorizontal ();
+			foreach (var z in loc.Zygotes ()) {
+				GUILayout.BeginHorizontal ();
+				GUILayout.FlexibleSpace ();
+				GUILayout.Label (z.id);
+				GUILayout.EndHorizontal ();
+			}
+		}
+
+		void ShowLocations ()
+		{
+			LocationSelector ();
+			switch (location) {
+				case Locations.AstronautComplex:
+					ShowLocation (ProgenyScenario.current.locations.astronaut_complex);
+					break;
+				case Locations.EVA:
+					ShowLocation (ProgenyScenario.current.locations.eva);
+					break;
+				case Locations.Tomb:
+					ShowLocation (ProgenyScenario.current.locations.tomb);
+					break;
+				case Locations.Wilds:
+					ShowLocation (ProgenyScenario.current.locations.wilds);
+					break;
+				case Locations.Womb:
+					ShowLocation (ProgenyScenario.current.locations.womb);
+					break;
+				case Locations.Vessel:
+					foreach (var v in ProgenyScenario.current.locations.vessel_parts.Values) {
+						ShowLocation (v);
+					}
+					break;
 			}
 		}
 
@@ -163,6 +235,9 @@ namespace KerbalStats.Progeny {
 					break;
 				case InfoType.Males:
 					ShowZygotes (ProgenyScenario.current.Males.Cast<Zygote>());
+					break;
+				case InfoType.Locations:
+					ShowLocations ();
 					break;
 			}
 
