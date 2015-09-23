@@ -96,7 +96,7 @@ namespace KerbalStats.Progeny {
 
 		public static uint rgrey (uint x)
 		{
-			for (var m = x; m != 0; m >>= 1) {
+			for (var m = x >> 1; m != 0; m >>= 1) {
 				x ^= m;
 			}
 			return x;
