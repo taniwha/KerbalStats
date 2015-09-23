@@ -46,13 +46,6 @@ namespace KerbalStats.Progeny {
 			return gamete.Life (p);
 		}
 
-		public float Fertility
-		{
-			get {
-				return 0.5f; //FIXME
-			}
-		}
-
 		public Male SelectMate (List<Male> males)
 		{
 			float [] male_readiness = new float[males.Count + 1];
@@ -72,7 +65,16 @@ namespace KerbalStats.Progeny {
 		{
 			mate.Mate (UT);
 			interest.Mate (UT);
-			float conceive_chance = Fertility * mate.Fertility;
+			var ot = cycle.OvulationTime;
+			float fv = 0, mv = 0;
+			if (UT < ot) {
+				mv = mate.gamete.Viability (ot - UT);
+				fv = gamete.Viability (0);
+			} else {
+				mv = mate.gamete.Viability (0);
+				fv = gamete.Viability (ot - UT);
+			}
+			float conceive_chance = fv * mv;
 			if (UnityEngine.Random.Range (0, 1f) > conceive_chance) {
 				return false;
 			}

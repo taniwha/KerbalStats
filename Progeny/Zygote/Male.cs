@@ -28,14 +28,7 @@ namespace KerbalStats.Progeny {
 	public class Male : Adult, IComparable<Male>
 	{
 		Interest interest;
-		Gamete gamete;
-
-		public float Fertility
-		{
-			get {
-				return 0.95f;//FIXME
-			}
-		}
+		public Gamete gamete { get; private set; }
 
 		public float isInterested (double UT)
 		{

@@ -62,12 +62,12 @@ namespace KerbalStats.Progeny {
 			return MathUtil.WeibullQF (gameteL, k, p);
 		}
 
-		public double Viability (double time)
+		public float Viability (double time)
 		{
 			var k = (gameteK.trait as GameteLifeK).K (gameteK);
 			double p = MathUtil.WeibullCDF (gameteL, k, time);
 			p = pRange.RevP (p);
-			return 1 - p;
+			return (float) (1 - p);
 		}
 	}
 }
