@@ -49,6 +49,7 @@ namespace KerbalStats.Progeny {
 			}
 			ProgenyScenario.current.AddKerbal (kerbal);
 			kerbal_ids[pcm.name] = kerbal.id;
+			CheckLocation (pcm);
 		}
 
 		public void RemoveKerbal (ProtoCrewMember pcm)
@@ -123,6 +124,31 @@ namespace KerbalStats.Progeny {
 			GameEvents.onVesselWasModified.Remove (onVesselWasModified);
 		}
 
+		void CheckLocation (ProtoCrewMember kerbal)
+		{
+			var zygote = ProgenyScenario.current.GetKerbal (kerbal_ids[kerbal.name]);
+			(zygote as IKerbal).kerbal = kerbal;
+			Location location = null;
+			switch (kerbal.rosterStatus) {
+				case ProtoCrewMember.RosterStatus.Available:
+					location = ProgenyScenario.current.GetLocation ("AstronautComplex");
+					break;
+				case ProtoCrewMember.RosterStatus.Assigned:
+					//handled by the vessel scan
+					break;
+				case ProtoCrewMember.RosterStatus.Missing:
+					location = ProgenyScenario.current.GetLocation ("Wilds");
+					break;
+				case ProtoCrewMember.RosterStatus.Dead:
+					location = ProgenyScenario.current.GetLocation ("Tomb");
+					break;
+			}
+			if (location != null) {
+				zygote.SetLocation (location);
+			}
+			Debug.Log(String.Format ("[KS P] CL {0} '{1}'", kerbal.name, location));
+		}
+
 		internal IEnumerator WaitAndCheckLocations ()
 		{
 			yield return null;
@@ -132,28 +158,7 @@ namespace KerbalStats.Progeny {
 			var game = HighLogic.CurrentGame;
 			var roster = game.CrewRoster;
 			for (int i = 0; i < roster.Count; i++) {
-				var kerbal = roster[i];
-				var zygote = ProgenyScenario.current.GetKerbal (kerbal_ids[kerbal.name]);
-				(zygote as IKerbal).kerbal = kerbal;
-				Location location = null;
-				switch (kerbal.rosterStatus) {
-					case ProtoCrewMember.RosterStatus.Available:
-						location = ProgenyScenario.current.GetLocation ("AstronautComplex");
-						break;
-					case ProtoCrewMember.RosterStatus.Assigned:
-						//handled by the vessel scan
-						break;
-					case ProtoCrewMember.RosterStatus.Missing:
-						location = ProgenyScenario.current.GetLocation ("Wilds");
-						break;
-					case ProtoCrewMember.RosterStatus.Dead:
-						location = ProgenyScenario.current.GetLocation ("Tomb");
-						break;
-				}
-				if (location != null) {
-					zygote.SetLocation (location);
-				}
-				//Debug.Log(String.Format ("[KS P] WACL {0} '{1}'", kerbal.name, location));
+				CheckLocation (roster[i]);
 			}
 			for (int i = 0; i < FlightGlobals.Vessels.Count; i++) {
 				GetCrew (FlightGlobals.Vessels[i]);

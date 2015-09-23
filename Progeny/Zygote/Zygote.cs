@@ -90,12 +90,13 @@ namespace KerbalStats.Progeny {
 			genes = Genome.ReadGenes (node.GetNode ("genome"));
 			Genome.RebuildGenes (null, genes);
 			init ();
-			location = ProgenyScenario.current.ParseLocation (node.GetValue ("location"));
+			var l = ProgenyScenario.current.ParseLocation (node.GetValue ("location"));
+			SetLocation (l);
 		}
 
 		public virtual void Save (ConfigNode node)
 		{
-			Debug.Log(String.Format ("[KS Zygote] Save: '{0}' '{1}' '{2}' '{3}'", id, mother_id, father_id, location));
+			Debug.Log(String.Format ("[KS Zygote] Save: '{0}' '{1}' '{2}' '{3}' '{4}'", id, mother_id, father_id, genes, location));
 			node.AddValue ("id", id);
 			node.AddValue ("mother", mother_id);
 			node.AddValue ("father", father_id);
