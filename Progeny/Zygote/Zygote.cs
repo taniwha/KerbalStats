@@ -32,8 +32,8 @@ namespace KerbalStats.Progeny {
 		public string father_id;
 		public Location location;
 		protected GenePair[] genes;
-		protected GenePair bioClock;
-		protected GenePair bioClockInverse;
+		public GenePair bioClock { get; private set; }
+		public GenePair bioClockInverse { get; private set; }
 
 		public string id
 		{
