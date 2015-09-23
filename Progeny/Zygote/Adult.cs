@@ -65,10 +65,7 @@ namespace KerbalStats.Progeny {
 			var p = pRange.P (subp);
 			BioClock bc_trait = bioClock.trait as BioClock;
 			var l = bc_trait.MaturationTime (bioClock, bioClockInverse);
-			// t = l * (-ln(1-p)) ^ 1/k
-			//ugh, why does .net not have log1p? Not that I expect the
-			// random number generator to give that small a p
-			aging = l * Math.Pow (-Math.Log (1 - p), 1/k);
+			aging = MathUtil.WeibulQF(l, k, p);
 		}
 
 		public Adult (Juvenile juvenile) : base (juvenile)

@@ -78,8 +78,8 @@ namespace KerbalStats.Progeny {
 			if (UT < interestTime) {
 				return 0;
 			}
-			double x = (UT - interestTime) / interestTC;
-			return (float) (1 - Math.Exp (-Math.Pow (x, interestK)));
+			double x = UT - interestTime;
+			return (float) MathUtil.WeibulCDF (interestTC, interestK, x);
 		}
 
 		public void Mate (double UT)
