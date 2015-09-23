@@ -27,14 +27,12 @@ namespace KerbalStats.Genome {
 	public class Genome: IKerbalExt
 	{
 		Dictionary<string, GenePair[]> kerbal_genome;
-		Dictionary<string, int> trait_map;
-		Trait[] traits;
 
-		static Genome instance;
+		static Dictionary<string, int> trait_map;
+		static Trait[] traits;
 
-		public Genome (KerbalStats ks)
+		static Genome ()
 		{
-			instance = this;
 			var trait_modules = ModuleLoader.LoadModules (typeof (Trait), new Type []{});
 			traits = new Trait[trait_modules.Count];
 			trait_map = new Dictionary<string, int> ();
@@ -43,6 +41,13 @@ namespace KerbalStats.Genome {
 				traits[i] = (Trait) trait_modules[i].Invoke (parms);
 				trait_map[traits[i].name] = i;
 			}
+		}
+
+		static Genome instance;
+
+		public Genome (KerbalStats ks)
+		{
+			instance = this;
 			Clear ();
 		}
 
@@ -60,9 +65,9 @@ namespace KerbalStats.Genome {
 
 		public static void RebuildGenes (ProtoCrewMember kerbal, GenePair[] genes)
 		{
-			for (int i = 0; i < instance.traits.Length; i++) {
+			for (int i = 0; i < traits.Length; i++) {
 				if (genes[i] == null) {
-					genes[i] = instance.traits[i].CreateGene (kerbal);
+					genes[i] = traits[i].CreateGene (kerbal);
 				}
 			}
 		}
@@ -111,13 +116,13 @@ namespace KerbalStats.Genome {
 		public static GenePair[] ReadGenes (ConfigNode node)
 		{
 			var pairs = node.values;
-			GenePair[] genes = new GenePair[instance.traits.Length];
+			GenePair[] genes = new GenePair[traits.Length];
 			for (int i = 0; i < pairs.Count; i++) {
 				var trait_name = pairs[i].name;
 				var trait_value = pairs[i].value;
-				if (instance.trait_map.ContainsKey (trait_name)) {
-					var ind = instance.trait_map[trait_name];
-					var trait = instance.traits[ind];
+				if (trait_map.ContainsKey (trait_name)) {
+					var ind = trait_map[trait_name];
+					var trait = traits[ind];
 					genes[ind] = new GenePair (trait, trait_value);
 				}
 			}
@@ -150,7 +155,7 @@ namespace KerbalStats.Genome {
 
 		public static GenePair[] Combine (GenePair[] kerbal1, GenePair[] kerbal2)
 		{
-			var genes = new GenePair[instance.traits.Length];
+			var genes = new GenePair[traits.Length];
 			for (int i = 0; i < genes.Length; i++) {
 				genes[i] = GenePair.Combine (kerbal1[i], kerbal2[i]);
 			}
