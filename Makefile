@@ -43,8 +43,8 @@ KS_FILES := \
 	Progeny/Traits/BioClockInverse.cs		\
 	Progeny/Traits/CyclePeriodK.cs			\
 	Progeny/Traits/CyclePeriodP.cs			\
-	Progeny/Traits/EggLifeK.cs				\
-	Progeny/Traits/EggLifeP.cs				\
+	Progeny/Traits/GameteLifeK.cs			\
+	Progeny/Traits/GameteLifeP.cs			\
 	Progeny/Traits/GestationPeriodK.cs		\
 	Progeny/Traits/GestationPeriodP.cs		\
 	Progeny/Traits/InterestK.cs				\
@@ -53,8 +53,6 @@ KS_FILES := \
 	Progeny/Traits/MaturationTimeP.cs		\
 	Progeny/Traits/OvulationTimeK.cs		\
 	Progeny/Traits/OvulationTimeP.cs		\
-	Progeny/Traits/SpermLifeK.cs			\
-	Progeny/Traits/SpermLifeP.cs			\
 	Progeny/Traits/BioClockInverse.cs		\
 	Progeny/Traits/PRange.cs				\
 	Progeny/Traits/TimeK.cs					\

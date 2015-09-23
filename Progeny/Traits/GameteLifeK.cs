@@ -21,9 +21,9 @@ using KerbalStats.Genome;
 
 namespace KerbalStats.Progeny {
 
-	public class EggLifeK : TimeK, Trait
+	public class GameteLifeK : TimeK, Trait
 	{
-		public string name { get { return "EggLifeK"; } }
+		public string name { get { return "GameteLifeK"; } }
 
 		public GenePair CreateGene (ProtoCrewMember pcm)
 		{
