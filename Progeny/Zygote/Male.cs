@@ -28,6 +28,7 @@ namespace KerbalStats.Progeny {
 	public class Male : Adult, IComparable<Male>
 	{
 		Interest interest;
+		Gamete gamete;
 
 		public float Fertility
 		{
@@ -41,6 +42,12 @@ namespace KerbalStats.Progeny {
 			return interest.isInterested (UT);
 		}
 
+		public double GameteLife ()
+		{
+			var p = UnityEngine.Random.Range (0, 1f);
+			return gamete.Life (p);
+		}
+
 		public void Mate (double UT)
 		{
 			interest.Mate (UT);
@@ -49,6 +56,7 @@ namespace KerbalStats.Progeny {
 		void initialize ()
 		{
 			interest = new Interest (genes);
+			gamete = new Gamete (genes, false, this);
 		}
 
 		public Male (Juvenile juvenile) : base (juvenile)

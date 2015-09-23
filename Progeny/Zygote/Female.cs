@@ -29,6 +29,7 @@ namespace KerbalStats.Progeny {
 		double UT;
 		Embryo embryo;
 		Interest interest;
+		Gamete gamete;
 
 		FemaleFSM fsm;
 
@@ -36,6 +37,12 @@ namespace KerbalStats.Progeny {
 		{
 			var p = UnityEngine.Random.Range (0, 1f);
 			return p < interest.isInterested (UT);
+		}
+
+		public double GameteLife ()
+		{
+			var p = UnityEngine.Random.Range (0, 1f);
+			return gamete.Life (p);
 		}
 
 		public float Fertility
@@ -79,6 +86,7 @@ namespace KerbalStats.Progeny {
 			fsm = new FemaleFSM (this);
 
 			interest = new Interest (genes);
+			gamete = new Gamete (genes, true, this);
 			embryo = null;
 		}
 
