@@ -263,6 +263,9 @@ namespace KerbalStats.Progeny {
 		internal IEnumerator WaitAndGetCrew (Vessel vessel)
 		{
 			yield return null;
+			if (vessel == null) {
+				yield break;
+			}
 			GetCrew (vessel);
 		}
 
