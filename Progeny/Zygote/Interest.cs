@@ -79,7 +79,7 @@ namespace KerbalStats.Progeny {
 				return 0;
 			}
 			double x = UT - interestTime;
-			return (float) MathUtil.WeibulCDF (interestTC, interestK, x);
+			return (float) MathUtil.WeibullCDF (interestTC, interestK, x);
 		}
 
 		public void Mate (double UT)

@@ -58,7 +58,7 @@ namespace KerbalStats.Progeny {
 			var pRange = (gameteP.trait as GameteLifeP).P (gameteP);
 			var k = (gameteK.trait as GameteLifeK).K (gameteK);
 			p = pRange.P (p);
-			return MathUtil.WeibulQF (gameteL, k, p);
+			return MathUtil.WeibullQF (gameteL, k, p);
 		}
 	}
 }

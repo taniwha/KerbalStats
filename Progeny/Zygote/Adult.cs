@@ -65,7 +65,7 @@ namespace KerbalStats.Progeny {
 			var p = pRange.P (subp);
 			BioClock bc_trait = bioClock.trait as BioClock;
 			var l = bc_trait.MaturationTime (bioClock, bioClockInverse);
-			aging = MathUtil.WeibulQF(l, k, p);
+			aging = MathUtil.WeibullQF(l, k, p);
 		}
 
 		public Adult (Juvenile juvenile) : base (juvenile)

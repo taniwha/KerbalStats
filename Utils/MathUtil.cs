@@ -21,12 +21,12 @@ using UnityEngine;
 
 namespace KerbalStats {
 	public static class MathUtil {
-		public static double WeibulCDF (double l, double k, double x)
+		public static double WeibullCDF (double l, double k, double x)
 		{
 			return 1 - Math.Exp (-Math.Pow (x/l, k));
 		}
 
-		public static double WeibulQF (double l, double k, double p)
+		public static double WeibullQF (double l, double k, double p)
 		{
 			// t = l * (-ln(1-p)) ^ 1/k
 			//ugh, why does .net not have log1p? Not that I expect the

@@ -71,7 +71,7 @@ namespace KerbalStats.Progeny {
 			var p = pRange.P (subp);
 			BioClock bc_trait = bioClock.trait as BioClock;
 			var l = bc_trait.GestationPeriod (bioClock, bioClockInverse);
-			return MathUtil.WeibulQF(l, k, p);
+			return MathUtil.WeibullQF(l, k, p);
 		}
 
 		public override void Save (ConfigNode node)
