@@ -139,6 +139,7 @@ namespace KerbalStats.Progeny {
 			if (UT - lastUpdate < 3600) {
 				return;
 			}
+			cycle.Update (UT);
 			fsm.UpdateFSM ();
 			lastUpdate = UT;
 		}
