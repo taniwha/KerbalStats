@@ -247,7 +247,6 @@ namespace KerbalStats.Progeny {
 			juveniles = new Dictionary<string, Juvenile> ();
 			males = new Dictionary<string, Male> ();
 			females = new Dictionary<string, Female> ();
-			enabled = false;
 		}
 
 		void OnDestroy ()
