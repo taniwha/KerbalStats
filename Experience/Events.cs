@@ -24,9 +24,10 @@ using UnityEngine;
 using KSP.IO;
 
 namespace KerbalStats.Experience {
-	[KSPAddon (KSPAddon.Startup.EveryScene, false)]
-	public class KSExperienceTrackerEvents : MonoBehaviour
+	public class ExperienceTrackerEvents
 	{
+		ExperienceTracker tracker;
+
 		string GetPartName (Part part)
 		{
 			// Extract the actual part name from the part. Root nodes include
@@ -76,7 +77,7 @@ namespace KerbalStats.Experience {
 				Vessel vessel = dst_part.vessel;
 				SeatKerbal (kerbal, vessel, "EVA");
 			} else {
-				StartCoroutine (WaitAndSeatKerbal (kerbal));
+				KerbalStats.current.StartCoroutine (WaitAndSeatKerbal (kerbal));
 			}
 		}
 
@@ -191,13 +192,13 @@ namespace KerbalStats.Experience {
 			if (vessel.protoVessel == null) {
 				// This is a newly created vessel.
 				// Crew have yet to be assigned to their positions.
-				StartCoroutine (WaitAndScanVesselCrew (vessel));
+				KerbalStats.current.StartCoroutine (WaitAndScanVesselCrew (vessel));
 			} else {
 				// This is an existing vessel loaded from a saved game.
 				// Any crew are already on board.
 				// However, the KerbalStats scenario is loaded after vessels,
 				// so wait a frame for the scenario to load.
-				StartCoroutine (WaitAndScanVesselCrew (vessel));
+				KerbalStats.current.StartCoroutine (WaitAndScanVesselCrew (vessel));
 			}
 		}
 
@@ -245,8 +246,7 @@ namespace KerbalStats.Experience {
 			string body = vessel.mainBody.bodyName;
 			double UT = Planetarium.GetUniversalTime ();
 			foreach (var kerbal in crew) {
-				ExperienceTracker.instance.SetSituation (kerbal, UT, body,
-														 situation);
+				tracker.SetSituation (kerbal, UT, body, situation);
 			}
 		}
 
@@ -267,11 +267,12 @@ namespace KerbalStats.Experience {
 		void onVesselSOIChanged (GameEvents.HostedFromToAction<Vessel, CelestialBody> hft)
 		{
 			Vessel vessel = hft.host;
-			StartCoroutine (WaitAndSetBody (vessel));
+			KerbalStats.current.StartCoroutine (WaitAndSetBody (vessel));
 		}
 
-		void Awake ()
+		public ExperienceTrackerEvents (ExperienceTracker tracker)
 		{
+			this.tracker = tracker;
 			var scene = HighLogic.LoadedScene;
 			if (scene == GameScenes.SPACECENTER
 				|| scene == GameScenes.EDITOR
@@ -291,7 +292,7 @@ namespace KerbalStats.Experience {
 				GameEvents.onVesselSOIChanged.Add (onVesselSOIChanged);
 			}
 		}
-		void OnDestroy ()
+		public void Shutdown ()
 		{
 			GameEvents.onCrewTransferred.Remove (onCrewTransferred);
 			GameEvents.onKerbalStatusChange.Remove (onKerbalStatusChange);

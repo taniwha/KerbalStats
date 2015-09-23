@@ -28,20 +28,17 @@ namespace KerbalStats.Experience {
 		Dictionary<string,Experience> kerbal_experience;
 		public static PartSeatTasks partSeatTasks;
 
+		ExperienceTrackerEvents event_handler;
 		public static ExperienceTracker instance;
 
 		public ExperienceTracker (KerbalStats ks)
 		{
 			instance = this;
+			event_handler = new ExperienceTrackerEvents (this);
 			if (partSeatTasks == null) {
 				partSeatTasks = new PartSeatTasks ();
 			}
 			Clear ();
-		}
-
-		~ExperienceTracker ()
-		{
-			instance = null;
 		}
 
 		public void AddKerbal (ProtoCrewMember kerbal)
@@ -88,6 +85,8 @@ namespace KerbalStats.Experience {
 
 		public void Shutdown ()
 		{
+			event_handler.Shutdown ();
+			event_handler = null;
 			instance = null;
 		}
 
