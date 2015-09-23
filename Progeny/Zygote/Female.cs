@@ -30,6 +30,7 @@ namespace KerbalStats.Progeny {
 		Embryo embryo;
 		Interest interest;
 		Gamete gamete;
+		Cycle cycle;
 
 		FemaleFSM fsm;
 
@@ -55,7 +56,7 @@ namespace KerbalStats.Progeny {
 		public Male SelectMate (List<Male> males)
 		{
 			float [] male_readiness = new float[males.Count + 1];
-			male_readiness[0] = 2; //FIXME
+			male_readiness[0] = cycle.NonmatingFactor (UT);
 			for (int i = 0; i < males.Count; i++) {
 				male_readiness[i + 1] = males[i].isInterested (UT);
 			}
@@ -87,6 +88,7 @@ namespace KerbalStats.Progeny {
 
 			interest = new Interest (genes);
 			gamete = new Gamete (genes, true, this);
+			cycle = new Cycle (genes, this);
 			embryo = null;
 		}
 
@@ -106,6 +108,7 @@ namespace KerbalStats.Progeny {
 		{
 			initialize ();
 			interest.Load (node);
+			cycle.Load (node);
 			if (node.HasValue ("state")) {
 				fsm.StartFSM (node.GetValue ("state"));
 			} else {
@@ -121,6 +124,7 @@ namespace KerbalStats.Progeny {
 		{
 			base.Save (node);
 			interest.Save (node);
+			cycle.Save (node);
 			node.AddValue ("state", fsm.currentStateName);
 			if (embryo != null) {
 				node.AddValue ("embryo", embryo.id);
