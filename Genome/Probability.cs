@@ -30,7 +30,6 @@ namespace KerbalStats.Genome {
 			for (int i = 0; i < ranges.Length; i++) {
 				total_range += ranges[i];
 			}
-			UnityEngine.Debug.Log (String.Format ("DiscreteDistribution: {0} {1}", total_range, this.ranges));
 		}
 
 		public int Value (float p)
