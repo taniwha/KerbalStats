@@ -17,7 +17,6 @@ along with KerbalStats.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 namespace KerbalStats {
 	public static class MathUtil {
@@ -33,5 +32,24 @@ namespace KerbalStats {
 			// random number generator to give that small a p
 			return l * Math.Pow (-Math.Log (1 - p), 1/k);
 		}
+
+		public static float[] Binomial (double p, int n)
+		{
+			double q = 1 - p;
+			double[] dist = new double[n + 1];
+			float[] fdist = new float[n + 1];
+
+			fdist[0] = (float) (dist[0] = Math.Pow (q, n));
+			fdist[n] = (float) (dist[n] = Math.Pow (p, n));
+			if (q == 0 || p == 0) {
+				return fdist;
+			}
+			for (int i = 1; i < n; i++) {
+				dist[i] = dist[i - 1] * (n + 1 - i) * p / (i * q);
+				fdist[i] = (float) dist[i];
+			}
+			return fdist;
+		}
+
 	}
 }
