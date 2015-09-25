@@ -33,22 +33,25 @@ namespace KerbalStats {
 			return l * Math.Pow (-Math.Log (1 - p), 1/k);
 		}
 
-		public static float[] Binomial (double p, int n)
+		public static float[] Binomial (float p, int n)
 		{
-			double q = 1 - p;
-			double[] dist = new double[n + 1];
-			float[] fdist = new float[n + 1];
+			float q = 1 - p;
+			float[] dist = new float[n + 1];
+			float P = 1;
+			float Q = 1;
 
-			fdist[0] = (float) (dist[0] = Math.Pow (q, n));
-			fdist[n] = (float) (dist[n] = Math.Pow (p, n));
-			if (q == 0 || p == 0) {
-				return fdist;
+			dist[0] = 1;
+			for (int i = 0; i < n; i++) {
+				dist[i + 1] = dist[i] * (n - i) / (i + 1);
+				dist[i] *= P;
+				P *= p;
 			}
-			for (int i = 1; i < n; i++) {
-				dist[i] = dist[i - 1] * (n + 1 - i) * p / (i * q);
-				fdist[i] = (float) dist[i];
+			dist[n] *= P;
+			for (int i = n; i >= 0; i--) {
+				dist[i] *= Q;
+				Q *= q;
 			}
-			return fdist;
+			return dist;
 		}
 
 	}
