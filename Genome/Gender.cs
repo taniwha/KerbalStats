@@ -21,8 +21,9 @@ namespace KerbalStats.Genome {
 
 	public class Gender : Trait
 	{
-		// The idea is 0 is X, 1 is Y, so zero bits means YY. For now, just
+		// The idea is 0 is Y, 1 is X, so zero bits means YY. For now, just
 		// make that male and never generate it.
+		// Indexed by bit count.
 		static string[] genders = { "M", "M", "F" };
 
 		public string name
