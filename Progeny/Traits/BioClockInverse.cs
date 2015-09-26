@@ -51,7 +51,7 @@ namespace KerbalStats.Progeny {
 
 		public int Inverse (GenePair gene)
 		{
-			return (int) (gene.a & gene.b) * 2 - 1;
+			return (int) (gene.a | gene.b) * 2 - 1;
 		}
 	}
 }
