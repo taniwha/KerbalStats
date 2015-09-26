@@ -30,6 +30,7 @@ namespace KerbalStats.Genome {
 
 		static Dictionary<string, int> trait_map;
 		static Trait[] traits;
+		static Dictionary<string, Dictionary<string, GenePair>> prefabs;
 
 		static Genome ()
 		{
@@ -40,6 +41,22 @@ namespace KerbalStats.Genome {
 			for (int i = 0; i < trait_modules.Count; i++) {
 				traits[i] = (Trait) trait_modules[i].Invoke (parms);
 				trait_map[traits[i].name] = i;
+			}
+
+			var dbase = GameDatabase.Instance;
+			var prefab_kerbals = dbase.GetConfigNodes ("ProgenyPrefab").LastOrDefault ();
+			prefabs = new Dictionary<string, Dictionary<string, GenePair>> ();
+			foreach (var kerbal in prefab_kerbals.GetNodes ("Kerbal")) {
+				if (!kerbal.HasValue ("name") || !kerbal.HasNode ("genome")) {
+					continue;
+				}
+				var name = kerbal.GetValue ("name");
+				Debug.Log(String.Format ("[KS Genome] prefab {0}", name));
+				var genome = ReadGenes (kerbal.GetNode ("genome"));
+				prefabs[name] = new Dictionary<string, GenePair> ();
+				foreach (var gene in genome) {
+					prefabs[name][gene.trait.name] = gene;
+				}
 			}
 		}
 
@@ -160,6 +177,16 @@ namespace KerbalStats.Genome {
 				genes[i] = GenePair.Combine (kerbal1[i], kerbal2[i]);
 			}
 			return genes;
+		}
+
+		public static GenePair Prefab (Trait trait, ProtoCrewMember kerbal)
+		{
+			if (prefabs.ContainsKey (kerbal.name)
+				&& prefabs[kerbal.name].ContainsKey (trait.name)) {
+				var gene = prefabs[kerbal.name][trait.name];
+				return gene;
+			}
+			return null;
 		}
 	}
 }

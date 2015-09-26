@@ -50,7 +50,11 @@ namespace KerbalStats.Progeny {
 
 		public GenePair CreateGene (ProtoCrewMember pcm)
 		{
-			return CreateGene ();
+			var gene = Genome.Prefab (this, pcm);
+			if (gene == null) {
+				gene = CreateGene ();
+			}
+			return gene;
 		}
 
 		static double[] k = { 0.5, 0.9, 1/0.05, 1/0.7, 1/0.9 };

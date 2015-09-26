@@ -112,7 +112,11 @@ namespace KerbalStats.Genome {
 				var b = UnityEngine.Random.Range (0, 2);
 				return CreateGene (b > 0);
 			}
-			return CreateGene (pcm.isBadass);
+			var gene = Genome.Prefab (this, pcm);
+			if (gene == null) {
+				gene = CreateGene (pcm.isBadass);
+			}
+			return gene;
 		}
 
 		public string CreateValue (GenePair gene)

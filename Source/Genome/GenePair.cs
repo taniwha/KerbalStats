@@ -32,6 +32,13 @@ namespace KerbalStats.Genome {
 			this.b = b;
 		}
 
+		public GenePair (GenePair gene)
+		{
+			trait = gene.trait;
+			a = gene.a;
+			b = gene.b;
+		}
+
 		public GenePair (Trait trait, string pair)
 		{
 			this.trait = trait;

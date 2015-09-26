@@ -63,7 +63,11 @@ namespace KerbalStats.Genome {
 				var g = UnityEngine.Random.Range (0, 2);
 				return CreateGene (g > 0);
 			}
-			return CreateGene (pcm.gender == ProtoCrewMember.Gender.Female);
+			var gene = Genome.Prefab (this, pcm);
+			if (gene == null) {
+				gene = CreateGene (pcm.gender == ProtoCrewMember.Gender.Female);
+			}
+			return gene;
 		}
 
 		public string CreateValue (GenePair gene)
