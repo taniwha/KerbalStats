@@ -70,8 +70,17 @@ namespace KerbalStats.Progeny {
 
 		protected void CalcAdulthood ()
 		{
-			var p = UnityEngine.Random.Range (0, 1f);	//FIXME
 			var UT = Planetarium.GetUniversalTime ();
+			double p = UnityEngine.Random.Range (0, 1f);
+			//p = (1 - (p + 1) * Math.Exp (-p));
+			p *= 0.999;	// avoid 1.0: bad juju (ln(0))
+			// map 0..1 onto 0..inf via artanh, then feed that into
+			// 1 - (x + 1) e^-x
+			//
+			// This remaps p to favor younger kerbals, but still allow older
+			// ones.
+			p = Math.Sqrt ((1 - p) / (1 + p));
+			p = 1 - p * (1 - Math.Log (p));
 			adulthoodUT = UT - aging * p;
 		}
 
