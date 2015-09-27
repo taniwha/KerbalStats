@@ -58,8 +58,8 @@ namespace KerbalStats.Progeny {
 			var g = gender.trait.CreateValue (gender);
 			isFemale = (g == "F");
 
-			var k = (maturationK.trait as MaturationTimeK).K (maturationK);
-			var pRange = (maturationP.trait as MaturationTimeP).P (maturationP);
+			var k = (maturationK.trait as TimeK).K (maturationK);
+			var pRange = (maturationP.trait as TimeP).P (maturationP);
 			var p = pRange.P (subp);
 			BioClock bc_trait = bioClock.trait as BioClock;
 			var l = bc_trait.MaturationTime (bioClock, bioClockInverse);

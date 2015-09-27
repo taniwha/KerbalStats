@@ -61,10 +61,10 @@ namespace KerbalStats.Progeny {
 			for (int i = 0; i < genes.Length; i++) {
 				switch (genes[i].trait.name) {
 					case "GestationPeriodK":
-						k = (genes[i].trait as GestationPeriodK).K (genes[i]);
+						k = (genes[i].trait as TimeK).K (genes[i]);
 						break;
 					case "GestationPeriodP":
-						pRange = (genes[i].trait as GestationPeriodP).P (genes[i]);
+						pRange = (genes[i].trait as TimeP).P (genes[i]);
 						break;
 				}
 			}

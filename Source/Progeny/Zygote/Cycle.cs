@@ -66,20 +66,20 @@ namespace KerbalStats.Progeny {
 			cycleL = bc_trait.CyclePeriod (bioClock, bioClockInverse);
 			ovulationL = bc_trait.OvulationTime (bioClock, bioClockInverse);
 
-			cyclePR = (cycleP.trait as CyclePeriodP).P (cycleP);
-			ovulationPR = (ovulationP.trait as OvulationTimeP).P (ovulationP);
+			cyclePR = (cycleP.trait as TimeP).P (cycleP);
+			ovulationPR = (ovulationP.trait as TimeP).P (ovulationP);
 		}
 
 		double CalcCyclePeriod (double p)
 		{
-			var k = (cycleK.trait as CyclePeriodK).K (cycleK);
+			var k = (cycleK.trait as TimeK).K (cycleK);
 			p = cyclePR.P (p);
 			return MathUtil.WeibullQF (cycleL, k, p);
 		}
 
 		double CalcOvulationTime (double p)
 		{
-			var k = (ovulationK.trait as OvulationTimeK).K (ovulationK);
+			var k = (ovulationK.trait as TimeK).K (ovulationK);
 			p = ovulationPR.P (p);
 			return MathUtil.WeibullQF (ovulationL, k, p);
 		}

@@ -60,8 +60,8 @@ namespace KerbalStats.Progeny {
 				}
 			}
 
-			var k = (agingK.trait as AgingTimeK).K (agingK);
-			var pRange = (agingP.trait as AgingTimeP).P (agingP);
+			var k = (agingK.trait as TimeK).K (agingK);
+			var pRange = (agingP.trait as TimeP).P (agingP);
 			var p = pRange.P (subp);
 			BioClock bc_trait = bioClock.trait as BioClock;
 			var l = bc_trait.MaturationTime (bioClock, bioClockInverse);
