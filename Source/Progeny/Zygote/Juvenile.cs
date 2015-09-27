@@ -69,6 +69,7 @@ namespace KerbalStats.Progeny {
 			} else {
 				subp = UnityEngine.Random.Range (0, 1f);
 			}
+			init ();
 		}
 
 		public override void Save (ConfigNode node)

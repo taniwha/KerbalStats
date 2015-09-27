@@ -55,29 +55,51 @@ namespace KerbalStats.Progeny {
 			birthUT = juvenile.Birth ();
 			adulthoodUT = juvenile.Maturation ();
 			kerbal = null;		// not yet recruited
+			subp = UnityEngine.Random.Range (0, 1f);
 			initialize ();
 		}
 
 		public Adult (ProtoCrewMember kerbal) : base (kerbal)
 		{
 			this.kerbal = kerbal;
+			subp = UnityEngine.Random.Range (0, 1f);
 			initialize ();
+			CalcAdulthood ();
+			CalcBirth ();
+		}
+
+		protected void CalcAdulthood ()
+		{
+			var p = UnityEngine.Random.Range (0, 1f);	//FIXME
+			var UT = Planetarium.GetUniversalTime ();
+			adulthoodUT = UT - aging * p;
+		}
+
+		// relies on adulthoodUT being known
+		protected void CalcBirth ()
+		{
+			var p = UnityEngine.Random.Range (0, 1f);
+			birthUT = adulthoodUT - bioClock.MaturationTime (p);
 		}
 
 		public Adult (ConfigNode node) : base (node)
 		{
 			this.kerbal = null;
-			initialize ();
-			if (node.HasValue ("birthUT")) {
-				double.TryParse (node.GetValue ("birthUT"), out birthUT);
-			}
-			if (node.HasValue ("adulthoodUT")) {
-				double.TryParse (node.GetValue ("adulthoodUT"), out adulthoodUT);
-			}
 			if (node.HasValue ("p")) {
 				double.TryParse (node.GetValue ("p"), out subp);
 			} else {
 				subp = UnityEngine.Random.Range (0, 1f);
+			}
+			initialize ();
+			if (node.HasValue ("adulthoodUT")) {
+				double.TryParse (node.GetValue ("adulthoodUT"), out adulthoodUT);
+			} else {
+				CalcAdulthood ();
+			}
+			if (node.HasValue ("birthUT")) {
+				double.TryParse (node.GetValue ("birthUT"), out birthUT);
+			} else {
+				CalcBirth ();
 			}
 		}
 
@@ -90,17 +112,17 @@ namespace KerbalStats.Progeny {
 
 		}
 
-		double Birth ()
+		public double Birth ()
 		{
 			return birthUT;
 		}
 
-		double Adulthood ()
+		public double Adulthood ()
 		{
 			return adulthoodUT;
 		}
 
-		double Aging ()
+		public double Aging ()
 		{
 			return aging;
 		}
