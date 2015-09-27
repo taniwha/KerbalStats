@@ -55,7 +55,11 @@ namespace KerbalStats.Genome {
 				var genome = ReadGenes (kerbal.GetNode ("genome"));
 				prefabs[name] = new Dictionary<string, GenePair> ();
 				foreach (var gene in genome) {
-					prefabs[name][gene.trait.name] = gene;
+					// gene will be null if it a trait is missing from the
+					// config
+					if (gene != null) {
+						prefabs[name][gene.trait.name] = gene;
+					}
 				}
 			}
 		}
