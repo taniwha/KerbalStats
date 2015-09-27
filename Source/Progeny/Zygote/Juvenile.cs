@@ -61,7 +61,7 @@ namespace KerbalStats.Progeny {
 			var k = (maturationK.trait as TimeK).K (maturationK);
 			var pRange = (maturationP.trait as TimeP).P (maturationP);
 			var p = pRange.P (subp);
-			BioClock bc_trait = bioClock.trait as BioClock;
+			BioClockTC bc_trait = bioClock.trait as BioClockTC;
 			var l = bc_trait.MaturationTime (bioClock, bioClockInverse);
 			maturation = MathUtil.WeibullQF(l, k, p);
 		}

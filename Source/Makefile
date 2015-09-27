@@ -37,7 +37,7 @@ KS_FILES := \
 	Progeny/Location/Womb.cs				\
 	Progeny/Traits/AgingTimeK.cs			\
 	Progeny/Traits/AgingTimeP.cs			\
-	Progeny/Traits/BioClock.cs				\
+	Progeny/Traits/BioClockTC.cs			\
 	Progeny/Traits/BioClockInverse.cs		\
 	Progeny/Traits/CyclePeriodK.cs			\
 	Progeny/Traits/CyclePeriodP.cs			\

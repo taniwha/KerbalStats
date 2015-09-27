@@ -61,7 +61,7 @@ namespace KerbalStats.Progeny {
 			}
 			GenePair bioClock = zygote.bioClock;
 			GenePair bioClockInverse = zygote.bioClockInverse;
-			BioClock bc_trait = bioClock.trait as BioClock;
+			BioClockTC bc_trait = bioClock.trait as BioClockTC;
 
 			cycleL = bc_trait.CyclePeriod (bioClock, bioClockInverse);
 			ovulationL = bc_trait.OvulationTime (bioClock, bioClockInverse);

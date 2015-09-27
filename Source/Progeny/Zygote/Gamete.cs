@@ -46,7 +46,7 @@ namespace KerbalStats.Progeny {
 			}
 			GenePair bioClock = zygote.bioClock;
 			GenePair bioClockInverse = zygote.bioClockInverse;
-			BioClock bc_trait = bioClock.trait as BioClock;
+			BioClockTC bc_trait = bioClock.trait as BioClockTC;
 			pRange = (gameteP.trait as TimeP).P (gameteP);
 			if (isFemale) {
 				gameteL = bc_trait.EggLife (bioClock, bioClockInverse);

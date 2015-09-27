@@ -20,9 +20,9 @@ using System.Linq;
 namespace KerbalStats.Progeny {
 	using Genome;
 
-	public class BioClock : Trait
+	public class BioClockTC : Trait
 	{
-		public string name { get { return "BioClock"; } }
+		public string name { get { return "BioClockTC"; } }
 		public int GeneSize { get { return 4; } }
 
 		int CountBits (uint x)

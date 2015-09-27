@@ -45,7 +45,7 @@ namespace KerbalStats.Progeny {
 		{
 			for (int i = 0; i < genes.Length; i++) {
 				switch (genes[i].trait.name) {
-					case "BioClock":
+					case "BioClockTC":
 						bioClock = genes[i];
 						break;
 					case "BioClockInverse":

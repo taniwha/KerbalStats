@@ -69,7 +69,7 @@ namespace KerbalStats.Progeny {
 				}
 			}
 			var p = pRange.P (subp);
-			BioClock bc_trait = bioClock.trait as BioClock;
+			BioClockTC bc_trait = bioClock.trait as BioClockTC;
 			var l = bc_trait.GestationPeriod (bioClock, bioClockInverse);
 			return MathUtil.WeibullQF(l, k, p);
 		}
