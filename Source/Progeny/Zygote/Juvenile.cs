@@ -29,9 +29,6 @@ namespace KerbalStats.Progeny {
 		double birthUT;
 		double maturation;
 		double subp;
-		GenePair gender;
-		GenePair maturationK;
-		GenePair maturationP;
 
 		public bool isFemale
 		{
@@ -41,16 +38,11 @@ namespace KerbalStats.Progeny {
 
 		void init ()
 		{
+			GenePair gender = null;
 			for (int i = 0; i < genes.Length; i++) {
 				switch (genes[i].trait.name) {
 					case "Gender":
 						gender = genes[i];
-						break;
-					case "MaturationTimeK":
-						maturationK = genes[i];
-						break;
-					case "MaturationTimeP":
-						maturationP = genes[i];
 						break;
 				}
 			}
@@ -58,12 +50,7 @@ namespace KerbalStats.Progeny {
 			var g = gender.trait.CreateValue (gender);
 			isFemale = (g == "F");
 
-			var k = (maturationK.trait as TimeK).K (maturationK);
-			var pRange = (maturationP.trait as TimeP).P (maturationP);
-			var p = pRange.P (subp);
-			BioClockTC bc_trait = bioClock.trait as BioClockTC;
-			var l = bc_trait.MaturationTime (bioClock, bioClockInverse);
-			maturation = MathUtil.WeibullQF(l, k, p);
+			maturation = bioClock.MaturationTime (subp);
 		}
 
 		public Juvenile (Embryo embryo) : base (embryo)

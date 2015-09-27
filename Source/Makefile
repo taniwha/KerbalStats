@@ -56,6 +56,7 @@ KS_FILES := \
 	Progeny/Traits/TimeK.cs					\
 	Progeny/Traits/TimeP.cs					\
 	Progeny/Zygote/Adult.cs					\
+	Progeny/Zygote/BioClock.cs				\
 	Progeny/Zygote/Cycle.cs					\
 	Progeny/Zygote/Embryo.cs				\
 	Progeny/Zygote/Female.cs				\

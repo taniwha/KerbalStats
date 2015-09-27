@@ -37,8 +37,6 @@ namespace KerbalStats.Progeny {
 		double adulthoodUT;
 		double aging;
 		double subp;
-		GenePair agingK;
-		GenePair agingP;
 
 		public string name
 		{
@@ -49,23 +47,7 @@ namespace KerbalStats.Progeny {
 
 		void initialize ()
 		{
-			for (int i = 0; i < genes.Length; i++) {
-				switch (genes[i].trait.name) {
-					case "AgingTimeK":
-						agingK = genes[i];
-						break;
-					case "AgingTimeP":
-						agingP = genes[i];
-						break;
-				}
-			}
-
-			var k = (agingK.trait as TimeK).K (agingK);
-			var pRange = (agingP.trait as TimeP).P (agingP);
-			var p = pRange.P (subp);
-			BioClockTC bc_trait = bioClock.trait as BioClockTC;
-			var l = bc_trait.MaturationTime (bioClock, bioClockInverse);
-			aging = MathUtil.WeibullQF(l, k, p);
+			aging = bioClock.AgingTime (subp);
 		}
 
 		public Adult (Juvenile juvenile) : base (juvenile)

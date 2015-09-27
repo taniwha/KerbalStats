@@ -89,8 +89,8 @@ namespace KerbalStats.Progeny {
 			fsm = new FemaleFSM (this);
 
 			interest = new Interest (genes);
-			gamete = new Gamete (genes, true, this);
-			cycle = new Cycle (genes, this);
+			gamete = new Gamete (genes, true, bioClock);
+			cycle = new Cycle (genes, bioClock);
 			embryo = null;
 		}
 

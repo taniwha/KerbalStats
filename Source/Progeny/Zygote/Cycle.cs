@@ -27,61 +27,52 @@ namespace KerbalStats.Progeny {
 
 	public class Cycle
 	{
-		GenePair cycleK;
-		GenePair cycleP;
-		PRange cyclePR;
+		double cycleK;
+		PRange cycleP;
 		double cycleL;
 
-		GenePair ovulationK;
-		GenePair ovulationP;
-		PRange ovulationPR;
+		double ovulationK;
+		PRange ovulationP;
 		double ovulationL;
 
 		double cycle_start;
 		double cycle_end;
 		double ovulation_time;
 
-		public Cycle (GenePair[] genes, Zygote zygote)
+		public Cycle (GenePair[] genes, BioClock bioClock)
 		{
 			for (int i = 0; i < genes.Length; i++) {
-				switch (genes[i].trait.name) {
+				var g = genes[i];
+				switch (g.trait.name) {
 					case "CyclePeriodK":
-						cycleK = genes[i];
+						cycleK = (g.trait as TimeK).K (g);
 						break;
 					case "CyclePeriodP":
-						cycleP = genes[i];
+						cycleP = (g.trait as TimeP).P (g);
 						break;
 					case "OvulationTimeK":
-						ovulationK = genes[i];
+						ovulationK = (g.trait as TimeK).K (g);
 						break;
 					case "OvulationTimeP":
-						ovulationP = genes[i];
+						ovulationP = (g.trait as TimeP).P (g);
 						break;
 				}
 			}
-			GenePair bioClock = zygote.bioClock;
-			GenePair bioClockInverse = zygote.bioClockInverse;
-			BioClockTC bc_trait = bioClock.trait as BioClockTC;
 
-			cycleL = bc_trait.CyclePeriod (bioClock, bioClockInverse);
-			ovulationL = bc_trait.OvulationTime (bioClock, bioClockInverse);
-
-			cyclePR = (cycleP.trait as TimeP).P (cycleP);
-			ovulationPR = (ovulationP.trait as TimeP).P (ovulationP);
+			cycleL = bioClock.CyclePeriod;
+			ovulationL = bioClock.OvulationTime;
 		}
 
 		double CalcCyclePeriod (double p)
 		{
-			var k = (cycleK.trait as TimeK).K (cycleK);
-			p = cyclePR.P (p);
-			return MathUtil.WeibullQF (cycleL, k, p);
+			p = cycleP.P (p);
+			return MathUtil.WeibullQF (cycleL, cycleK, p);
 		}
 
 		double CalcOvulationTime (double p)
 		{
-			var k = (ovulationK.trait as TimeK).K (ovulationK);
-			p = ovulationPR.P (p);
-			return MathUtil.WeibullQF (ovulationL, k, p);
+			p = ovulationP.P (p);
+			return MathUtil.WeibullQF (ovulationL, ovulationK, p);
 		}
 
 		public void Update (double UT)

@@ -27,46 +27,40 @@ namespace KerbalStats.Progeny {
 
 	public class Gamete
 	{
-		GenePair gameteK;
-		GenePair gameteP;
+		double gameteK;
+		PRange gameteP;
 		double gameteL;
-		PRange pRange;
 
-		public Gamete (GenePair[] genes, bool isFemale, Zygote zygote)
+		public Gamete (GenePair[] genes, bool isFemale, BioClock bioClock)
 		{
 			for (int i = 0; i < genes.Length; i++) {
-				switch (genes[i].trait.name) {
+				var g = genes[i];
+				switch (g.trait.name) {
 					case "GameteLifeK":
-						gameteK = genes[i];
+						gameteK = (g.trait as TimeK).K (g);
 						break;
 					case "GameteLifeP":
-						gameteP = genes[i];
+						gameteP = (g.trait as TimeP).P (g);
 						break;
 				}
 			}
-			GenePair bioClock = zygote.bioClock;
-			GenePair bioClockInverse = zygote.bioClockInverse;
-			BioClockTC bc_trait = bioClock.trait as BioClockTC;
-			pRange = (gameteP.trait as TimeP).P (gameteP);
 			if (isFemale) {
-				gameteL = bc_trait.EggLife (bioClock, bioClockInverse);
+				gameteL = bioClock.EggLife;
 			} else {
-				gameteL = bc_trait.SpermLife (bioClock, bioClockInverse);
+				gameteL = bioClock.SpermLife;
 			}
 		}
 
 		public double Life (double p)
 		{
-			var k = (gameteK.trait as TimeK).K (gameteK);
-			p = pRange.P (p);
-			return MathUtil.WeibullQF (gameteL, k, p);
+			p = gameteP.P (p);
+			return MathUtil.WeibullQF (gameteL, gameteK, p);
 		}
 
 		public float Viability (double time)
 		{
-			var k = (gameteK.trait as TimeK).K (gameteK);
-			double p = MathUtil.WeibullCDF (gameteL, k, time);
-			p = pRange.RevP (p);
+			double p = MathUtil.WeibullCDF (gameteL, gameteK, time);
+			p = gameteP.RevP (p);
 			return (float) (1 - p);
 		}
 	}

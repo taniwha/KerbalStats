@@ -32,8 +32,7 @@ namespace KerbalStats.Progeny {
 		public string father_id;
 		public Location location;
 		protected GenePair[] genes;
-		public GenePair bioClock { get; private set; }
-		public GenePair bioClockInverse { get; private set; }
+		public BioClock bioClock { get; private set; }
 
 		public string id
 		{
@@ -43,16 +42,7 @@ namespace KerbalStats.Progeny {
 
 		void init ()
 		{
-			for (int i = 0; i < genes.Length; i++) {
-				switch (genes[i].trait.name) {
-					case "BioClockTC":
-						bioClock = genes[i];
-						break;
-					case "BioClockInverse":
-						bioClockInverse = genes[i];
-						break;
-				}
-			}
+			bioClock = new BioClock (genes);
 		}
 
 		public Zygote (ProtoCrewMember kerbal)

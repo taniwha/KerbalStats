@@ -49,7 +49,7 @@ namespace KerbalStats.Progeny {
 		void initialize ()
 		{
 			interest = new Interest (genes);
-			gamete = new Gamete (genes, false, this);
+			gamete = new Gamete (genes, false, bioClock);
 		}
 
 		public Male (Juvenile juvenile) : base (juvenile)
