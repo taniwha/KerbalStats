@@ -55,7 +55,7 @@ namespace KerbalStats.Progeny {
 
 		static double[] k = { 1/0.5, 1/0.5, 1/0.05, 1/0.7, 1/0.9 };
 
-		public double K (GenePair gene)
+		public virtual double K (GenePair gene)
 		{
 			var c = CountBits (gene.a & gene.b);
 			return k[c];

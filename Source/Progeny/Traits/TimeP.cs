@@ -61,7 +61,7 @@ namespace KerbalStats.Progeny {
 			new PRange (0.9, 0.99),
 		};
 
-		public PRange P (GenePair gene)
+		public virtual PRange P (GenePair gene)
 		{
 			var c = CountBits (gene.a & gene.b);
 			return ranges[c];
