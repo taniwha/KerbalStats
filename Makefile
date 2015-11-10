@@ -20,7 +20,6 @@ KS_FILES := \
 	Experience/SeatTasks.cs			\
 	Experience/Task.cs				\
 	Experience/Tracker.cs			\
-	Profession/Profession.cs		\
 	IKerbalExt.cs					\
 	KerbalExt.cs					\
 	KerbalStats.cs					\
