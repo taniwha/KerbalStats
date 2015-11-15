@@ -26,7 +26,6 @@ KS_FILES := \
 	Genome/Probability.cs			\
 	Genome/Stupidity.cs				\
 	Genome/Trait.cs					\
-	Profession/Profession.cs		\
 	Progeny/Location/AstronautComplex.cs	\
 	Progeny/Location/EVA.cs					\
 	Progeny/Location/Location.cs			\
