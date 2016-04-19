@@ -83,7 +83,7 @@ KS_FILES := \
 	$e
 
 RESGEN2		:= resgen2
-GMCS		:= gmcs
+GMCS		:= mcs
 GMCSFLAGS	:= -optimize -warnaserror
 GIT			:= git
 TAR			:= tar
