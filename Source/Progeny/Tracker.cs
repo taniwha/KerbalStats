@@ -151,7 +151,9 @@ namespace KerbalStats.Progeny {
 
 		internal IEnumerator WaitAndCheckLocations ()
 		{
-			yield return null;
+			while (ProgenyScenario.current == null) {
+				yield return null;
+			}
 			yield return null;
 			yield return null;
 			//Debug.Log(String.Format ("[KS Progeny] WaitAndCheckLocations"));
