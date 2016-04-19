@@ -134,7 +134,7 @@ namespace KerbalStats.Progeny {
 				if (z is Adult) {
 					double UT = Planetarium.GetUniversalTime ();
 					double age = UT - (z as Adult).Birth ();
-					age /= KSPUtil.Year;
+					age /= KSPUtil.dateTimeFormatter.Year;
 					GUILayout.Label (age.ToString ("F1"));
 				}
 				GUILayout.FlexibleSpace ();
