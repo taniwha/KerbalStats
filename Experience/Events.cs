@@ -21,6 +21,7 @@ using System.Linq;
 using UnityEngine;
 
 using KSP.IO;
+using KSP.UI.Screens;
 
 namespace KerbalStats.Experience {
 	[KSPAddon (KSPAddon.Startup.EveryScene, false)]
@@ -200,7 +201,7 @@ namespace KerbalStats.Experience {
 			}
 		}
 
-		void onVesselRecovered (ProtoVessel vessel)
+		void onVesselRecovered (ProtoVessel vessel, bool quick)
 		{
 			Debug.Log (String.Format ("[KS Exp] {0}: {1}",
 									  "onVesselRecovered", vessel));

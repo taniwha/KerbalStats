@@ -53,7 +53,9 @@ info:
 bin/KerbalStats.dll: ${KS_FILES}
 	@mkdir -p bin
 	${GMCS} ${GMCSFLAGS} -t:library -lib:${MANAGED} \
-		-r:Assembly-CSharp,Assembly-CSharp-firstpass,UnityEngine \
+		-r:Assembly-CSharp,Assembly-CSharp-firstpass \
+		-r:UnityEngine,UnityEngine.UI \
+		-r:KSPUtil \
 		-out:$@ $^
 
 clean:
