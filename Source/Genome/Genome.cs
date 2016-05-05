@@ -34,7 +34,7 @@ namespace KerbalStats.Genome {
 
 		static Genome ()
 		{
-			var trait_modules = ModuleLoader.LoadModules (typeof (Trait), new Type []{});
+			var trait_modules = ModuleLoader.LoadModules<Trait> (new Type []{});
 			traits = new Trait[trait_modules.Count];
 			trait_map = new Dictionary<string, int> ();
 			var parms = new object[] {};

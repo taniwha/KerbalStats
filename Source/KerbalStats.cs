@@ -135,7 +135,7 @@ namespace KerbalStats {
 		void LoadModules ()
 		{
 			kerbalext_modules = new Dictionary<string, IKerbalExt> ();
-			var modules = ModuleLoader.LoadModules (typeof (IKerbalExt), new Type[] {typeof (KerbalStats)});
+			var modules = ModuleLoader.LoadModules<IKerbalExt> (new Type[] {typeof (KerbalStats)});
 			var parms = new object[] {this};
 			foreach (var m in modules) {
 				IKerbalExt kext;

@@ -30,8 +30,9 @@ namespace KerbalStats {
 	]
 	public class ModuleLoader
 	{
-		public static List<ConstructorInfo> LoadModules (Type ofType, Type[] param_types)
+		public static List<ConstructorInfo> LoadModules<T> (Type[] param_types) where T: class
 		{
+			Type ofType = typeof(T);
 			var constructor_list = new List<ConstructorInfo> ();
 			foreach (var loaded in AssemblyLoader.loadedAssemblies) {
 				var assembly = loaded.assembly;
