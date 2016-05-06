@@ -21,13 +21,6 @@ using System.Linq;
 using UnityEngine;
 
 namespace KerbalStats {
-	[KSPScenario(ScenarioCreationOptions.AddToAllGames, new GameScenes[] {
-			GameScenes.SPACECENTER,
-			GameScenes.EDITOR,
-			GameScenes.FLIGHT,
-			GameScenes.TRACKSTATION,
-		})
-	]
 	public class ModuleLoader
 	{
 		public static List<ConstructorInfo> LoadModules<T> (Type[] param_types) where T: class
