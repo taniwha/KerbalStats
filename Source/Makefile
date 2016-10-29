@@ -75,7 +75,7 @@ KS_FILES := \
 	Utils/ModuleLoader.cs			\
 	IKerbalExt.cs					\
 	KerbalExt.cs					\
-	KerbalStats.cs					\
+	KerbalStatsScenario.cs			\
 	assembly/AssemblyInfo.cs		\
 	assembly/VersionReport.cs		\
 	toolbar/Toolbar.cs				\
@@ -110,7 +110,6 @@ bin/KerbalStats.dll: ${KS_FILES}
 	${GMCS} ${GMCSFLAGS} -t:library -lib:${MANAGED} \
 		-r:Assembly-CSharp,Assembly-CSharp-firstpass \
 		-r:UnityEngine,UnityEngine.UI \
-		-r:KSPUtil \
 		-out:$@ $^
 
 clean:

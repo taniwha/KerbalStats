@@ -30,7 +30,7 @@ namespace KerbalStats {
 
 		public void NewKerbal (ProtoCrewMember pcm)
 		{
-			var modules = KerbalStats.current.kerbalext_modules;
+			var modules = Scenario.KerbalStats.current.kerbalext_modules;
 			foreach (var mod in modules.Values) {
 				mod.AddKerbal (pcm);
 			}
@@ -38,7 +38,7 @@ namespace KerbalStats {
 
 		public void Load (ProtoCrewMember kerbal, ConfigNode ext)
 		{
-			var modules = KerbalStats.current.kerbalext_modules;
+			var modules = Scenario.KerbalStats.current.kerbalext_modules;
 			if (ext.HasValue ("name")) {
 				var name = ext.GetValue ("name");
 				ext.RemoveValue ("name");
@@ -68,7 +68,7 @@ namespace KerbalStats {
 
 		public void Save (ProtoCrewMember kerbal, ConfigNode ext)
 		{
-			var modules = KerbalStats.current.kerbalext_modules;
+			var modules = Scenario.KerbalStats.current.kerbalext_modules;
 			ext.AddValue ("name", kerbal.name);
 			node.CopyTo (ext, "KerbalExt");
 			foreach (var mod in modules.Values) {
@@ -78,7 +78,7 @@ namespace KerbalStats {
 
 		internal static void Clear ()
 		{
-			var modules = KerbalStats.current.kerbalext_modules;
+			var modules = Scenario.KerbalStats.current.kerbalext_modules;
 			foreach (var mod in modules.Values) {
 				mod.Clear ();
 			}
@@ -86,7 +86,7 @@ namespace KerbalStats {
 
 		public static string Get (ProtoCrewMember kerbal, string parms)
 		{
-			var modules = KerbalStats.current.kerbalext_modules;
+			var modules = Scenario.KerbalStats.current.kerbalext_modules;
 			string system = parms;
 			if (parms.Contains (":")) {
 				int index = parms.IndexOf (":");

@@ -19,14 +19,12 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace KerbalStats {
-	[KSPScenario(ScenarioCreationOptions.AddToAllGames, new GameScenes[] {
-			GameScenes.SPACECENTER,
-			GameScenes.EDITOR,
-			GameScenes.FLIGHT,
-			GameScenes.TRACKSTATION,
-		})
-	]
+namespace KerbalStats.Scenario {
+	[KSPScenario(ScenarioCreationOptions.None,
+				 GameScenes.SPACECENTER,
+				 GameScenes.EDITOR,
+				 GameScenes.FLIGHT,
+				 GameScenes.TRACKSTATION)]
 	public class KerbalStats : ScenarioModule
 	{
 		List<KerbalExt> Roster;

@@ -78,7 +78,7 @@ namespace KerbalStats.Experience {
 				Vessel vessel = dst_part.vessel;
 				SeatKerbal (kerbal, vessel, "EVA");
 			} else {
-				KerbalStats.current.StartCoroutine (WaitAndSeatKerbal (kerbal));
+				Scenario.KerbalStats.current.StartCoroutine (WaitAndSeatKerbal (kerbal));
 			}
 		}
 
@@ -193,13 +193,13 @@ namespace KerbalStats.Experience {
 			if (vessel.protoVessel == null) {
 				// This is a newly created vessel.
 				// Crew have yet to be assigned to their positions.
-				KerbalStats.current.StartCoroutine (WaitAndScanVesselCrew (vessel));
+				Scenario.KerbalStats.current.StartCoroutine (WaitAndScanVesselCrew (vessel));
 			} else {
 				// This is an existing vessel loaded from a saved game.
 				// Any crew are already on board.
 				// However, the KerbalStats scenario is loaded after vessels,
 				// so wait a frame for the scenario to load.
-				KerbalStats.current.StartCoroutine (WaitAndScanVesselCrew (vessel));
+				Scenario.KerbalStats.current.StartCoroutine (WaitAndScanVesselCrew (vessel));
 			}
 		}
 
@@ -268,7 +268,7 @@ namespace KerbalStats.Experience {
 		void onVesselSOIChanged (GameEvents.HostedFromToAction<Vessel, CelestialBody> hft)
 		{
 			Vessel vessel = hft.host;
-			KerbalStats.current.StartCoroutine (WaitAndSetBody (vessel));
+			Scenario.KerbalStats.current.StartCoroutine (WaitAndSetBody (vessel));
 		}
 
 		public ExperienceTrackerEvents (ExperienceTracker tracker)
