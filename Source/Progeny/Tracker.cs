@@ -39,22 +39,21 @@ namespace KerbalStats.Progeny {
 			return vessels[id];
 		}
 
-		public void AddKerbal (ProtoCrewMember pcm)
+		public void AddKerbal (KerbalExt ext)
 		{
 			Zygote kerbal;
-			if (pcm.gender == ProtoCrewMember.Gender.Female) {
-				kerbal = new Female (pcm);
+			if (ext.kerbal.gender == ProtoCrewMember.Gender.Female) {
+				kerbal = new Female (ext.kerbal);
 			} else {
-				kerbal = new Male (pcm);
+				kerbal = new Male (ext.kerbal);
 			}
 			ProgenyScenario.current.AddKerbal (kerbal);
-			kerbal_ids[pcm.name] = kerbal.id;
-			CheckLocation (pcm);
+			ext[name] = kerbal.id;
+			CheckLocation (ext.kerbal);
 		}
 
-		public void RemoveKerbal (ProtoCrewMember pcm)
+		public void RemoveKerbal (KerbalExt kerbal)
 		{
-			kerbal_ids.Remove (pcm.name);
 		}
 
 		public string name
@@ -64,28 +63,28 @@ namespace KerbalStats.Progeny {
 			}
 		}
 
-		IEnumerator WaitAndAddKerbal (ProtoCrewMember pcm)
+		IEnumerator WaitAndAddKerbal (KerbalExt kerbal)
 		{
 			yield return null;
 			yield return null;
-			AddKerbal (pcm);
+			AddKerbal (kerbal);
 		}
 
-		public void Load (ProtoCrewMember pcm, ConfigNode node)
+		public void Load (KerbalExt kerbal, ConfigNode node)
 		{
 			if (node.HasValue (name)) {
 				var id = node.GetValue (name);
-				kerbal_ids[pcm.name] = id;
+				kerbal[name] = id;
 			} else {
 				if (!HighLogic.LoadedSceneIsEditor) {
-					KerbalStats.current.StartCoroutine (WaitAndAddKerbal (pcm));
+					KerbalStats.current.StartCoroutine (WaitAndAddKerbal (kerbal));
 				}
 			}
 		}
 
-		public void Save (ProtoCrewMember pcm, ConfigNode node)
+		public void Save (KerbalExt kerbal, ConfigNode node)
 		{
-			node.AddValue (name, kerbal_ids[pcm.name]);
+			node.AddValue (name, kerbal[name] as string);
 		}
 
 		public void Clear ()
@@ -94,7 +93,7 @@ namespace KerbalStats.Progeny {
 			vessels = new Dictionary<Guid, Vessel> ();
 		}
 
-		public string Get (ProtoCrewMember kerbal, string parms)
+		public string Get (KerbalExt kerbal, string parms)
 		{
 			return null;
 		}
