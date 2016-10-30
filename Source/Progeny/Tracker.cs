@@ -78,7 +78,7 @@ namespace KerbalStats.Progeny {
 				kerbal_ids[pcm.name] = id;
 			} else {
 				if (!HighLogic.LoadedSceneIsEditor) {
-					Scenario.KerbalStats.current.StartCoroutine (WaitAndAddKerbal (pcm));
+					KerbalStats.current.StartCoroutine (WaitAndAddKerbal (pcm));
 				}
 			}
 		}
@@ -99,7 +99,7 @@ namespace KerbalStats.Progeny {
 			return null;
 		}
 
-		public ProgenyTracker (Scenario.KerbalStats ks)
+		public ProgenyTracker (KerbalStats ks)
 		{
 			instance = this;
 			Clear ();
@@ -110,7 +110,7 @@ namespace KerbalStats.Progeny {
 			GameEvents.onVesselWasModified.Add (onVesselWasModified);
 
 			if (!HighLogic.LoadedSceneIsEditor) {
-				Scenario.KerbalStats.current.StartCoroutine (WaitAndCheckLocations ());
+				KerbalStats.current.StartCoroutine (WaitAndCheckLocations ());
 			}
 		}
 
@@ -204,7 +204,7 @@ namespace KerbalStats.Progeny {
 						// Check the kerbal's status again next frame. If it
 						// is still Available, then the kerbal has been
 						// recovered
-						Scenario.KerbalStats.current.StartCoroutine (WaitAndCheckStatus (pcm));
+						KerbalStats.current.StartCoroutine (WaitAndCheckStatus (pcm));
 						return;
 					}
 					// Look what the cat dragged in.
@@ -274,7 +274,7 @@ namespace KerbalStats.Progeny {
 		void onVesselCreate (Vessel vessel)
 		{
 			//Debug.Log(String.Format ("[KS Progeny] onVesselCreate"));
-			Scenario.KerbalStats.current.StartCoroutine (WaitAndGetCrew (vessel));
+			KerbalStats.current.StartCoroutine (WaitAndGetCrew (vessel));
 			//Debug.Log(String.Format ("[KS Progeny] onVesselCreate a"));
 			vessels[vessel.id] = vessel;
 		}
@@ -288,7 +288,7 @@ namespace KerbalStats.Progeny {
 		void onVesselWasModified (Vessel vessel)
 		{
 			//Debug.Log(String.Format ("[KS Progeny] onVesselWasModified"));
-			Scenario.KerbalStats.current.StartCoroutine (WaitAndGetCrew (vessel));
+			KerbalStats.current.StartCoroutine (WaitAndGetCrew (vessel));
 		}
 	}
 }

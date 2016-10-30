@@ -31,7 +31,7 @@ namespace KerbalStats.Experience {
 		ExperienceTrackerEvents event_handler;
 		public static ExperienceTracker instance;
 
-		public ExperienceTracker (Scenario.KerbalStats ks)
+		public ExperienceTracker (KerbalStats ks)
 		{
 			instance = this;
 			event_handler = new ExperienceTrackerEvents (this);

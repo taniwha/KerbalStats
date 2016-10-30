@@ -66,7 +66,7 @@ namespace KerbalStats.Genome {
 
 		static Genome instance;
 
-		public Genome (Scenario.KerbalStats ks)
+		public Genome (KerbalStats ks)
 		{
 			instance = this;
 			Clear ();

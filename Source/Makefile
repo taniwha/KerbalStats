@@ -75,6 +75,7 @@ KS_FILES := \
 	Utils/ModuleLoader.cs			\
 	IKerbalExt.cs					\
 	KerbalExt.cs					\
+	KerbalStats.cs					\
 	KerbalStatsScenario.cs			\
 	assembly/AssemblyInfo.cs		\
 	assembly/VersionReport.cs		\
