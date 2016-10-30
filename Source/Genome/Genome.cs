@@ -62,17 +62,13 @@ namespace KerbalStats.Genome {
 			}
 		}
 
-		static Genome instance;
-
 		public Genome (KerbalStats ks)
 		{
-			instance = this;
 			Clear ();
 		}
 
 		~Genome ()
 		{
-			instance = null;
 		}
 
 		public static string extname = "genome";
@@ -163,7 +159,6 @@ namespace KerbalStats.Genome {
 
 		public void Shutdown ()
 		{
-			instance = null;
 		}
 
 		public string Get (KerbalExt kerbal, string parms)
