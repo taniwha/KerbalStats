@@ -26,8 +26,6 @@ namespace KerbalStats.Genome {
 
 	public class Genome: IKerbalExt
 	{
-		Dictionary<string, GenePair[]> kerbal_genome;
-
 		static Dictionary<string, int> trait_map;
 		static Trait[] traits;
 		static Dictionary<string, Dictionary<string, GenePair>> prefabs;
@@ -76,11 +74,13 @@ namespace KerbalStats.Genome {
 		{
 			instance = null;
 		}
+
+		public static string extname = "genome";
 			
 		public string name
 		{
 			get {
-				return "genome";
+				return extname;
 			}
 		}
 
@@ -93,35 +93,34 @@ namespace KerbalStats.Genome {
 			}
 		}
 
-		public void AddKerbal (ProtoCrewMember kerbal)
+		public void AddKerbal (KerbalExt kerbal)
 		{
-			if (kerbal_genome.ContainsKey (kerbal.name)) {
+			if (kerbal[name] != null) {
 				// already added via an initialization race
 				return;
 			}
 			var genes = new GenePair[traits.Length];
-			RebuildGenes (kerbal, genes);
-			kerbal_genome[kerbal.name] = genes;
+			RebuildGenes (kerbal.kerbal, genes);
+			kerbal[name] = genes;
 		}
 
-		public static GenePair[] GetGenes (ProtoCrewMember kerbal)
+		public static GenePair[] GetGenes (ProtoCrewMember pcm)
 		{
-			if (!instance.kerbal_genome.ContainsKey (kerbal.name)) {
-				instance.AddKerbal (kerbal);
-			}
-			return instance.kerbal_genome[kerbal.name];
+			KerbalExt kerbal = KerbalStats.current[pcm];
+			return kerbal[extname] as GenePair[];
 		}
 
-		public void RemoveKerbal (ProtoCrewMember kerbal)
+		public void RemoveKerbal (KerbalExt kerbal)
 		{
 		}
 
-		public void Load (ProtoCrewMember kerbal, ConfigNode node)
+		public void Load (KerbalExt kerbal, ConfigNode node)
 		{
 			if (node.HasNode (name)) {
 				node = node.GetNode (name);
-				kerbal_genome[kerbal.name] = ReadGenes (node);
-				RebuildGenes (kerbal, kerbal_genome[kerbal.name]);
+				var genes = ReadGenes (node);
+				kerbal[name] = genes;
+				RebuildGenes (kerbal.kerbal, genes);
 			} else {
 				AddKerbal (kerbal);
 			}
@@ -150,18 +149,16 @@ namespace KerbalStats.Genome {
 			return genes;
 		}
 
-		public void Save (ProtoCrewMember kerbal, ConfigNode node)
+		public void Save (KerbalExt kerbal, ConfigNode node)
 		{
-			if (kerbal_genome.ContainsKey (kerbal.name)) {
-				var gen = new ConfigNode (name);
-				node.AddNode (gen);
-				WriteGenes (kerbal_genome[kerbal.name], gen);
-			}
+			var genes = kerbal[name] as GenePair[];
+			var gen = new ConfigNode (name);
+			node.AddNode (gen);
+			WriteGenes (genes, gen);
 		}
 
 		public void Clear ()
 		{
-			kerbal_genome = new Dictionary<string, GenePair[]>();
 		}
 
 		public void Shutdown ()
@@ -169,7 +166,7 @@ namespace KerbalStats.Genome {
 			instance = null;
 		}
 
-		public string Get (ProtoCrewMember kerbal, string parms)
+		public string Get (KerbalExt kerbal, string parms)
 		{
 			return "";
 		}
