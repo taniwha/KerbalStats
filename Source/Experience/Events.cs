@@ -203,38 +203,12 @@ namespace KerbalStats.Experience {
 			}
 		}
 
-		void onVesselRecovered (ProtoVessel vessel, bool quick)
-		{
-			Debug.Log (String.Format ("[KS Exp] {0}: {1}",
-									  "onVesselRecovered", vessel));
-		}
-
 		void onVesselRecoveryProcessing (ProtoVessel vessel, MissionRecoveryDialog d, float f)
 		{
-			Debug.Log (String.Format ("[KS Exp] {0}: {1} {2} {3}",
-									  "onVesselRecoveryProcessing", vessel, d, f));
-		}
-
-		void OnVesselRecoveryRequested (Vessel vessel)
-		{
 			double UT = Planetarium.GetUniversalTime ();
-			if (vessel.loaded) {
-				for (int i = 0; i < vessel.parts.Count; i++) {
-					Part part = vessel.parts[i];
-					for (int j = 0; j < part.protoModuleCrew.Count; j++) {
-						ProtoCrewMember kerbal = part.protoModuleCrew[j];
-						ExperienceTracker.instance.FinishAllTasks (kerbal, UT);
-					}
-				}
-			} else {
-				ProtoVessel pv = vessel.protoVessel;
-				for (int i = 0; i < pv.protoPartSnapshots.Count; i++) {
-					ProtoPartSnapshot pp = pv.protoPartSnapshots[i];
-					for (int j = 0; j < pp.protoModuleCrew.Count; j++) {
-						ProtoCrewMember kerbal = pp.protoModuleCrew[j];
-						ExperienceTracker.instance.FinishAllTasks (kerbal, UT);
-					}
-				}
+			var crew = vessel.GetVesselCrew ();
+			foreach (var kerbal in crew) {
+				ExperienceTracker.instance.FinishAllTasks (kerbal, UT);
 			}
 		}
 
@@ -281,9 +255,7 @@ namespace KerbalStats.Experience {
 			GameEvents.onPartCouple.Add (onPartCouple);
 			GameEvents.onPartUndock.Add (onPartUndock);
 			GameEvents.onVesselCreate.Add (onVesselCreate);
-			GameEvents.onVesselRecovered.Add (onVesselRecovered);
 			GameEvents.onVesselRecoveryProcessing.Add (onVesselRecoveryProcessing);
-			GameEvents.OnVesselRecoveryRequested.Add (OnVesselRecoveryRequested);
 			GameEvents.onVesselSituationChange.Add (onVesselSituationChange);
 			GameEvents.onVesselSOIChanged.Add (onVesselSOIChanged);
 		}
@@ -296,9 +268,7 @@ namespace KerbalStats.Experience {
 			GameEvents.onPartCouple.Remove (onPartCouple);
 			GameEvents.onPartUndock.Remove (onPartUndock);
 			GameEvents.onVesselCreate.Remove (onVesselCreate);
-			GameEvents.onVesselRecovered.Remove (onVesselRecovered);
 			GameEvents.onVesselRecoveryProcessing.Remove (onVesselRecoveryProcessing);
-			GameEvents.OnVesselRecoveryRequested.Remove (OnVesselRecoveryRequested);
 			GameEvents.onVesselSituationChange.Remove (onVesselSituationChange);
 			GameEvents.onVesselSOIChanged.Remove (onVesselSOIChanged);
 		}
