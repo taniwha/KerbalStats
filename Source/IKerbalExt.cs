@@ -23,13 +23,13 @@ namespace KerbalStats {
 	public interface IKerbalExt
 	{
 		string name { get; }
-		void AddKerbal (ProtoCrewMember kerbal);
-		void RemoveKerbal (ProtoCrewMember kerbal);
-		void Load (ProtoCrewMember kerbal, ConfigNode node);
-		void Save (ProtoCrewMember kerbal, ConfigNode node);
+		void AddKerbal (KerbalExt kerbal);
+		void RemoveKerbal (KerbalExt kerbal);
+		void Load (KerbalExt kerbal, ConfigNode node);
+		void Save (KerbalExt kerbal, ConfigNode node);
 		void Clear ();
 		void Shutdown ();
 
-		string Get (ProtoCrewMember kerbal, string parms);
+		string Get (KerbalExt kerbal, string parms);
 	}
 }

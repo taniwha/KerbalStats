@@ -22,22 +22,40 @@ namespace KerbalStats {
 	public class KerbalExt
 	{
 		ConfigNode node;
+		Dictionary<string, object> module_data;
+
+		public ProtoCrewMember kerbal { get; private set; }
+
+		public object this[string mod]
+		{
+			get {
+				object data;
+				module_data.TryGetValue (mod, out data);
+				return data;
+			}
+			set {
+				module_data[mod] = value;
+			}
+		}
 
 		public KerbalExt ()
 		{
 			node = new ConfigNode ();
+			module_data = new Dictionary<string, object>();
 		}
 
 		public void NewKerbal (ProtoCrewMember pcm)
 		{
+			kerbal = pcm;
 			var modules = KerbalStats.current.kerbalext_modules;
 			foreach (var mod in modules.Values) {
-				mod.AddKerbal (pcm);
+				mod.AddKerbal (this);
 			}
 		}
 
-		public void Load (ProtoCrewMember kerbal, ConfigNode ext)
+		public void Load (ProtoCrewMember pcm, ConfigNode ext)
 		{
+			kerbal = pcm;
 			var modules = KerbalStats.current.kerbalext_modules;
 			if (ext.HasValue ("name")) {
 				var name = ext.GetValue ("name");
@@ -48,7 +66,7 @@ namespace KerbalStats {
 			}
 			ext.CopyTo (node, "KerbalExt");
 			foreach (var mod in modules.Values) {
-				mod.Load (kerbal, node);
+				mod.Load (this, node);
 			}
 			for (int i = 0; i < node.nodes.Count; ) {
 				if (modules.ContainsKey (node.nodes[i].name)) {
@@ -66,12 +84,12 @@ namespace KerbalStats {
 			}
 		}
 
-		public void Save (ProtoCrewMember kerbal, ConfigNode ext)
+		public void Save (ConfigNode ext)
 		{
 			var modules = KerbalStats.current.kerbalext_modules;
 			node.CopyTo (ext, "KerbalExt");
 			foreach (var mod in modules.Values) {
-				mod.Save (kerbal, ext);
+				mod.Save (this, ext);
 			}
 		}
 
@@ -83,9 +101,10 @@ namespace KerbalStats {
 			}
 		}
 
-		public static string Get (ProtoCrewMember kerbal, string parms)
+		public static string Get (ProtoCrewMember pcm, string parms)
 		{
 			var modules = KerbalStats.current.kerbalext_modules;
+			KerbalExt kerbal = KerbalStats.current[pcm];
 			string system = parms;
 			if (parms.Contains (":")) {
 				int index = parms.IndexOf (":");

@@ -274,24 +274,18 @@ namespace KerbalStats.Experience {
 		public ExperienceTrackerEvents (ExperienceTracker tracker)
 		{
 			this.tracker = tracker;
-			var scene = HighLogic.LoadedScene;
-			if (scene == GameScenes.SPACECENTER
-				|| scene == GameScenes.EDITOR
-				|| scene == GameScenes.FLIGHT
-				|| scene == GameScenes.TRACKSTATION) {
-				GameEvents.onCrewTransferred.Add (onCrewTransferred);
-				GameEvents.onKerbalStatusChange.Add (onKerbalStatusChange);
-				GameEvents.onKerbalTypeChange.Add (onKerbalTypeChange);
-				GameEvents.onNewVesselCreated.Add (onNewVesselCreated);
-				GameEvents.onPartCouple.Add (onPartCouple);
-				GameEvents.onPartUndock.Add (onPartUndock);
-				GameEvents.onVesselCreate.Add (onVesselCreate);
-				GameEvents.onVesselRecovered.Add (onVesselRecovered);
-				GameEvents.onVesselRecoveryProcessing.Add (onVesselRecoveryProcessing);
-				GameEvents.OnVesselRecoveryRequested.Add (OnVesselRecoveryRequested);
-				GameEvents.onVesselSituationChange.Add (onVesselSituationChange);
-				GameEvents.onVesselSOIChanged.Add (onVesselSOIChanged);
-			}
+			GameEvents.onCrewTransferred.Add (onCrewTransferred);
+			GameEvents.onKerbalStatusChange.Add (onKerbalStatusChange);
+			GameEvents.onKerbalTypeChange.Add (onKerbalTypeChange);
+			GameEvents.onNewVesselCreated.Add (onNewVesselCreated);
+			GameEvents.onPartCouple.Add (onPartCouple);
+			GameEvents.onPartUndock.Add (onPartUndock);
+			GameEvents.onVesselCreate.Add (onVesselCreate);
+			GameEvents.onVesselRecovered.Add (onVesselRecovered);
+			GameEvents.onVesselRecoveryProcessing.Add (onVesselRecoveryProcessing);
+			GameEvents.OnVesselRecoveryRequested.Add (OnVesselRecoveryRequested);
+			GameEvents.onVesselSituationChange.Add (onVesselSituationChange);
+			GameEvents.onVesselSOIChanged.Add (onVesselSOIChanged);
 		}
 		public void Shutdown ()
 		{

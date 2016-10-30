@@ -39,6 +39,15 @@ namespace KerbalStats {
 		Dictionary<string, KerbalExt> kerbals;
 		List<KerbalPair> loading_kerbals;
 
+		public KerbalExt this[ProtoCrewMember pcm]
+		{
+			get {
+				KerbalExt ext;
+				kerbals.TryGetValue (pcm.name, out ext);
+				return ext;
+			}
+		}
+
 		internal void SetExt (ProtoCrewMember pcm, KerbalExt ext)
 		{
 			if (loading_kerbals != null) {
@@ -100,14 +109,14 @@ namespace KerbalStats {
 			ConfigNode kerbalExt = node.AddNode ("KerbalExt");
 			if (kerbals != null) {
 				Debug.Log ("    from kerbals");
-				kerbals[pcm.name].Save (pcm, kerbalExt);
+				kerbals[pcm.name].Save (kerbalExt);
 			} else if (loading_kerbals != null) {
 				Debug.Log ("    from loading_kerbals");
 			} else {
 				Debug.Log ("    from the ether");
 				KerbalExt ext = new KerbalExt ();
 				ext.NewKerbal (pcm);
-				ext.Save (pcm, kerbalExt);
+				ext.Save (kerbalExt);
 			}
 		}
 

@@ -25,7 +25,6 @@ using KSP.IO;
 namespace KerbalStats.Experience {
 	public class ExperienceTracker : IKerbalExt
 	{
-		Dictionary<string,Experience> kerbal_experience;
 		public static PartSeatTasks partSeatTasks;
 
 		ExperienceTrackerEvents event_handler;
@@ -41,14 +40,13 @@ namespace KerbalStats.Experience {
 			Clear ();
 		}
 
-		public void AddKerbal (ProtoCrewMember kerbal)
+		public void AddKerbal (KerbalExt kerbal)
 		{
-			kerbal_experience[kerbal.name] = new Experience ();
+			kerbal[name] = new Experience ();
 		}
 
-		public void RemoveKerbal (ProtoCrewMember kerbal)
+		public void RemoveKerbal (KerbalExt kerbal)
 		{
-			kerbal_experience.Remove (kerbal.name);
 		}
 
 		public string name
@@ -58,29 +56,28 @@ namespace KerbalStats.Experience {
 			}
 		}
 
-		public void Load (ProtoCrewMember kerbal, ConfigNode node)
+		public void Load (KerbalExt kerbal, ConfigNode node)
 		{
-			kerbal_experience[kerbal.name] = new Experience ();
+			var experience = new Experience ();
+			kerbal[name] = experience;
 			if (node.HasNode (name)) {
 				var exp = node.GetNode (name);
-				kerbal_experience[kerbal.name].Load (exp);
+				experience.Load (exp);
 			} else {
 				AddKerbal (kerbal);
 			}
 		}
 
-		public void Save (ProtoCrewMember kerbal, ConfigNode node)
+		public void Save (KerbalExt kerbal, ConfigNode node)
 		{
-			if (kerbal_experience.ContainsKey (kerbal.name)) {
-				var exp = new ConfigNode (name);
-				node.AddNode (exp);
-				kerbal_experience[kerbal.name].Save (exp);
-			}
+			Experience experience = kerbal[name] as Experience;
+			var exp = new ConfigNode (name);
+			node.AddNode (exp);
+			experience.Save (exp);
 		}
 
 		public void Clear ()
 		{
-			kerbal_experience = new Dictionary<string,Experience> ();
 		}
 
 		public void Shutdown ()
@@ -90,12 +87,8 @@ namespace KerbalStats.Experience {
 			instance = null;
 		}
 
-		public string Get (ProtoCrewMember kerbal, string parms)
+		public string Get (KerbalExt kerbal, string parms)
 		{
-			if (!kerbal_experience.ContainsKey (kerbal.name)) {
-				Debug.LogError ("[KS] ExperienceTracker.Get: no such kerbal: " + kerbal.name);
-				return null;
-			}
 			string task = null;
 			string body = null;
 			string situation = null;
@@ -119,45 +112,37 @@ namespace KerbalStats.Experience {
 				}
 			}
 			double UT = Planetarium.GetUniversalTime ();
-			var exp = kerbal_experience[kerbal.name].GetExperience (UT, task, body, situation);
+			var exp = (kerbal[name] as Experience).GetExperience (UT, task, body, situation);
 			return exp.ToString ("G17");
 		}
 
-		public void SetSituation (ProtoCrewMember kerbal, double UT,
+		public void SetSituation (ProtoCrewMember pcm, double UT,
 								  string body, string situation)
 		{
-			if (!kerbal_experience.ContainsKey (kerbal.name)) {
-				AddKerbal (kerbal);
-			}
-			var exp = kerbal_experience[kerbal.name];
+			KerbalExt kerbal = KerbalStats.current[pcm];
+			var exp = kerbal[name] as Experience;
 			exp.SetSituation (UT, body, situation);
 		}
 
-		public void BeginTask (ProtoCrewMember kerbal, double UT, string task,
+		public void BeginTask (ProtoCrewMember pcm, double UT, string task,
 							   string body, string situation)
 		{
-			if (!kerbal_experience.ContainsKey (kerbal.name)) {
-				AddKerbal (kerbal);
-			}
-			var exp = kerbal_experience[kerbal.name];
+			KerbalExt kerbal = KerbalStats.current[pcm];
+			var exp = kerbal[name] as Experience;
 			exp.BeginTask (UT, task, body, situation);
 		}
 
-		public void FinishTask (ProtoCrewMember kerbal, double UT, string task)
+		public void FinishTask (ProtoCrewMember pcm, double UT, string task)
 		{
-			if (!kerbal_experience.ContainsKey (kerbal.name)) {
-				AddKerbal (kerbal);
-			}
-			var exp = kerbal_experience[kerbal.name];
+			KerbalExt kerbal = KerbalStats.current[pcm];
+			var exp = kerbal[name] as Experience;
 			exp.FinishTask (UT, task);
 		}
 
-		public void FinishAllTasks (ProtoCrewMember kerbal, double UT)
+		public void FinishAllTasks (ProtoCrewMember pcm, double UT)
 		{
-			if (!kerbal_experience.ContainsKey (kerbal.name)) {
-				AddKerbal (kerbal);
-			}
-			var exp = kerbal_experience[kerbal.name];
+			KerbalExt kerbal = KerbalStats.current[pcm];
+			var exp = kerbal[name] as Experience;
 			foreach (var task in exp.Current) {
 				exp.FinishTask (UT, task);
 			}
