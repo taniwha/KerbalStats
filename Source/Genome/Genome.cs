@@ -29,6 +29,7 @@ namespace KerbalStats.Genome {
 		static Dictionary<string, int> trait_map;
 		static Trait[] traits;
 		static Dictionary<string, Dictionary<string, GenePair>> prefabs;
+		static List<KerbalExt> loading_kerbals;
 
 		static Genome ()
 		{
@@ -62,13 +63,25 @@ namespace KerbalStats.Genome {
 			}
 		}
 
+		void onGameStateCreated (Game game)
+		{
+			if (loading_kerbals != null) {
+				foreach (var kerbal in loading_kerbals) {
+					var genes = kerbal[name] as GenePair[];
+					RebuildGenes (kerbal.kerbal, genes);
+				}
+				loading_kerbals = null;
+			}
+		}
+
 		public Genome (KerbalStats ks)
 		{
-			Clear ();
+			GameEvents.onGameStateCreated.Add (onGameStateCreated);
 		}
 
 		~Genome ()
 		{
+			GameEvents.onGameStateCreated.Remove (onGameStateCreated);
 		}
 
 		public static string extname = "genome";
@@ -93,11 +106,20 @@ namespace KerbalStats.Genome {
 		{
 			if (kerbal[name] != null) {
 				// already added via an initialization race
+				Debug.LogFormat("[Genome] AddKerbal: double add {0}",
+								kerbal.kerbal.name);
 				return;
 			}
 			var genes = new GenePair[traits.Length];
-			RebuildGenes (kerbal.kerbal, genes);
 			kerbal[name] = genes;
+			if (kerbal.kerbal.name != null) {
+				RebuildGenes (kerbal.kerbal, genes);
+			} else {
+				if (loading_kerbals == null) {
+					loading_kerbals = new List<KerbalExt> ();
+				}
+				loading_kerbals.Add (kerbal);
+			}
 		}
 
 		public static GenePair[] GetGenes (ProtoCrewMember pcm)
