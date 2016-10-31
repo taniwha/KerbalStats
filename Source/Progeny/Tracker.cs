@@ -31,6 +31,9 @@ namespace KerbalStats.Progeny {
 		Dictionary<string, string> kerbal_ids;
 		Dictionary<Guid, Vessel> vessels;
 
+		List<KerbalExt> loading_kerbals;
+		bool reset_loading_kerbals;
+
 		Vessel vessel (Guid id)
 		{
 			if (!vessels.ContainsKey (id)) {
@@ -39,14 +42,48 @@ namespace KerbalStats.Progeny {
 			return vessels[id];
 		}
 
+		void onGameStateCreated (Game game)
+		{
+			reset_loading_kerbals = true;
+			if (ProgenyScenario.current == null) {
+				return;
+			}
+		}
+
+		void ProcessLoadingKerbals ()
+		{
+			if (loading_kerbals != null) {
+				foreach (var ext in loading_kerbals) {
+					AddKerbal (ext);
+				}
+				loading_kerbals = null;
+			}
+		}
+
+		public static void ScenarioLoaded ()
+		{
+			instance.ProcessLoadingKerbals ();
+		}
+
 		public void AddKerbal (KerbalExt ext)
 		{
+			if (ProgenyScenario.current == null) {
+				Debug.LogFormat("[ProgenyTracker] AddKerbal: delaying add");
+				if (loading_kerbals == null || reset_loading_kerbals) {
+					loading_kerbals = new List<KerbalExt> ();
+					reset_loading_kerbals = false;
+				}
+				loading_kerbals.Add (ext);
+				return;
+			}
+			Debug.LogFormat("[ProgenyTracker] AddKerbal: adding kerbal");
 			Zygote kerbal;
 			if (ext.kerbal.gender == ProtoCrewMember.Gender.Female) {
 				kerbal = new Female (ext.kerbal);
 			} else {
 				kerbal = new Male (ext.kerbal);
 			}
+			kerbal_ids[ext.kerbal.name] = kerbal.id;
 			ProgenyScenario.current.AddKerbal (kerbal);
 			ext[name] = kerbal.id;
 			CheckLocation (ext.kerbal);
@@ -84,6 +121,7 @@ namespace KerbalStats.Progeny {
 
 		public void Save (KerbalExt kerbal, ConfigNode node)
 		{
+			Debug.LogFormat("[ProgenyTracker] Save: {0} {1}", kerbal.kerbal.name, kerbal[name]);
 			node.AddValue (name, kerbal[name] as string);
 		}
 
@@ -107,6 +145,7 @@ namespace KerbalStats.Progeny {
 			GameEvents.onVesselCreate.Add (onVesselCreate);
 			GameEvents.onVesselDestroy.Add (onVesselDestroy);
 			GameEvents.onVesselWasModified.Add (onVesselWasModified);
+			GameEvents.onGameStateCreated.Add (onGameStateCreated);
 
 			if (!HighLogic.LoadedSceneIsEditor) {
 				KerbalStats.current.StartCoroutine (WaitAndCheckLocations ());
@@ -121,6 +160,7 @@ namespace KerbalStats.Progeny {
 			GameEvents.onVesselCreate.Remove (onVesselCreate);
 			GameEvents.onVesselDestroy.Remove (onVesselDestroy);
 			GameEvents.onVesselWasModified.Remove (onVesselWasModified);
+			GameEvents.onGameStateCreated.Remove (onGameStateCreated);
 		}
 
 		void CheckLocation (ProtoCrewMember kerbal)

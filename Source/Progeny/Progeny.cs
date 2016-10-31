@@ -172,10 +172,8 @@ namespace KerbalStats.Progeny {
 			return id.ToString("x");
 		}
 
-		IEnumerator WaitAndLoadZygotes (ConfigNode config)
+		void LoadZygotes (ConfigNode config)
 		{
-			yield return null;
-
 			var zygote_list = config.nodes;
 			foreach (ConfigNode z in zygote_list) {
 				switch (z.name) {
@@ -199,15 +197,24 @@ namespace KerbalStats.Progeny {
 			}
 		}
 
+		IEnumerator WaitAndLoadZygotes (ConfigNode config)
+		{
+			yield return null;
+			LoadZygotes (config);
+		}
+
 		public override void OnLoad (ConfigNode config)
 		{
+			Debug.Log("[ProgenyScenario] OnLoad");
 			ProgenySettings.Load (config);
 			var ids = config.GetValue ("zygote_id");
 			uint id = 0;
 			uint.TryParse (ids, out id);
 			zygote_id = rgrey (bit_reverse (id));
 
-			StartCoroutine (WaitAndLoadZygotes (config));
+			//StartCoroutine (WaitAndLoadZygotes (config));
+			LoadZygotes (config);
+			ProgenyTracker.ScenarioLoaded ();
 		}
 
 		public override void OnSave (ConfigNode config)
@@ -239,6 +246,7 @@ namespace KerbalStats.Progeny {
 
 		public override void OnAwake ()
 		{
+			Debug.Log("[ProgenyScenario] OnAwake");
 			current = this;
 
 			locations = new LocationTracker ();
