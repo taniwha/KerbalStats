@@ -121,7 +121,14 @@ namespace KerbalStats.Progeny {
 
 		public void Save (KerbalExt kerbal, ConfigNode node)
 		{
-			Debug.LogFormat("[ProgenyTracker] Save: {0} {1}", kerbal.kerbal.name, kerbal[name]);
+			if (kerbal[name] == null) {
+				// If the id is null, then the Progeny scenario never loaded
+				// before saving. It is very likelly a new save was created.
+				// The id will be set eventually when the scenario does load.
+				Debug.LogFormat("[ProgenyTracker] not saving null id for {0}",
+								kerbal.kerbal.name);
+				return;
+			}
 			node.AddValue (name, kerbal[name] as string);
 		}
 
