@@ -44,6 +44,7 @@ namespace KerbalStats.Progeny {
 
 		void onGameStateCreated (Game game)
 		{
+			Debug.Log("[ProgenyTracker] onGameStateCreated");
 			reset_loading_kerbals = true;
 			if (ProgenyScenario.current == null) {
 				return;
@@ -113,14 +114,23 @@ namespace KerbalStats.Progeny {
 				var id = node.GetValue (name);
 				kerbal[name] = id;
 			} else {
-				if (!HighLogic.LoadedSceneIsEditor) {
-					KerbalStats.current.StartCoroutine (WaitAndAddKerbal (kerbal));
-				}
+				AddKerbal (kerbal);
+				//if (!HighLogic.LoadedSceneIsEditor) {
+				//	KerbalStats.current.StartCoroutine (WaitAndAddKerbal (kerbal));
+				//}
 			}
 		}
 
 		public void Save (KerbalExt kerbal, ConfigNode node)
 		{
+			// Ensure loading_kerbals gets flushed. The problem is that
+			// onGameStateCreated is fired before the kerbal roster is created
+			// for new games, and then not fired again until after loading
+			// the new game once the space center has been entered. Load and
+			// Save are never interleaved, so this is a good way of "detecting"
+			// the end of the new game creation.
+			reset_loading_kerbals = true;
+
 			if (kerbal[name] == null) {
 				// If the id is null, then the Progeny scenario never loaded
 				// before saving. It is very likelly a new save was created.
