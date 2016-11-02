@@ -53,9 +53,16 @@ namespace KerbalStats.Progeny {
 
 		void ProcessLoadingKerbals ()
 		{
+			Debug.Log("[ProgenyTracker] ProcessLoadingKerbals");
 			if (loading_kerbals != null) {
 				foreach (var ext in loading_kerbals) {
-					AddKerbal (ext);
+					if (ext[name] != null) {
+						var kerbal = ProgenyScenario.current.GetKerbal (ext[name] as string) as IKerbal;
+						kerbal.kerbal = ext.kerbal;
+						Debug.LogFormat("    {0} {1} {2}", ext.kerbal.name, ext[name], kerbal.id);
+					} else {
+						AddKerbal (ext);
+					}
 				}
 				loading_kerbals = null;
 			}
@@ -66,15 +73,20 @@ namespace KerbalStats.Progeny {
 			instance.ProcessLoadingKerbals ();
 		}
 
+		void AddLoadingKerbal(KerbalExt ext)
+		{
+			if (loading_kerbals == null || reset_loading_kerbals) {
+				loading_kerbals = new List<KerbalExt> ();
+				reset_loading_kerbals = false;
+			}
+			loading_kerbals.Add (ext);
+		}
+
 		public void AddKerbal (KerbalExt ext)
 		{
 			if (ProgenyScenario.current == null) {
 				Debug.LogFormat("[ProgenyTracker] AddKerbal: delaying add");
-				if (loading_kerbals == null || reset_loading_kerbals) {
-					loading_kerbals = new List<KerbalExt> ();
-					reset_loading_kerbals = false;
-				}
-				loading_kerbals.Add (ext);
+				AddLoadingKerbal (ext);
 				return;
 			}
 			Debug.LogFormat("[ProgenyTracker] AddKerbal: adding kerbal");
@@ -121,6 +133,7 @@ namespace KerbalStats.Progeny {
 			if (node.HasValue (name)) {
 				var id = node.GetValue (name);
 				kerbal[name] = id;
+				AddLoadingKerbal (kerbal);
 			} else {
 				AddKerbal (kerbal);
 				//if (!HighLogic.LoadedSceneIsEditor) {
