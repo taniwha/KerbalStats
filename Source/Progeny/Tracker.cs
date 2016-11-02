@@ -110,6 +110,14 @@ namespace KerbalStats.Progeny {
 
 		public void Load (KerbalExt kerbal, ConfigNode node)
 		{
+			// Resuming a save can involve loading multiple saves before
+			// loading the desired one, so ensure loading_kerbals is flushed
+			// between loading passes.
+			if (reset_loading_kerbals) {
+				reset_loading_kerbals = false;
+				loading_kerbals = null;
+			}
+
 			if (node.HasValue (name)) {
 				var id = node.GetValue (name);
 				kerbal[name] = id;
