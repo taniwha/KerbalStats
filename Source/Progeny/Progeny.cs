@@ -23,6 +23,7 @@ using UnityEngine;
 namespace KerbalStats.Progeny {
 	[KSPScenario(ScenarioCreationOptions.AddToAllGames, new GameScenes[] {
 			GameScenes.SPACECENTER,
+			GameScenes.EDITOR,
 			GameScenes.FLIGHT,
 			GameScenes.TRACKSTATION,
 		})
