@@ -25,26 +25,7 @@ namespace KerbalStats {
 	{
 		public static List<ConstructorInfo> LoadModules<T> (Type[] param_types) where T: class
 		{
-			Type ofType = typeof(T);
-			var constructor_list = new List<ConstructorInfo> ();
-			foreach (var loaded in AssemblyLoader.loadedAssemblies) {
-				var assembly = loaded.assembly;
-				//Debug.Log (String.Format ("[KS] LoadModules {0}", loaded.name));
-				var types = assembly.GetTypes ();
-				for (int i = 0; i < types.Length; i++) {
-					var type = types[i];
-					if (type.GetInterfaces ().Contains (ofType)) {
-						//Debug.Log (String.Format ("[KS] LoadModules type:{0}", type.Name));
-						var constructor = type.GetConstructor (param_types);
-						if (constructor != null) {
-							Debug.Log (String.Format ("[KS] found module {0}",
-													  type.Name));
-							constructor_list.Add (constructor);
-						}
-					}
-				}
-			}
-			return constructor_list;
+			return AssemblyLoader.GetModulesImplementingInterface<T> (param_types);
 		}
 	}
 
