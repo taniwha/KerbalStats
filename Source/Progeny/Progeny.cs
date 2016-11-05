@@ -38,6 +38,8 @@ namespace KerbalStats.Progeny {
 
 		public LocationTracker locations { get; private set; }
 
+		public static EventData<ProgenyScenario> onProgenyScenarioLoaded = new EventData<ProgenyScenario> ("onProgenyScenarioLoaded");
+
 		public List<Embryo> Embryos
 		{
 			get {
@@ -198,10 +200,11 @@ namespace KerbalStats.Progeny {
 			}
 		}
 
-		IEnumerator WaitAndLoadZygotes (ConfigNode config)
+		IEnumerator WaitAndLoadProgeny (ConfigNode config)
 		{
 			yield return null;
 			LoadZygotes (config);
+			onProgenyScenarioLoaded.Fire (this);
 		}
 
 		public override void OnLoad (ConfigNode config)
@@ -213,9 +216,7 @@ namespace KerbalStats.Progeny {
 			uint.TryParse (ids, out id);
 			zygote_id = rgrey (bit_reverse (id));
 
-			//StartCoroutine (WaitAndLoadZygotes (config));
-			LoadZygotes (config);
-			ProgenyTracker.ScenarioLoaded ();
+			StartCoroutine (WaitAndLoadProgeny (config));
 		}
 
 		public override void OnSave (ConfigNode config)

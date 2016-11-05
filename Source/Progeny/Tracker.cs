@@ -68,9 +68,9 @@ namespace KerbalStats.Progeny {
 			}
 		}
 
-		public static void ScenarioLoaded ()
+		void onProgenyScenarioLoaded (ProgenyScenario progeny)
 		{
-			instance.ProcessLoadingKerbals ();
+			ProcessLoadingKerbals ();
 		}
 
 		void AddLoadingKerbal(KerbalExt ext)
@@ -185,6 +185,8 @@ namespace KerbalStats.Progeny {
 			GameEvents.onVesselWasModified.Add (onVesselWasModified);
 			GameEvents.onGameStateCreated.Add (onGameStateCreated);
 
+			ProgenyScenario.onProgenyScenarioLoaded.Add (onProgenyScenarioLoaded);
+
 			if (!HighLogic.LoadedSceneIsEditor) {
 				KerbalStats.current.StartCoroutine (WaitAndCheckLocations ());
 			}
@@ -199,6 +201,8 @@ namespace KerbalStats.Progeny {
 			GameEvents.onVesselDestroy.Remove (onVesselDestroy);
 			GameEvents.onVesselWasModified.Remove (onVesselWasModified);
 			GameEvents.onGameStateCreated.Remove (onGameStateCreated);
+
+			ProgenyScenario.onProgenyScenarioLoaded.Remove (onProgenyScenarioLoaded);
 		}
 
 		void CheckLocation (ProtoCrewMember kerbal)
