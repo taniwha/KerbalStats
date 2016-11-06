@@ -215,7 +215,13 @@ namespace KerbalStats.Progeny {
 					location = ProgenyScenario.current.GetLocation ("AstronautComplex");
 					break;
 				case ProtoCrewMember.RosterStatus.Assigned:
-					//handled by the vessel scan
+					//handled by the vessel scan, but fresh contract kerbals
+					// (rescue or tourist) are Assigned but not on any vessel.
+					// Avoid trampling on the vessel scan if it happens first,
+					// but the scan will set the location if it happens second.
+					if (zygote.location == null) {
+						location = ProgenyScenario.current.GetLocation ("Unknown");
+					}
 					break;
 				case ProtoCrewMember.RosterStatus.Missing:
 					location = ProgenyScenario.current.GetLocation ("Wilds");

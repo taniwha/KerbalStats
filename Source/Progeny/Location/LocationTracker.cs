@@ -30,6 +30,7 @@ namespace KerbalStats.Progeny {
 
 		public AstronautComplex astronaut_complex;
 		public EVA eva;
+		public Unknown unknown;
 		public Wilds wilds;
 		public Womb womb;
 		public Tomb tomb;
@@ -47,6 +48,8 @@ namespace KerbalStats.Progeny {
 					return eva;
 				case "Wilds":
 					return wilds;
+				case "Unknown":
+					return unknown;
 				case "Womb":
 					return womb;
 				case "Tomb":
@@ -62,6 +65,7 @@ namespace KerbalStats.Progeny {
 			vessel_parts = new Dictionary<Guid, VesselPart> ();
 			astronaut_complex = new AstronautComplex ();
 			eva = new EVA ();
+			unknown = new Unknown ();
 			wilds = new Wilds ();
 			womb = new Womb ();
 			tomb = new Tomb ();

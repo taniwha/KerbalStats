@@ -31,6 +31,7 @@ KS_FILES := \
 	Progeny/Location/Location.cs			\
 	Progeny/Location/LocationTracker.cs		\
 	Progeny/Location/Tomb.cs				\
+	Progeny/Location/Unknown.cs				\
 	Progeny/Location/VesselPart.cs			\
 	Progeny/Location/Wilds.cs				\
 	Progeny/Location/Womb.cs				\
