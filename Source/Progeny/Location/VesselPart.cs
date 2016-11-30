@@ -40,7 +40,7 @@ namespace KerbalStats.Progeny {
 
 		public override string ToString ()
 		{
-			return "VesselPart," + vessel.id;
+			return "VesselPart," + vessel.id.ToString("N");
 		}
 	}
 }
