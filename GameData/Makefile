@@ -2,7 +2,8 @@ KSPDIR		:= ${HOME}/ksp/KSP_linux
 MANAGED		:= ${KSPDIR}/KSP_Data/Managed
 GAMEDATA	:= ${KSPDIR}/GameData
 KSGAMEDATA  := ${GAMEDATA}/KerbalStats
-PLUGINDIR	:= ${KSGAMEDATA}/Plugins
+PLUGINDIR	:= ${MODGAMEDATA}/Plugins
+APIEXTDATA	:= ${PLUGINDIR}
 
 RESGEN2	:= resgen2
 GMCS	:= gmcs
@@ -10,27 +11,9 @@ GIT		:= git
 TAR		:= tar
 ZIP		:= zip
 
-.PHONY: all clean info install
+all:
 
-#SUBDIRS=Assets
-SUBDIRS=GameData Source
-
-DATA		:= \
-	License.txt					\
-	README.md					\
-	$e
-
-all clean:
-	@for dir in ${SUBDIRS}; do \
-		make -C $$dir $@ || exit 1; \
-	done
-
-install:
-	@for dir in ${SUBDIRS}; do \
-		make -C $$dir $@ || exit 1; \
-	done
-	mkdir -p ${KSGAMEDATA}
-	cp ${DATA} ${KSGAMEDATA}
+clean:
 
 info:
 	@echo "KerbalStats Build Information"
@@ -41,3 +24,8 @@ info:
 	@echo "    zip:      ${ZIP}"
 	@echo "    KSP Data: ${KSPDIR}"
 	@echo "    Plugin:   ${PLUGINDIR}"
+
+install: all
+	../tools/copy-files files ${GAMEDATA}
+
+.PHONY: all clean info install

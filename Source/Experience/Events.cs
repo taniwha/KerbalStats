@@ -15,6 +15,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with KerbalStats.  If not, see <http://www.gnu.org/licenses/>.
 */
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
@@ -24,9 +25,10 @@ using KSP.IO;
 using KSP.UI.Screens;
 
 namespace KerbalStats.Experience {
-	[KSPAddon (KSPAddon.Startup.EveryScene, false)]
-	public class KSExperienceTrackerEvents : MonoBehaviour
+	public class ExperienceTrackerEvents
 	{
+		ExperienceTracker tracker;
+
 		string GetPartName (Part part)
 		{
 			// Extract the actual part name from the part. Root nodes include
@@ -58,7 +60,7 @@ namespace KerbalStats.Experience {
 												  situation);
 		}
 
-		IEnumerator<YieldInstruction> WaitAndSeatKerbal (ProtoCrewMember kerbal)
+		IEnumerator WaitAndSeatKerbal (ProtoCrewMember kerbal)
 		{
 			yield return null;
 			Part part = kerbal.KerbalRef.InPart;
@@ -76,7 +78,7 @@ namespace KerbalStats.Experience {
 				Vessel vessel = dst_part.vessel;
 				SeatKerbal (kerbal, vessel, "EVA");
 			} else {
-				StartCoroutine (WaitAndSeatKerbal (kerbal));
+				KerbalStats.current.StartCoroutine (WaitAndSeatKerbal (kerbal));
 			}
 		}
 
@@ -172,7 +174,7 @@ namespace KerbalStats.Experience {
 			}
 		}
 
-		IEnumerator<YieldInstruction> WaitAndScanVesselCrew (Vessel vessel)
+		IEnumerator WaitAndScanVesselCrew (Vessel vessel)
 		{
 			// Newly created vessels for launch are populated with assigned
 			// kerbals in the same frame as the vessel is created, but after
@@ -191,48 +193,22 @@ namespace KerbalStats.Experience {
 			if (vessel.protoVessel == null) {
 				// This is a newly created vessel.
 				// Crew have yet to be assigned to their positions.
-				StartCoroutine (WaitAndScanVesselCrew (vessel));
+				KerbalStats.current.StartCoroutine (WaitAndScanVesselCrew (vessel));
 			} else {
 				// This is an existing vessel loaded from a saved game.
 				// Any crew are already on board.
 				// However, the KerbalStats scenario is loaded after vessels,
 				// so wait a frame for the scenario to load.
-				StartCoroutine (WaitAndScanVesselCrew (vessel));
+				KerbalStats.current.StartCoroutine (WaitAndScanVesselCrew (vessel));
 			}
-		}
-
-		void onVesselRecovered (ProtoVessel vessel, bool quick)
-		{
-			Debug.Log (String.Format ("[KS Exp] {0}: {1}",
-									  "onVesselRecovered", vessel));
 		}
 
 		void onVesselRecoveryProcessing (ProtoVessel vessel, MissionRecoveryDialog d, float f)
 		{
-			Debug.Log (String.Format ("[KS Exp] {0}: {1} {2} {3}",
-									  "onVesselRecoveryProcessing", vessel, d, f));
-		}
-
-		void OnVesselRecoveryRequested (Vessel vessel)
-		{
 			double UT = Planetarium.GetUniversalTime ();
-			if (vessel.loaded) {
-				for (int i = 0; i < vessel.parts.Count; i++) {
-					Part part = vessel.parts[i];
-					for (int j = 0; j < part.protoModuleCrew.Count; j++) {
-						ProtoCrewMember kerbal = part.protoModuleCrew[j];
-						ExperienceTracker.instance.FinishAllTasks (kerbal, UT);
-					}
-				}
-			} else {
-				ProtoVessel pv = vessel.protoVessel;
-				for (int i = 0; i < pv.protoPartSnapshots.Count; i++) {
-					ProtoPartSnapshot pp = pv.protoPartSnapshots[i];
-					for (int j = 0; j < pp.protoModuleCrew.Count; j++) {
-						ProtoCrewMember kerbal = pp.protoModuleCrew[j];
-						ExperienceTracker.instance.FinishAllTasks (kerbal, UT);
-					}
-				}
+			var crew = vessel.GetVesselCrew ();
+			foreach (var kerbal in crew) {
+				ExperienceTracker.instance.FinishAllTasks (kerbal, UT);
 			}
 		}
 
@@ -245,12 +221,11 @@ namespace KerbalStats.Experience {
 			string body = vessel.mainBody.bodyName;
 			double UT = Planetarium.GetUniversalTime ();
 			foreach (var kerbal in crew) {
-				ExperienceTracker.instance.SetSituation (kerbal, UT, body,
-														 situation);
+				tracker.SetSituation (kerbal, UT, body, situation);
 			}
 		}
 
-		IEnumerator<YieldInstruction> WaitAndSetBody (Vessel vessel)
+		IEnumerator WaitAndSetBody (Vessel vessel)
 		{
 			yield return null;
 			yield return null;
@@ -267,31 +242,24 @@ namespace KerbalStats.Experience {
 		void onVesselSOIChanged (GameEvents.HostedFromToAction<Vessel, CelestialBody> hft)
 		{
 			Vessel vessel = hft.host;
-			StartCoroutine (WaitAndSetBody (vessel));
+			KerbalStats.current.StartCoroutine (WaitAndSetBody (vessel));
 		}
 
-		void Awake ()
+		public ExperienceTrackerEvents (ExperienceTracker tracker)
 		{
-			var scene = HighLogic.LoadedScene;
-			if (scene == GameScenes.SPACECENTER
-				|| scene == GameScenes.EDITOR
-				|| scene == GameScenes.FLIGHT
-				|| scene == GameScenes.TRACKSTATION) {
-				GameEvents.onCrewTransferred.Add (onCrewTransferred);
-				GameEvents.onKerbalStatusChange.Add (onKerbalStatusChange);
-				GameEvents.onKerbalTypeChange.Add (onKerbalTypeChange);
-				GameEvents.onNewVesselCreated.Add (onNewVesselCreated);
-				GameEvents.onPartCouple.Add (onPartCouple);
-				GameEvents.onPartUndock.Add (onPartUndock);
-				GameEvents.onVesselCreate.Add (onVesselCreate);
-				GameEvents.onVesselRecovered.Add (onVesselRecovered);
-				GameEvents.onVesselRecoveryProcessing.Add (onVesselRecoveryProcessing);
-				GameEvents.OnVesselRecoveryRequested.Add (OnVesselRecoveryRequested);
-				GameEvents.onVesselSituationChange.Add (onVesselSituationChange);
-				GameEvents.onVesselSOIChanged.Add (onVesselSOIChanged);
-			}
+			this.tracker = tracker;
+			GameEvents.onCrewTransferred.Add (onCrewTransferred);
+			GameEvents.onKerbalStatusChange.Add (onKerbalStatusChange);
+			GameEvents.onKerbalTypeChange.Add (onKerbalTypeChange);
+			GameEvents.onNewVesselCreated.Add (onNewVesselCreated);
+			GameEvents.onPartCouple.Add (onPartCouple);
+			GameEvents.onPartUndock.Add (onPartUndock);
+			GameEvents.onVesselCreate.Add (onVesselCreate);
+			GameEvents.onVesselRecoveryProcessing.Add (onVesselRecoveryProcessing);
+			GameEvents.onVesselSituationChange.Add (onVesselSituationChange);
+			GameEvents.onVesselSOIChanged.Add (onVesselSOIChanged);
 		}
-		void OnDestroy ()
+		public void Shutdown ()
 		{
 			GameEvents.onCrewTransferred.Remove (onCrewTransferred);
 			GameEvents.onKerbalStatusChange.Remove (onKerbalStatusChange);
@@ -300,9 +268,7 @@ namespace KerbalStats.Experience {
 			GameEvents.onPartCouple.Remove (onPartCouple);
 			GameEvents.onPartUndock.Remove (onPartUndock);
 			GameEvents.onVesselCreate.Remove (onVesselCreate);
-			GameEvents.onVesselRecovered.Remove (onVesselRecovered);
 			GameEvents.onVesselRecoveryProcessing.Remove (onVesselRecoveryProcessing);
-			GameEvents.OnVesselRecoveryRequested.Remove (OnVesselRecoveryRequested);
 			GameEvents.onVesselSituationChange.Remove (onVesselSituationChange);
 			GameEvents.onVesselSOIChanged.Remove (onVesselSOIChanged);
 		}

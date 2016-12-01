@@ -15,20 +15,18 @@ You should have received a copy of the GNU Lesser General Public License
 along with KerbalStats.  If not, see <http://www.gnu.org/licenses/>.
 */
 using System;
+using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 namespace KerbalStats {
-	public interface IKerbalExt
+	public class ModuleLoader
 	{
-		string name { get; }
-		void AddKerbal (ProtoCrewMember kerbal);
-		void RemoveKerbal (ProtoCrewMember kerbal);
-		void Load (ProtoCrewMember kerbal, ConfigNode node);
-		void Save (ProtoCrewMember kerbal, ConfigNode node);
-		void Clear ();
-
-		string Get (ProtoCrewMember kerbal, string parms);
+		public static List<ConstructorInfo> LoadModules<T> (Type[] param_types) where T: class
+		{
+			return AssemblyLoader.GetModulesImplementingInterface<T> (param_types);
+		}
 	}
+
 }

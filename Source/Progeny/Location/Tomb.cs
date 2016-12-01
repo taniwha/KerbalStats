@@ -16,27 +16,23 @@ along with KerbalStats.  If not, see <http://www.gnu.org/licenses/>.
 */
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Linq;
 using UnityEngine;
-using Toolbar;
 
-namespace ExLP {
-	[KSPAddon (KSPAddon.Startup.EditorAny, false)]
-	public class ExToolbar_ShipInfo : MonoBehaviour
+using KSP.IO;
+
+namespace KerbalStats.Progeny {
+	public class Tomb : Location
 	{
-//		private IButton button;
-
-		public void Awake ()
+		public Tomb ()
 		{
-			//button = ToolbarManager.Instance.add ("KerbalStats", "button");
-			//button.TexturePath = "KerbalStats/Textures/icon_button";
-			//button.ToolTip = "EL Build Resources Display";
-			//button.OnClick += (e) => ExShipInfo.ToggleGUI ();
+			name = "Tomb";
 		}
 
-		void OnDestroy()
+		public override bool isWatched ()
 		{
-			//button.Destroy ();
+			return false;
 		}
 	}
 }
