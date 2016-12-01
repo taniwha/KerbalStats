@@ -116,7 +116,7 @@ info:
 	@echo "    zip:        ${ZIP}"
 	@echo "    KSP Data:   ${KSPDIR}"
 
-KS_FILES := ${KS_CORE} ${KS_EXPERIENCE} ${KS_GENOME} ${KS_PROGENY}
+KS_FILES := ${KS_CORE} ${KS_EXPERIENCE}
 
 bin/KerbalStats.dll: ${KS_FILES}
 	@mkdir -p bin
