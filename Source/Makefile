@@ -10,7 +10,20 @@ DATA		:= \
 	Experience/seat_tasks.cfg	\
 	$e
 
-KS_FILES := \
+KS_CORE := \
+	Utils/EnumUtil.cs				\
+	Utils/MathUtil.cs				\
+	Utils/ModuleLoader.cs			\
+	IKerbalExt.cs					\
+	KerbalExt.cs					\
+	KerbalStats.cs					\
+	KerbalStatsScenario.cs			\
+	assembly/AssemblyInfo.cs		\
+	assembly/VersionReport.cs		\
+	toolbar/ToolbarWrapper.cs		\
+	$e
+
+KS_EXPERIENCE := \
 	Experience/Body.cs				\
 	Experience/Events.cs			\
 	Experience/Experience.cs		\
@@ -18,6 +31,9 @@ KS_FILES := \
 	Experience/SeatTasks.cs			\
 	Experience/Task.cs				\
 	Experience/Tracker.cs			\
+	$e
+
+KS_GENOME := \
 	Genome/BadAss.cs				\
 	Genome/Courage.cs				\
 	Genome/Gender.cs				\
@@ -26,6 +42,9 @@ KS_FILES := \
 	Genome/Probability.cs			\
 	Genome/Stupidity.cs				\
 	Genome/Trait.cs					\
+	$e
+
+KS_PROGENY := \
 	Progeny/Location/AstronautComplex.cs	\
 	Progeny/Location/EVA.cs					\
 	Progeny/Location/Location.cs			\
@@ -71,17 +90,7 @@ KS_FILES := \
 	Progeny/Progeny.cs				\
 	Progeny/Settings.cs				\
 	Progeny/Tracker.cs				\
-	Utils/EnumUtil.cs				\
-	Utils/MathUtil.cs				\
-	Utils/ModuleLoader.cs			\
-	IKerbalExt.cs					\
-	KerbalExt.cs					\
-	KerbalStats.cs					\
-	KerbalStatsScenario.cs			\
-	assembly/AssemblyInfo.cs		\
-	assembly/VersionReport.cs		\
 	toolbar/Toolbar.cs				\
-	toolbar/ToolbarWrapper.cs		\
 	$e
 
 RESGEN2		:= resgen2
@@ -106,6 +115,8 @@ info:
 	@echo "    tar:        ${TAR}"
 	@echo "    zip:        ${ZIP}"
 	@echo "    KSP Data:   ${KSPDIR}"
+
+KS_FILES := ${KS_CORE} ${KS_EXPERIENCE} ${KS_GENOME} ${KS_PROGENY}
 
 bin/KerbalStats.dll: ${KS_FILES}
 	@mkdir -p bin
