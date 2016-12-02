@@ -60,6 +60,7 @@ namespace KerbalStats.Progeny {
 						var kerbal = ProgenyScenario.current.GetKerbal (ext[name] as string) as IKerbal;
 						kerbal.kerbal = ext.kerbal;
 						Debug.LogFormat("    {0} {1} {2}", ext.kerbal.name, ext[name], kerbal.id);
+						kerbal_ids[ext.kerbal.name] = kerbal.id;
 					} else {
 						AddKerbal (ext);
 					}
@@ -343,7 +344,7 @@ namespace KerbalStats.Progeny {
 			var location = ProgenyScenario.current.GetLocation ("Vessel", vessel);
 			var crew = vessel.GetVesselCrew ();
 			for (int i = 0; i < crew.Count; i++) {
-				//Debug.Log(String.Format ("[KS Progeny] {0} {1}", crew[i].name, location));
+				Debug.Log(String.Format ("[KS Progeny] {0} {1}", crew[i].name, location));
 				var kerbal = ProgenyScenario.current.GetKerbal (kerbal_ids[crew[i].name]);
 				kerbal.SetLocation (location);
 			}
