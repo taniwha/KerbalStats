@@ -13,7 +13,7 @@ ZIP		:= zip
 .PHONY: all clean info install
 
 #SUBDIRS=Assets
-SUBDIRS=GameData Source
+SUBDIRS=Assets GameData Source
 
 DATA		:= \
 	License.txt					\

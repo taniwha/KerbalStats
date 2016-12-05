@@ -34,7 +34,7 @@ namespace KerbalStats {
 				return;
 			}
 			button = ToolbarManager.Instance.add ("KerbalStats", "KS_P_Debug");
-			button.TexturePath = "KerbalStats/Textures/icon_button";
+			button.TexturePath = "KerbalStats/Textures/progeny_icon_button";
 			button.ToolTip = "KerbalStats Progeny Debug";
 			button.OnClick += (e) => Progeny.DebugWindow.ToggleGUI ();
 		}

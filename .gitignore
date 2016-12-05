@@ -14,3 +14,5 @@ bin
 *.csproj.user
 AssemblyInfo.cs
 AssemblyInfoToolbar.cs
+
+/Assets/*.png
