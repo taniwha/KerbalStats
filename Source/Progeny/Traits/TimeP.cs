@@ -19,7 +19,7 @@ using System.Linq;
 
 using KerbalStats.Genome;
 
-namespace KerbalStats.Progeny {
+namespace KerbalStats.Progeny.Traits {
 
 	public class TimeP
 	{

@@ -22,8 +22,10 @@ using UnityEngine;
 
 using KSP.IO;
 
-namespace KerbalStats.Progeny {
+namespace KerbalStats.Progeny.Zygotes {
 	using Genome;
+	using Traits;
+
 	public class Embryo: Zygote
 	{
 		// As a simplification, this coverers all stages from conception to

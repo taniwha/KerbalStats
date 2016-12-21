@@ -22,7 +22,9 @@ using UnityEngine;
 
 using KSP.IO;
 
-namespace KerbalStats.Progeny {
+namespace KerbalStats.Progeny.Locations {
+	using Zygotes;
+
 	public abstract class Location
 	{
 		Dictionary<string, Zygote> zygotes;	// all kerbals in this location

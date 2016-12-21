@@ -22,7 +22,7 @@ using UnityEngine;
 
 using KSP.IO;
 
-namespace KerbalStats.Progeny {
+namespace KerbalStats.Progeny.Zygotes {
 	using Genome;
 
 	public class Male : Adult, IComparable<Male>

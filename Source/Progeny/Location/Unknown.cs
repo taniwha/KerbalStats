@@ -22,7 +22,7 @@ using UnityEngine;
 
 using KSP.IO;
 
-namespace KerbalStats.Progeny {
+namespace KerbalStats.Progeny.Locations {
 	public class Unknown : Location
 	{
 		public Unknown ()

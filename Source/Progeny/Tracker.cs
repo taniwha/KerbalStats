@@ -24,6 +24,9 @@ using UnityEngine;
 using KSP.IO;
 
 namespace KerbalStats.Progeny {
+	using Locations;
+	using Zygotes;
+
 	public class ProgenyTracker : IKerbalExt
 	{
 		internal static ProgenyTracker instance;

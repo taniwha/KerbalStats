@@ -23,7 +23,7 @@ using UnityEngine;
 
 using KSP.IO;
 
-namespace KerbalStats.Progeny {
+namespace KerbalStats.Progeny.Locations {
 	public class LocationTracker
 	{
 		public Dictionary<Guid, VesselPart> vessel_parts;

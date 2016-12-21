@@ -17,7 +17,7 @@ along with KerbalStats.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Linq;
 
-namespace KerbalStats.Progeny {
+namespace KerbalStats.Progeny.Traits {
 	using Genome;
 
 	public class InterestK : Trait

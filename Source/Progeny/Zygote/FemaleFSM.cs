@@ -22,7 +22,7 @@ using UnityEngine;
 
 using KSP.IO;
 
-namespace KerbalStats.Progeny {
+namespace KerbalStats.Progeny.Zygotes {
 	public class FemaleFSM : KerbalFSM
 	{
 		Female female;

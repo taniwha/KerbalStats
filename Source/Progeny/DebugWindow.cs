@@ -22,6 +22,9 @@ using System.Linq;
 using UnityEngine;
 
 namespace KerbalStats.Progeny {
+	using Locations;
+	using Zygotes;
+
 	[KSPAddon (KSPAddon.Startup.EveryScene, false)]
 	public class DebugWindow : MonoBehaviour
 	{

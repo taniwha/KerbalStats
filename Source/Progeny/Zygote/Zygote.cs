@@ -22,8 +22,10 @@ using UnityEngine;
 
 using KSP.IO;
 
-namespace KerbalStats.Progeny {
+namespace KerbalStats.Progeny.Zygotes {
 	using Genome;
+	using Locations;
+
 	public class Zygote
 	{
 		// This is an abstraction for all stages of kerbal development, from

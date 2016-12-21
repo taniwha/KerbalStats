@@ -21,6 +21,9 @@ using System.Linq;
 using UnityEngine;
 
 namespace KerbalStats.Progeny {
+	using Locations;
+	using Zygotes;
+
 	[KSPScenario(ScenarioCreationOptions.AddToAllGames, new GameScenes[] {
 			GameScenes.SPACECENTER,
 			GameScenes.EDITOR,
