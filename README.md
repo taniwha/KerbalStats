@@ -4,20 +4,8 @@ kerbals in your game. It has been designed to be easily extended by other
 mods wishing to store kerbal specific information. Also, it is easy for
 mods to query KerbalStats for the stored information.
 
-KerbalStats comes with two built-in modules that are both useful and act as
-sample implementations: *gender* and *experience*.
-
-##*gender* module
-The gender module is very simple and stores only a single value
-representing the gender of the kerbal. It currently checks the kerbal's
-name for any forms that seemed to indicate a gender to the author and
-assigns a gender as appropriate, or should there be no obvious forms, the
-gender is chosen randomly.
-
-### Gender Queries
-For mods wishing to query the gender of a kerbal, the query string is
-simply **"gender"** (the module name). Any parameters will be silently
-ignored. The returned value is either "M" or "F" for male and female.
+KerbalStats comes with a built-in module that is useful and acts as a
+sample implementations: *experience*.
 
 ##*experience* module
 The experience module is rather complicated. It keeps track of the amount
@@ -93,9 +81,5 @@ KerbalStatsWrapper.cs itself remains under the GNU LGPL.
 ##Extending KerbalStats
 
 At this stage, extending KerbalStats requires linking agaist
-KerbalStats.dll. To create a module, derive from IKerbalExt. It is probably
-best to study the gender (Gender/Gender.cs) and experience
-(Experience/Tracker.cs) modules to see what is needed. The gender module
-uses only a ConfigNode value while the experience module uses a ConfigNode
-node. It is then best to put the extension module in a directory that is
-guaranteed to come after the KerbalStats.dll (KSP dll load order issues).
+KerbalStats.dll. To create a module, simply derive from IKerbalExt:
+KerbalStats will automatically use it.
