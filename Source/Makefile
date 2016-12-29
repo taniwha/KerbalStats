@@ -135,7 +135,7 @@ install: all
 	cp ${TARGETS} ${PLUGINDIR}
 	cp ${DATA} ${KSGAMEDATA}
 
-doc:
+doc: version
 	doxygen KerbalStats.dox
 
 .PHONY: all clean install doc
