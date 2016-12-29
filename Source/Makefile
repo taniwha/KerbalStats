@@ -126,7 +126,8 @@ bin/KerbalStats.dll: ${KS_FILES}
 		-out:$@ $^
 
 clean:
-	rm -f ${TARGETS} assembly/AssemblyInfo.cs
+	rm -f ${TARGETS} KerbalStats.dox assembly/AssemblyInfo.cs
+	rm -rf docs
 	test -d bin && rmdir bin || true
 
 install: all
