@@ -68,8 +68,8 @@ namespace KerbalStats {
 
 		void onKerbalAdded (ProtoCrewMember pcm)
 		{
-			Debug.LogFormat ("[KS] {0} {1} {2}", pcm.name,
-							 pcm.rosterStatus, pcm.type);
+			Debug.LogFormat ("[KerbalStats] onKerbalAdded: {0} {1} {2}",
+							 pcm.name, pcm.rosterStatus, pcm.type);
 			addKerbal (pcm);
 		}
 
@@ -83,13 +83,19 @@ namespace KerbalStats {
 			if (loading_kerbals == null) {
 				loading_kerbals = new List<KerbalPair>();
 			}
+			Debug.LogFormat ("[KerbalStats] onProtoCrewMemberLoad: {0}", action);
 			ProtoCrewMember pcm = action.from;
 			ConfigNode node = action.to;
 			string name = pcm.name;
 			if (name == null && node != null && node.HasValue ("name")) {
+				// it turns out onProtoCrewMemberLoad is sometimes fired too
+				// early (before ProtoCrewMember is filled in)
 				name = node.GetValue ("name");
 			}
-			if (node.HasNode ("KerbalExt")) {
+			// Kerbals created on entering the astronaut complex do not have
+			// a config node, and kerbals created before installing KS won't
+			// have a KerbalExt
+			if (node != null && node.HasNode ("KerbalExt")) {
 				Debug.LogFormat ("[KerbalStats] loading ext for {0}", name);
 				var kerbal = node.GetNode ("KerbalExt");
 				var ext = new KerbalExt ();
