@@ -72,11 +72,26 @@ namespace KerbalStats {
 			yield return null;
 			Debug.LogFormat ("[KerbalStats] onKerbalAdded: {0} {1} {2}",
 							 pcm.name, pcm.rosterStatus, pcm.type);
+			if (kerbals.ContainsKey (pcm.name)) {
+				Debug.LogFormat ("    {0} already added", pcm.name);
+				yield break;
+			}
 			addKerbal (pcm);
+		}
+
+		void ProcessLoadingKerbals ()
+		{
+			foreach (var pair in loading_kerbals) {
+				kerbals[pair.pcm.name] = pair.ext;
+			}
+			loading_kerbals = null;
 		}
 
 		void onKerbalAdded (ProtoCrewMember pcm)
 		{
+			if (loading_kerbals != null) {
+				ProcessLoadingKerbals ();
+			}
 			StartCoroutine (WaitAndAddKerbal (pcm));
 		}
 
@@ -137,10 +152,7 @@ namespace KerbalStats {
 		{
 			kerbals = new Dictionary<string, KerbalExt>();
 			if (loading_kerbals != null) {
-				foreach (var pair in loading_kerbals) {
-					kerbals[pair.pcm.name] = pair.ext;
-				}
-				loading_kerbals = null;
+				ProcessLoadingKerbals ();
 			}
 		}
 
