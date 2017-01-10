@@ -15,6 +15,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with KerbalStats.  If not, see <http://www.gnu.org/licenses/>.
 */
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -66,11 +67,17 @@ namespace KerbalStats {
 			SetExt (pcm, ext);
 		}
 
-		void onKerbalAdded (ProtoCrewMember pcm)
+		IEnumerator WaitAndAddKerbal (ProtoCrewMember pcm)
 		{
+			yield return null;
 			Debug.LogFormat ("[KerbalStats] onKerbalAdded: {0} {1} {2}",
 							 pcm.name, pcm.rosterStatus, pcm.type);
 			addKerbal (pcm);
+		}
+
+		void onKerbalAdded (ProtoCrewMember pcm)
+		{
+			StartCoroutine (WaitAndAddKerbal (pcm));
 		}
 
 		void onKerbalRemoved (ProtoCrewMember pcm)
