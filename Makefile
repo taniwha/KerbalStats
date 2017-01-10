@@ -10,7 +10,7 @@ GIT		:= git
 TAR		:= tar
 ZIP		:= zip
 
-.PHONY: all clean info install
+.PHONY: all clean info install release
 
 #SUBDIRS=Assets
 SUBDIRS=GameData Source
@@ -41,3 +41,6 @@ info:
 	@echo "    zip:      ${ZIP}"
 	@echo "    KSP Data: ${KSPDIR}"
 	@echo "    Plugin:   ${PLUGINDIR}"
+
+release:
+	tools/make-release
