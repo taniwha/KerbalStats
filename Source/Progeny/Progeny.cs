@@ -203,13 +203,6 @@ namespace KerbalStats.Progeny {
 			}
 		}
 
-		IEnumerator WaitAndLoadProgeny (ConfigNode config)
-		{
-			yield return null;
-			LoadZygotes (config);
-			onProgenyScenarioLoaded.Fire (this);
-		}
-
 		public override void OnLoad (ConfigNode config)
 		{
 			Debug.Log("[ProgenyScenario] OnLoad");
@@ -219,7 +212,8 @@ namespace KerbalStats.Progeny {
 			uint.TryParse (ids, out id);
 			zygote_id = rgrey (bit_reverse (id));
 
-			StartCoroutine (WaitAndLoadProgeny (config));
+			LoadZygotes (config);
+			onProgenyScenarioLoaded.Fire (this);
 		}
 
 		public override void OnSave (ConfigNode config)
