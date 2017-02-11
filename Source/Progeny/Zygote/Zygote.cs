@@ -32,7 +32,7 @@ namespace KerbalStats.Progeny.Zygotes {
 		// conception to death.
 		public string mother_id;
 		public string father_id;
-		public Location location;
+		public Location location { get; private set; }
 		protected GenePair[] genes;
 		public BioClock bioClock { get; private set; }
 
