@@ -4,7 +4,7 @@ GAMEDATA	:= ${KSPDIR}/GameData
 KSGAMEDATA  := ${GAMEDATA}/KerbalStats
 PLUGINDIR	:= ${KSGAMEDATA}/Plugins
 
-TARGETS		:= bin/KerbalStats.dll
+TARGETS		:= bin/KerbalStats.dll bin/Progeny.dll
 DATA		:= \
 	KerbalStatsWrapper.cs		\
 	Experience/seat_tasks.cfg	\
@@ -20,7 +20,6 @@ KS_CORE := \
 	KerbalStatsScenario.cs			\
 	assembly/AssemblyInfo.cs		\
 	assembly/VersionReport.cs		\
-	toolbar/ToolbarWrapper.cs		\
 	$e
 
 KS_EXPERIENCE := \
@@ -70,7 +69,6 @@ KS_PROGENY := \
 	Progeny/Traits/MaturationTimeP.cs		\
 	Progeny/Traits/OvulationTimeK.cs		\
 	Progeny/Traits/OvulationTimeP.cs		\
-	Progeny/Traits/BioClockInverse.cs		\
 	Progeny/Traits/PRange.cs				\
 	Progeny/Traits/TimeK.cs					\
 	Progeny/Traits/TimeP.cs					\
@@ -91,6 +89,7 @@ KS_PROGENY := \
 	Progeny/Settings.cs				\
 	Progeny/Tracker.cs				\
 	toolbar/Toolbar.cs				\
+	toolbar/ToolbarWrapper.cs		\
 	$e
 
 RESGEN2		:= resgen2
@@ -116,7 +115,9 @@ info:
 	@echo "    zip:        ${ZIP}"
 	@echo "    KSP Data:   ${KSPDIR}"
 
-KS_FILES := ${KS_CORE} ${KS_EXPERIENCE} ${KS_GENOME} ${KS_PROGENY}
+KS_FILES := ${KS_CORE} ${KS_EXPERIENCE}
+
+PR_FILES := ${KS_GENOME} ${KS_PROGENY}
 
 bin/KerbalStats.dll: ${KS_FILES}
 	@mkdir -p bin
@@ -124,6 +125,14 @@ bin/KerbalStats.dll: ${KS_FILES}
 		-r:Assembly-CSharp,Assembly-CSharp-firstpass \
 		-r:UnityEngine,UnityEngine.UI \
 		-out:$@ $^
+
+bin/Progeny.dll: ${PR_FILES} bin/KerbalStats.dll
+	@mkdir -p bin
+	${GMCS} ${GMCSFLAGS} -t:library -lib:${MANAGED} \
+		-r:Assembly-CSharp,Assembly-CSharp-firstpass \
+		-r:UnityEngine,UnityEngine.UI \
+		-lib:bin -r:KerbalStats \
+		-out:$@ ${PR_FILES}
 
 clean:
 	rm -f ${TARGETS} KerbalStats.dox assembly/AssemblyInfo.cs
