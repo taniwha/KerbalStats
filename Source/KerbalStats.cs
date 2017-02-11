@@ -15,6 +15,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with KerbalStats.  If not, see <http://www.gnu.org/licenses/>.
 */
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -66,11 +67,32 @@ namespace KerbalStats {
 			SetExt (pcm, ext);
 		}
 
+		IEnumerator WaitAndAddKerbal (ProtoCrewMember pcm)
+		{
+			yield return null;
+			Debug.LogFormat ("[KerbalStats] onKerbalAdded: {0} {1} {2}",
+							 pcm.name, pcm.rosterStatus, pcm.type);
+			if (kerbals.ContainsKey (pcm.name)) {
+				Debug.LogFormat ("    {0} already added", pcm.name);
+				yield break;
+			}
+			addKerbal (pcm);
+		}
+
+		void ProcessLoadingKerbals ()
+		{
+			foreach (var pair in loading_kerbals) {
+				kerbals[pair.pcm.name] = pair.ext;
+			}
+			loading_kerbals = null;
+		}
+
 		void onKerbalAdded (ProtoCrewMember pcm)
 		{
-			Debug.LogFormat ("[KS] {0} {1} {2}", pcm.name,
-							 pcm.rosterStatus, pcm.type);
-			addKerbal (pcm);
+			if (loading_kerbals != null) {
+				ProcessLoadingKerbals ();
+			}
+			StartCoroutine (WaitAndAddKerbal (pcm));
 		}
 
 		void onKerbalRemoved (ProtoCrewMember pcm)
@@ -83,13 +105,19 @@ namespace KerbalStats {
 			if (loading_kerbals == null) {
 				loading_kerbals = new List<KerbalPair>();
 			}
+			Debug.LogFormat ("[KerbalStats] onProtoCrewMemberLoad: {0}", action);
 			ProtoCrewMember pcm = action.from;
 			ConfigNode node = action.to;
 			string name = pcm.name;
 			if (name == null && node != null && node.HasValue ("name")) {
+				// it turns out onProtoCrewMemberLoad is sometimes fired too
+				// early (before ProtoCrewMember is filled in)
 				name = node.GetValue ("name");
 			}
-			if (node.HasNode ("KerbalExt")) {
+			// Kerbals created on entering the astronaut complex do not have
+			// a config node, and kerbals created before installing KS won't
+			// have a KerbalExt
+			if (node != null && node.HasNode ("KerbalExt")) {
 				Debug.LogFormat ("[KerbalStats] loading ext for {0}", name);
 				var kerbal = node.GetNode ("KerbalExt");
 				var ext = new KerbalExt ();
@@ -124,10 +152,7 @@ namespace KerbalStats {
 		{
 			kerbals = new Dictionary<string, KerbalExt>();
 			if (loading_kerbals != null) {
-				foreach (var pair in loading_kerbals) {
-					kerbals[pair.pcm.name] = pair.ext;
-				}
-				loading_kerbals = null;
+				ProcessLoadingKerbals ();
 			}
 		}
 
