@@ -17,7 +17,6 @@ along with KerbalStats.  If not, see <http://www.gnu.org/licenses/>.
 using UnityEngine;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Linq;
 
 namespace ModName.KerbalStats {
 	/**	Wrapper class for accessing KerbalStats via reflection.

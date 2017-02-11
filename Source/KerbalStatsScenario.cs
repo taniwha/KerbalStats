@@ -16,7 +16,6 @@ along with KerbalStats.  If not, see <http://www.gnu.org/licenses/>.
 */
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 using Master = KerbalStats.KerbalStats;
@@ -40,7 +39,7 @@ namespace KerbalStats.Scenario {
 
 			if (roster != null) {
 				var kerbal_list = roster.GetNodes ("KerbalExt");
-				for (int i = 0; i < kerbal_list.Count(); i++) {
+				for (int i = 0; i < kerbal_list.Length; i++) {
 					var kerbal = kerbal_list[i];
 					ProtoCrewMember pcm = game.CrewRoster[i];
 					var ext = new KerbalExt ();

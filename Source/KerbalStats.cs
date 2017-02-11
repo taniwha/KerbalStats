@@ -17,7 +17,6 @@ along with KerbalStats.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace KerbalStats {
@@ -191,8 +190,7 @@ namespace KerbalStats {
 			GameEvents.onProtoCrewMemberLoad.Remove (onProtoCrewMemberLoad);
 			GameEvents.onProtoCrewMemberSave.Remove (onProtoCrewMemberSave);
 			GameEvents.onGameStateCreated.Remove (onGameStateCreated);
-			var modules = kerbalext_modules.Values.ToList ();
-			foreach (var m in modules) {
+			foreach (var m in kerbalext_modules.Values) {
 				m.Shutdown ();
 			}
 		}
