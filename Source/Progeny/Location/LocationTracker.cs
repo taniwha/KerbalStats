@@ -93,6 +93,9 @@ namespace KerbalStats.Progeny.Locations {
 				case "Womb":
 					location = womb;
 					break;
+				case "Unknown":
+					location = unknown;
+					break;
 				case "Tomb":
 					location = tomb;
 					break;
