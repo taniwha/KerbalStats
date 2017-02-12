@@ -274,6 +274,12 @@ namespace KerbalStats.Progeny {
 
 		void onKerbalStatusChange (ProtoCrewMember pcm, ProtoCrewMember.RosterStatus oldStatus, ProtoCrewMember.RosterStatus newStatus)
 		{
+			if (string.IsNullOrEmpty (pcm.name)
+				|| !kerbal_ids.ContainsKey (pcm.name)) {
+				// premature event: the kerbal is still in the process of being
+				// created by KSP
+				return;
+			}
 			if (newStatus == oldStatus) {
 				// KSP doesn't check before firing the event.
 				return;
