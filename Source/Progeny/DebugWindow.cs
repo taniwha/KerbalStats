@@ -44,6 +44,7 @@ namespace KerbalStats.Progeny {
 			AstronautComplex,
 			EVA,
 			Tomb,
+			Unknown,
 			Wilds,
 			Womb,
 			Vessel,
@@ -196,6 +197,9 @@ namespace KerbalStats.Progeny {
 					break;
 				case Locations.Tomb:
 					ShowLocation (ProgenyScenario.current.locations.tomb);
+					break;
+				case Locations.Unknown:
+					ShowLocation (ProgenyScenario.current.locations.unknown);
 					break;
 				case Locations.Wilds:
 					ShowLocation (ProgenyScenario.current.locations.wilds);
