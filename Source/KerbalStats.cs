@@ -44,6 +44,15 @@ namespace KerbalStats {
 			get {
 				KerbalExt ext;
 				kerbals.TryGetValue (pcm.name, out ext);
+				if (ext == null) {
+					int count = loading_kerbals.Count;
+					for (int i = 0; i < count; i++) {
+						if (loading_kerbals[i].pcm == pcm) {
+							ext = loading_kerbals[i].ext;
+							break;
+						}
+					}
+				}
 				return ext;
 			}
 		}
@@ -62,8 +71,8 @@ namespace KerbalStats {
 		void addKerbal (ProtoCrewMember pcm)
 		{
 			KerbalExt ext = new KerbalExt ();
-			ext.NewKerbal (pcm);
 			SetExt (pcm, ext);
+			ext.NewKerbal (pcm);
 		}
 
 		IEnumerator WaitAndAddKerbal (ProtoCrewMember pcm)
