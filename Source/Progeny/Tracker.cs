@@ -223,7 +223,8 @@ namespace KerbalStats.Progeny {
 					// (rescue or tourist) are Assigned but not on any vessel.
 					// Avoid trampling on the vessel scan if it happens first,
 					// but the scan will set the location if it happens second.
-					if (zygote.location == null) {
+					if (zygote.location == null
+						|| zygote.location is Unknown) {
 						location = ProgenyScenario.current.GetLocation ("Unknown");
 					}
 					break;
