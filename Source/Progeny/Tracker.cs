@@ -47,11 +47,16 @@ namespace KerbalStats.Progeny {
 
 		void onGameStateCreated (Game game)
 		{
-			Debug.Log("[ProgenyTracker] onGameStateCreated");
+			Debug.LogFormat("[ProgenyTracker] onGameStateCreated: {0}", game.Title);
 			reset_loading_kerbals = true;
 			if (ProgenyScenario.current == null) {
 				return;
 			}
+		}
+
+		void onGameStatePostLoad (ConfigNode node)
+		{
+			Debug.LogFormat("[ProgenyTracker] onGameStatePostLoad: {0}", node);
 		}
 
 		void ProcessLoadingKerbals ()
@@ -63,8 +68,11 @@ namespace KerbalStats.Progeny {
 						Debug.LogFormat("[ProgenyTracker] ProcessLoadingKerbals: already added {0}:{1}:{2}", ext.kerbal.name, ext[ModuleName], kerbal_ids[ext.kerbal.name]);
 						ext[ModuleName] = kerbal_ids[ext.kerbal.name];
 					} else {
+						IKerbal kerbal = null;
 						if (ext[ModuleName] != null) {
-							var kerbal = ProgenyScenario.current.GetKerbal (ext[ModuleName] as string) as IKerbal;
+							kerbal = ProgenyScenario.current.GetKerbal (ext[ModuleName] as string) as IKerbal;
+						}
+						if (kerbal != null) {
 							kerbal.kerbal = ext.kerbal;
 							Debug.LogFormat("    {0} {1} {2}", ext.kerbal.name, ext[ModuleName], kerbal.id);
 							kerbal_ids[ext.kerbal.name] = kerbal.id;
@@ -193,6 +201,7 @@ namespace KerbalStats.Progeny {
 			GameEvents.onVesselDestroy.Add (onVesselDestroy);
 			GameEvents.onVesselWasModified.Add (onVesselWasModified);
 			GameEvents.onGameStateCreated.Add (onGameStateCreated);
+			GameEvents.onGameStatePostLoad.Add (onGameStatePostLoad);
 
 			ProgenyScenario.onProgenyScenarioLoaded.Add (onProgenyScenarioLoaded);
 
@@ -210,6 +219,7 @@ namespace KerbalStats.Progeny {
 			GameEvents.onVesselDestroy.Remove (onVesselDestroy);
 			GameEvents.onVesselWasModified.Remove (onVesselWasModified);
 			GameEvents.onGameStateCreated.Remove (onGameStateCreated);
+			GameEvents.onGameStatePostLoad.Remove (onGameStatePostLoad);
 
 			ProgenyScenario.onProgenyScenarioLoaded.Remove (onProgenyScenarioLoaded);
 		}
