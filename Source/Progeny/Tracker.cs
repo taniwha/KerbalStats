@@ -59,13 +59,18 @@ namespace KerbalStats.Progeny {
 			Debug.Log("[ProgenyTracker] ProcessLoadingKerbals");
 			if (loading_kerbals != null) {
 				foreach (var ext in loading_kerbals) {
-					if (ext[ModuleName] != null) {
-						var kerbal = ProgenyScenario.current.GetKerbal (ext[ModuleName] as string) as IKerbal;
-						kerbal.kerbal = ext.kerbal;
-						Debug.LogFormat("    {0} {1} {2}", ext.kerbal.name, ext[ModuleName], kerbal.id);
-						kerbal_ids[ext.kerbal.name] = kerbal.id;
+					if (kerbal_ids.ContainsKey (ext.kerbal.name)) {
+						Debug.LogFormat("[ProgenyTracker] ProcessLoadingKerbals: already added {0}:{1}:{2}", ext.kerbal.name, ext[ModuleName], kerbal_ids[ext.kerbal.name]);
+						ext[ModuleName] = kerbal_ids[ext.kerbal.name];
 					} else {
-						AddKerbal (ext);
+						if (ext[ModuleName] != null) {
+							var kerbal = ProgenyScenario.current.GetKerbal (ext[ModuleName] as string) as IKerbal;
+							kerbal.kerbal = ext.kerbal;
+							Debug.LogFormat("    {0} {1} {2}", ext.kerbal.name, ext[ModuleName], kerbal.id);
+							kerbal_ids[ext.kerbal.name] = kerbal.id;
+						} else {
+							AddKerbal (ext);
+						}
 					}
 				}
 				loading_kerbals = null;
@@ -89,7 +94,7 @@ namespace KerbalStats.Progeny {
 		public void AddKerbal (KerbalExt ext)
 		{
 			if (ProgenyScenario.current == null) {
-				Debug.LogFormat("[ProgenyTracker] AddKerbal: delaying add");
+				Debug.LogFormat("[ProgenyTracker] AddKerbal: delaying add {0}", ext.kerbal.name);
 				AddLoadingKerbal (ext);
 				return;
 			}
