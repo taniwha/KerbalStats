@@ -39,19 +39,26 @@ namespace KerbalStats {
 		Dictionary<string, KerbalExt> kerbals;
 		List<KerbalPair> loading_kerbals;
 
+		KerbalExt find_loading_kerbal (ProtoCrewMember pcm)
+		{
+			int count = loading_kerbals.Count;
+			for (int i = 0; i < count; i++) {
+				if (loading_kerbals[i].pcm == pcm) {
+					return loading_kerbals[i].ext;
+				}
+			}
+			return null;
+		}
+
 		public KerbalExt this[ProtoCrewMember pcm]
 		{
 			get {
-				KerbalExt ext;
-				kerbals.TryGetValue (pcm.name, out ext);
-				if (ext == null) {
-					int count = loading_kerbals.Count;
-					for (int i = 0; i < count; i++) {
-						if (loading_kerbals[i].pcm == pcm) {
-							ext = loading_kerbals[i].ext;
-							break;
-						}
-					}
+				KerbalExt ext = null;
+				if (kerbals != null) {
+					kerbals.TryGetValue (pcm.name, out ext);
+				}
+				if (ext == null && loading_kerbals != null) {
+					ext = find_loading_kerbal (pcm);
 				}
 				return ext;
 			}
@@ -143,14 +150,13 @@ namespace KerbalStats {
 			Debug.LogFormat ("[KerbalStats] saving ext for {0}", pcm.name);
 			ConfigNode node = action.to;
 			ConfigNode kerbalExt = node.AddNode ("KerbalExt");
-			if (kerbals != null) {
-				//Debug.Log ("    from kerbals");
-				kerbals[pcm.name].Save (kerbalExt);
-			} else if (loading_kerbals != null) {
-				//Debug.Log ("    from loading_kerbals");
+			KerbalExt ext = this[pcm];
+			if (ext != null) {
+				Debug.Log ("    from kerbals or loading_kerbals");
+				ext.Save (kerbalExt);
 			} else {
-				//Debug.Log ("    from the ether");
-				KerbalExt ext = new KerbalExt ();
+				Debug.Log ("    from the ether");
+				ext = new KerbalExt ();
 				ext.NewKerbal (pcm);
 				ext.Save (kerbalExt);
 			}
