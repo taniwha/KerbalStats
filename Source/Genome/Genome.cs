@@ -67,7 +67,7 @@ namespace KerbalStats.Genome {
 		{
 			if (loading_kerbals != null) {
 				foreach (var kerbal in loading_kerbals) {
-					var genes = kerbal[name] as GenePair[];
+					var genes = kerbal[ModuleName] as GenePair[];
 					RebuildGenes (kerbal.kerbal, genes);
 				}
 				loading_kerbals = null;
@@ -86,7 +86,7 @@ namespace KerbalStats.Genome {
 
 		public static string extname = "genome";
 			
-		public string name
+		public string ModuleName
 		{
 			get {
 				return extname;
@@ -104,14 +104,14 @@ namespace KerbalStats.Genome {
 
 		public void AddKerbal (KerbalExt kerbal)
 		{
-			if (kerbal[name] != null) {
+			if (kerbal[ModuleName] != null) {
 				// already added via an initialization race
 				Debug.LogFormat("[Genome] AddKerbal: double add {0}",
 								kerbal.kerbal.name);
 				return;
 			}
 			var genes = new GenePair[traits.Length];
-			kerbal[name] = genes;
+			kerbal[ModuleName] = genes;
 			if (kerbal.kerbal.name != null) {
 				RebuildGenes (kerbal.kerbal, genes);
 			} else {
@@ -134,10 +134,10 @@ namespace KerbalStats.Genome {
 
 		public void Load (KerbalExt kerbal, ConfigNode node)
 		{
-			if (node.HasNode (name)) {
-				node = node.GetNode (name);
+			if (node.HasNode (ModuleName)) {
+				node = node.GetNode (ModuleName);
 				var genes = ReadGenes (node);
-				kerbal[name] = genes;
+				kerbal[ModuleName] = genes;
 				RebuildGenes (kerbal.kerbal, genes);
 			} else {
 				AddKerbal (kerbal);
@@ -169,8 +169,8 @@ namespace KerbalStats.Genome {
 
 		public void Save (KerbalExt kerbal, ConfigNode node)
 		{
-			var genes = kerbal[name] as GenePair[];
-			var gen = new ConfigNode (name);
+			var genes = kerbal[ModuleName] as GenePair[];
+			var gen = new ConfigNode (ModuleName);
 			node.AddNode (gen);
 			WriteGenes (genes, gen);
 		}

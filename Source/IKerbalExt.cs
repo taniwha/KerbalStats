@@ -21,7 +21,7 @@ using UnityEngine;
 namespace KerbalStats {
 	public interface IKerbalExt
 	{
-		string name { get; }
+		string ModuleName { get; }
 		void AddKerbal (KerbalExt kerbal);
 		void RemoveKerbal (KerbalExt kerbal);
 		void Load (KerbalExt kerbal, ConfigNode node);

@@ -59,10 +59,10 @@ namespace KerbalStats.Progeny {
 			Debug.Log("[ProgenyTracker] ProcessLoadingKerbals");
 			if (loading_kerbals != null) {
 				foreach (var ext in loading_kerbals) {
-					if (ext[name] != null) {
-						var kerbal = ProgenyScenario.current.GetKerbal (ext[name] as string) as IKerbal;
+					if (ext[ModuleName] != null) {
+						var kerbal = ProgenyScenario.current.GetKerbal (ext[ModuleName] as string) as IKerbal;
 						kerbal.kerbal = ext.kerbal;
-						Debug.LogFormat("    {0} {1} {2}", ext.kerbal.name, ext[name], kerbal.id);
+						Debug.LogFormat("    {0} {1} {2}", ext.kerbal.name, ext[ModuleName], kerbal.id);
 						kerbal_ids[ext.kerbal.name] = kerbal.id;
 					} else {
 						AddKerbal (ext);
@@ -102,7 +102,7 @@ namespace KerbalStats.Progeny {
 			}
 			kerbal_ids[ext.kerbal.name] = kerbal.id;
 			ProgenyScenario.current.AddKerbal (kerbal);
-			ext[name] = kerbal.id;
+			ext[ModuleName] = kerbal.id;
 			CheckLocation (ext.kerbal);
 		}
 
@@ -110,7 +110,7 @@ namespace KerbalStats.Progeny {
 		{
 		}
 
-		public string name
+		public string ModuleName
 		{
 			get {
 				return "progeny";
@@ -134,9 +134,9 @@ namespace KerbalStats.Progeny {
 				loading_kerbals = null;
 			}
 
-			if (node.HasValue (name)) {
-				var id = node.GetValue (name);
-				kerbal[name] = id;
+			if (node.HasValue (ModuleName)) {
+				var id = node.GetValue (ModuleName);
+				kerbal[ModuleName] = id;
 				AddLoadingKerbal (kerbal);
 			} else {
 				AddKerbal (kerbal);
@@ -156,7 +156,7 @@ namespace KerbalStats.Progeny {
 			// the end of the new game creation.
 			reset_loading_kerbals = true;
 
-			if (kerbal[name] == null) {
+			if (kerbal[ModuleName] == null) {
 				// If the id is null, then the Progeny scenario never loaded
 				// before saving. It is very likelly a new save was created.
 				// The id will be set eventually when the scenario does load.
@@ -164,7 +164,7 @@ namespace KerbalStats.Progeny {
 								kerbal.kerbal.name);
 				return;
 			}
-			node.AddValue (name, kerbal[name] as string);
+			node.AddValue (ModuleName, kerbal[ModuleName] as string);
 		}
 
 		public void Clear ()

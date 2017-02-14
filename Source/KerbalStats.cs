@@ -172,8 +172,8 @@ namespace KerbalStats {
 			foreach (var m in modules) {
 				IKerbalExt kext;
 				kext = (IKerbalExt) m.Invoke (parms);
-				kerbalext_modules[kext.name] = kext;
-				Debug.LogFormat ("[KS] module: {0}", kext.name);
+				kerbalext_modules[kext.ModuleName] = kext;
+				Debug.LogFormat ("[KS] module: {0}", kext.ModuleName);
 			}
 		}
 

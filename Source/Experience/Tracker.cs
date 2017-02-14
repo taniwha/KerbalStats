@@ -42,14 +42,14 @@ namespace KerbalStats.Experience {
 
 		public void AddKerbal (KerbalExt kerbal)
 		{
-			kerbal[name] = new Experience ();
+			kerbal[ModuleName] = new Experience ();
 		}
 
 		public void RemoveKerbal (KerbalExt kerbal)
 		{
 		}
 
-		public string name
+		public string ModuleName
 		{
 			get {
 				return "experience";
@@ -59,9 +59,9 @@ namespace KerbalStats.Experience {
 		public void Load (KerbalExt kerbal, ConfigNode node)
 		{
 			var experience = new Experience ();
-			kerbal[name] = experience;
-			if (node.HasNode (name)) {
-				var exp = node.GetNode (name);
+			kerbal[ModuleName] = experience;
+			if (node.HasNode (ModuleName)) {
+				var exp = node.GetNode (ModuleName);
 				experience.Load (exp);
 			} else {
 				AddKerbal (kerbal);
@@ -70,8 +70,8 @@ namespace KerbalStats.Experience {
 
 		public void Save (KerbalExt kerbal, ConfigNode node)
 		{
-			Experience experience = kerbal[name] as Experience;
-			var exp = new ConfigNode (name);
+			Experience experience = kerbal[ModuleName] as Experience;
+			var exp = new ConfigNode (ModuleName);
 			node.AddNode (exp);
 			experience.Save (exp);
 		}
@@ -112,7 +112,7 @@ namespace KerbalStats.Experience {
 				}
 			}
 			double UT = Planetarium.GetUniversalTime ();
-			var exp = (kerbal[name] as Experience).GetExperience (UT, task, body, situation);
+			var exp = (kerbal[ModuleName] as Experience).GetExperience (UT, task, body, situation);
 			return exp.ToString ("G17");
 		}
 
@@ -120,7 +120,7 @@ namespace KerbalStats.Experience {
 								  string body, string situation)
 		{
 			KerbalExt kerbal = KerbalStats.current[pcm];
-			var exp = kerbal[name] as Experience;
+			var exp = kerbal[ModuleName] as Experience;
 			exp.SetSituation (UT, body, situation);
 		}
 
@@ -128,21 +128,21 @@ namespace KerbalStats.Experience {
 							   string body, string situation)
 		{
 			KerbalExt kerbal = KerbalStats.current[pcm];
-			var exp = kerbal[name] as Experience;
+			var exp = kerbal[ModuleName] as Experience;
 			exp.BeginTask (UT, task, body, situation);
 		}
 
 		public void FinishTask (ProtoCrewMember pcm, double UT, string task)
 		{
 			KerbalExt kerbal = KerbalStats.current[pcm];
-			var exp = kerbal[name] as Experience;
+			var exp = kerbal[ModuleName] as Experience;
 			exp.FinishTask (UT, task);
 		}
 
 		public void FinishAllTasks (ProtoCrewMember pcm, double UT)
 		{
 			KerbalExt kerbal = KerbalStats.current[pcm];
-			var exp = kerbal[name] as Experience;
+			var exp = kerbal[ModuleName] as Experience;
 			foreach (var task in exp.Current) {
 				exp.FinishTask (UT, task);
 			}
