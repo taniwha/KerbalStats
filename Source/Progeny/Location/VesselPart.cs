@@ -25,12 +25,23 @@ using KSP.IO;
 namespace KerbalStats.Progeny.Locations {
 	public class VesselPart : Location
 	{
-		Vessel vessel;
+		Vessel _vessel;
+		public Vessel vessel
+		{
+			get {
+				return _vessel;
+			}
+			set {
+				_vessel = value;
+				if (value != null) {
+					name = "VesselPart" + value.name;
+				}
+			}
+		}
 
 		public VesselPart (Vessel v)
 		{
 			vessel = v;
-			name = "VesselPart" + v.name;
 		}
 
 		public override bool isWatched ()

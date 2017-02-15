@@ -32,18 +32,9 @@ namespace KerbalStats.Progeny {
 		internal static ProgenyTracker instance;
 
 		Dictionary<string, string> kerbal_ids;
-		Dictionary<Guid, Vessel> vessels;
 
 		List<KerbalExt> loading_kerbals;
 		bool reset_loading_kerbals;
-
-		Vessel vessel (Guid id)
-		{
-			if (!vessels.ContainsKey (id)) {
-				return null;
-			}
-			return vessels[id];
-		}
 
 		void onGameStateCreated (Game game)
 		{
@@ -183,7 +174,6 @@ namespace KerbalStats.Progeny {
 		public void Clear ()
 		{
 			kerbal_ids = new Dictionary<string, string> ();
-			vessels = new Dictionary<Guid, Vessel> ();
 		}
 
 		public string Get (KerbalExt kerbal, string parms)
@@ -390,13 +380,12 @@ namespace KerbalStats.Progeny {
 			Debug.LogFormat ("[ProgenyTracker] onVesselCreate");
 			KerbalStats.current.StartCoroutine (WaitAndGetCrew (vessel));
 			Debug.LogFormat ("[ProgenyTracker] onVesselCreate a");
-			vessels[vessel.id] = vessel;
+			ProgenyScenario.current.locations.VesselCreated (vessel);
 		}
 
 		void onVesselDestroy (Vessel vessel)
 		{
 			Debug.LogFormat ("[ProgenyTracker] onVesselDestroy");
-			vessels.Remove (vessel.id);
 		}
 
 		void onVesselWasModified (Vessel vessel)
