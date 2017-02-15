@@ -253,7 +253,7 @@ namespace KerbalStats.Progeny {
 			if (location != null) {
 				zygote.SetLocation (location);
 			}
-			Debug.Log(String.Format ("[KS P] CL {0} '{1}'", kerbal.name, location));
+			Debug.LogFormat ("[ProgenyTracker] CheckLocation {0} '{1}'", kerbal.name, location);
 		}
 
 		internal IEnumerator WaitAndCheckLocations ()
@@ -263,7 +263,7 @@ namespace KerbalStats.Progeny {
 			}
 			yield return null;
 			yield return null;
-			//Debug.Log(String.Format ("[KS Progeny] WaitAndCheckLocations"));
+			Debug.LogFormat ("[ProgenyTracker] WaitAndCheckLocations");
 			var game = HighLogic.CurrentGame;
 			var roster = game.CrewRoster;
 			for (int i = 0; i < roster.Count; i++) {
@@ -278,18 +278,19 @@ namespace KerbalStats.Progeny {
 		{
 			yield return null;
 			if (pcm.rosterStatus == ProtoCrewMember.RosterStatus.Available) {
-				//Debug.Log(String.Format ("[KS Progeny] WaitAndCheckStatus: {0} available", pcm.name));
+				Debug.LogFormat ("[ProgenyTracker] WaitAndCheckStatus: {0} available", pcm.name);
 				var kerbal = ProgenyScenario.current.GetKerbal (kerbal_ids[pcm.name]);
 				var location = ProgenyScenario.current.GetLocation ("AstronautComplex");
 				kerbal.SetLocation (location);
 
 			} else {
-				//Debug.Log(String.Format ("[KS Progeny] WaitAndCheckStatus: {0} {1}", pcm.name, pcm.rosterStatus));
+				Debug.LogFormat ("[ProgenyTracker] WaitAndCheckStatus: {0} {1}", pcm.name, pcm.rosterStatus);
 			}
 		}
 
 		void onKerbalStatusChange (ProtoCrewMember pcm, ProtoCrewMember.RosterStatus oldStatus, ProtoCrewMember.RosterStatus newStatus)
 		{
+			Debug.LogFormat ("[ProgenyTracker] onKerbalStatusChange: {0} {1} {2}", pcm.name, oldStatus, newStatus);
 			if (string.IsNullOrEmpty (pcm.name)
 				|| !kerbal_ids.ContainsKey (pcm.name)) {
 				// premature event: the kerbal is still in the process of being
@@ -343,7 +344,7 @@ namespace KerbalStats.Progeny {
 			var kerbal = ProgenyScenario.current.GetKerbal (kerbal_ids[hft.host.name]);
 			if (hft.from != null && hft.to != null) {
 				if (hft.from.vessel != hft.to.vessel) {
-					//Debug.Log(String.Format ("[KS Progeny] transfer: {0}", hft.host.name));
+					Debug.LogFormat ("[ProgenyTracker] onCrewTransferred: {0}", hft.host.name);
 					if (hft.to.vessel.isEVA) {
 						// EVA spawns a new vessel, so onVesselCreate should
 						// take care of things.
@@ -356,11 +357,11 @@ namespace KerbalStats.Progeny {
 					// transferes within a vessel have no effect
 				}
 			} else if (hft.from != null) {
-				//Debug.Log(String.Format ("[KS Progeny] transfer?1: {0}", hft.host.name));
+				Debug.LogFormat ("[ProgenyTracker] onCrewTransferred?1: {0}", hft.host.name);
 			} else if (hft.to != null) {
-				//Debug.Log(String.Format ("[KS Progeny] transfer?2: {0}", hft.host.name));
+				Debug.LogFormat ("[ProgenyTracker] onCrewTransferred?2: {0}", hft.host.name);
 			} else {
-				//Debug.Log(String.Format ("[KS Progeny] transfer?3: {0}", hft.host.name));
+				Debug.LogFormat ("[ProgenyTracker] onCrewTransferred?3: {0}", hft.host.name);
 			}
 		}
 
@@ -369,7 +370,7 @@ namespace KerbalStats.Progeny {
 			var location = ProgenyScenario.current.GetLocation ("Vessel", vessel);
 			var crew = vessel.GetVesselCrew ();
 			for (int i = 0; i < crew.Count; i++) {
-				Debug.Log(String.Format ("[KS Progeny] {0} {1}", crew[i].name, location));
+				Debug.LogFormat ("[ProgenyTracker] GetCrew {0} {1}", crew[i].name, location);
 				var kerbal = ProgenyScenario.current.GetKerbal (kerbal_ids[crew[i].name]);
 				kerbal.SetLocation (location);
 			}
@@ -386,21 +387,21 @@ namespace KerbalStats.Progeny {
 
 		void onVesselCreate (Vessel vessel)
 		{
-			//Debug.Log(String.Format ("[KS Progeny] onVesselCreate"));
+			Debug.LogFormat ("[ProgenyTracker] onVesselCreate");
 			KerbalStats.current.StartCoroutine (WaitAndGetCrew (vessel));
-			//Debug.Log(String.Format ("[KS Progeny] onVesselCreate a"));
+			Debug.LogFormat ("[ProgenyTracker] onVesselCreate a");
 			vessels[vessel.id] = vessel;
 		}
 
 		void onVesselDestroy (Vessel vessel)
 		{
-			//Debug.Log(String.Format ("[KS Progeny] onVesselDestroy"));
+			Debug.LogFormat ("[ProgenyTracker] onVesselDestroy");
 			vessels.Remove (vessel.id);
 		}
 
 		void onVesselWasModified (Vessel vessel)
 		{
-			//Debug.Log(String.Format ("[KS Progeny] onVesselWasModified"));
+			Debug.LogFormat ("[ProgenyTracker] onVesselWasModified");
 			KerbalStats.current.StartCoroutine (WaitAndGetCrew (vessel));
 		}
 	}
