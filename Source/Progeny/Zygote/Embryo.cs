@@ -32,11 +32,9 @@ namespace KerbalStats.Progeny.Zygotes {
 		// birth (zygote, proembryo, embryo, fetus).
 		double conceived;
 		double birth;
-		double subp;
 
 		public Embryo (Female mother, Male father) : base (mother, father)
 		{
-			subp = UnityEngine.Random.Range (0, 1f);
 			conceived = Planetarium.GetUniversalTime ();
 			birth = CalcBirth ();
 			SetLocation (ProgenyScenario.current.GetLocation ("Womb"));
@@ -46,11 +44,6 @@ namespace KerbalStats.Progeny.Zygotes {
 		{
 			if (node.HasValue ("conceived")) {
 				double.TryParse (node.GetValue ("conceived"), out conceived);
-			}
-			if (node.HasValue ("p")) {
-				double.TryParse (node.GetValue ("p"), out subp);
-			} else {
-				subp = UnityEngine.Random.Range (0, 1f);
 			}
 			birth = CalcBirth ();
 		}
@@ -78,7 +71,6 @@ namespace KerbalStats.Progeny.Zygotes {
 		public override void Save (ConfigNode node)
 		{
 			base.Save (node);
-			node.AddValue ("p", subp.ToString ("G17"));
 			node.AddValue ("conceived", conceived.ToString ("G17"));
 		}
 

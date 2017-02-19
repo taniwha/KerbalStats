@@ -28,7 +28,6 @@ namespace KerbalStats.Progeny.Zygotes {
 	{
 		double birthUT;
 		double maturation;
-		double subp;
 
 		public bool isFemale
 		{
@@ -64,18 +63,12 @@ namespace KerbalStats.Progeny.Zygotes {
 			if (node.HasValue ("birthUT")) {
 				double.TryParse (node.GetValue ("birthUT"), out birthUT);
 			}
-			if (node.HasValue ("p")) {
-				double.TryParse (node.GetValue ("p"), out subp);
-			} else {
-				subp = UnityEngine.Random.Range (0, 1f);
-			}
 			init ();
 		}
 
 		public override void Save (ConfigNode node)
 		{
 			node.AddValue ("birthUT", birthUT.ToString ("G17"));
-			node.AddValue ("p", subp.ToString ("G17"));
 		}
 
 		public double Birth ()

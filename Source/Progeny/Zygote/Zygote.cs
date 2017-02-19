@@ -35,6 +35,7 @@ namespace KerbalStats.Progeny.Zygotes {
 		public Location location { get; private set; }
 		protected GenePair[] genes;
 		public BioClock bioClock { get; private set; }
+		protected double subp;
 
 		public string id
 		{
@@ -45,6 +46,7 @@ namespace KerbalStats.Progeny.Zygotes {
 		void init ()
 		{
 			bioClock = new BioClock (genes);
+			subp = UnityEngine.Random.Range (0, 1f);
 		}
 
 		public Zygote (ProtoCrewMember kerbal)
@@ -82,6 +84,11 @@ namespace KerbalStats.Progeny.Zygotes {
 			genes = Genome.ReadGenes (node.GetNode ("genome"));
 			Genome.RebuildGenes (null, genes);
 			init ();
+			if (node.HasValue ("p")) {
+				double.TryParse (node.GetValue ("p"), out subp);
+			} else {
+				subp = UnityEngine.Random.Range (0, 1f);
+			}
 			var l = ProgenyScenario.current.ParseLocation (node.GetValue ("location"));
 			SetLocation (l);
 		}
@@ -93,6 +100,7 @@ namespace KerbalStats.Progeny.Zygotes {
 			node.AddValue ("mother", mother_id);
 			node.AddValue ("father", father_id);
 			Genome.WriteGenes (genes, node.AddNode ("genome"));
+			node.AddValue ("p", subp.ToString ("G17"));
 			node.AddValue ("location", location.ToString ());
 		}
 

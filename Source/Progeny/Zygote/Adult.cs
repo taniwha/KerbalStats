@@ -36,7 +36,6 @@ namespace KerbalStats.Progeny.Zygotes {
 		double birthUT;
 		double adulthoodUT;
 		double aging;
-		double subp;
 
 		public string name
 		{
@@ -55,14 +54,12 @@ namespace KerbalStats.Progeny.Zygotes {
 			birthUT = juvenile.Birth ();
 			adulthoodUT = juvenile.Maturation ();
 			kerbal = null;		// not yet recruited
-			subp = UnityEngine.Random.Range (0, 1f);
 			initialize ();
 		}
 
 		public Adult (ProtoCrewMember kerbal) : base (kerbal)
 		{
 			this.kerbal = kerbal;
-			subp = UnityEngine.Random.Range (0, 1f);
 			initialize ();
 			CalcAdulthood ();
 			CalcBirth ();
@@ -98,11 +95,6 @@ namespace KerbalStats.Progeny.Zygotes {
 		public Adult (ConfigNode node) : base (node)
 		{
 			this.kerbal = null;
-			if (node.HasValue ("p")) {
-				double.TryParse (node.GetValue ("p"), out subp);
-			} else {
-				subp = UnityEngine.Random.Range (0, 1f);
-			}
 			initialize ();
 			if (node.HasValue ("adulthoodUT")) {
 				double.TryParse (node.GetValue ("adulthoodUT"), out adulthoodUT);
@@ -121,7 +113,6 @@ namespace KerbalStats.Progeny.Zygotes {
 			base.Save (node);
 			node.AddValue ("birthUT", birthUT.ToString ("G17"));
 			node.AddValue ("adulthoodUT", adulthoodUT.ToString ("G17"));
-			node.AddValue ("p", subp.ToString ("G17"));
 
 		}
 
