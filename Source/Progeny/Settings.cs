@@ -40,7 +40,7 @@ namespace KerbalStats.Progeny {
 		public static void Load (ConfigNode config)
 		{
 			LoadGlobalSettings ();
-			Debug.Log (String.Format ("[KS:Progeny] Settings load"));
+			//Debug.Log (String.Format ("[KS:Progeny] Settings load"));
 			var settings = config.GetNode ("Settings");
 			if (settings == null) {
 				settings = new ConfigNode ("Settings");
@@ -54,7 +54,7 @@ namespace KerbalStats.Progeny {
 
 		public static void Save (ConfigNode config)
 		{
-			Debug.Log (String.Format ("[KS:Progeny] Settings save: {0}", config));
+			//Debug.Log (String.Format ("[KS:Progeny] Settings save: {0}", config));
 			var settings = new ConfigNode ("Settings");
 			config.AddNode (settings);
 		}

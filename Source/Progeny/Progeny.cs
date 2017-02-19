@@ -205,7 +205,7 @@ namespace KerbalStats.Progeny {
 
 		public override void OnLoad (ConfigNode config)
 		{
-			Debug.Log("[ProgenyScenario] OnLoad");
+			//Debug.Log("[ProgenyScenario] OnLoad");
 			ProgenySettings.Load (config);
 			var ids = config.GetValue ("zygote_id");
 			uint id = 0;
@@ -245,7 +245,7 @@ namespace KerbalStats.Progeny {
 
 		public override void OnAwake ()
 		{
-			Debug.Log("[ProgenyScenario] OnAwake");
+			//Debug.Log("[ProgenyScenario] OnAwake");
 			current = this;
 
 			locations = new LocationTracker ();

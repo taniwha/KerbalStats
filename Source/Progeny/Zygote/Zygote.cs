@@ -88,7 +88,7 @@ namespace KerbalStats.Progeny.Zygotes {
 
 		public virtual void Save (ConfigNode node)
 		{
-			Debug.Log(String.Format ("[KS Zygote] Save: '{0}' '{1}' '{2}' '{3}' '{4}'", id, mother_id, father_id, genes, location));
+			//Debug.Log(String.Format ("[KS Zygote] Save: '{0}' '{1}' '{2}' '{3}' '{4}'", id, mother_id, father_id, genes, location));
 			node.AddValue ("id", id);
 			node.AddValue ("mother", mother_id);
 			node.AddValue ("father", father_id);
