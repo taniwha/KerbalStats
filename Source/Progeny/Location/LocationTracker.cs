@@ -89,7 +89,11 @@ namespace KerbalStats.Progeny.Locations {
 					Debug.LogFormat("[LocationTracker] Parse: VesselPart {0}:{1}", vessel_parts, FlightGlobals.Vessels);
 					if (!vessel_parts.ContainsKey (id)) {
 						Vessel vessel = FlightGlobals.Vessels.Where (v => v.id == id).FirstOrDefault ();
-						vessel_parts[id] = new VesselPart (vessel);
+						if (vessel != null) {
+							vessel_parts[id] = new VesselPart (vessel);
+						} else {
+							vessel_parts[id] = new VesselPart (id);
+						}
 					}
 					location = vessel_parts[id];
 					break;

@@ -25,6 +25,7 @@ using KSP.IO;
 namespace KerbalStats.Progeny.Locations {
 	public class VesselPart : Location
 	{
+		Guid id;
 		Vessel _vessel;
 		public Vessel vessel
 		{
@@ -34,7 +35,8 @@ namespace KerbalStats.Progeny.Locations {
 			set {
 				_vessel = value;
 				if (value != null) {
-					name = "VesselPart" + value.name;
+					name = "VesselPart:" + value.name;
+					id = value.id;
 				}
 			}
 		}
@@ -44,14 +46,22 @@ namespace KerbalStats.Progeny.Locations {
 			vessel = v;
 		}
 
+		public VesselPart (Guid id)
+		{
+			this.id = id;
+		}
+
 		public override bool isWatched ()
 		{
+			if (vessel == null) {
+				return false;
+			}
 			return vessel.loaded;
 		}
 
 		public override string ToString ()
 		{
-			return "VesselPart," + vessel.id.ToString("N");
+			return "VesselPart," + id.ToString("N");
 		}
 	}
 }
