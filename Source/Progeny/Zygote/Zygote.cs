@@ -89,7 +89,8 @@ namespace KerbalStats.Progeny.Zygotes {
 			} else {
 				subp = UnityEngine.Random.Range (0, 1f);
 			}
-			var l = ProgenyScenario.current.ParseLocation (node.GetValue ("location"));
+			string location = node.GetValue ("location");
+			Location l = ProgenyScenario.current.ParseLocation (location);
 			SetLocation (l);
 		}
 
