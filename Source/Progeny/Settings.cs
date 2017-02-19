@@ -36,6 +36,8 @@ namespace KerbalStats.Progeny {
 		public static double EggLife			{ get; private set; }
 		public static double SpermLife			{ get; private set; }
 		public static double InterestTC			{ get; private set; }
+		public static double ReportPeriod		{ get; private set; }
+		public static double ReportPeriod2		{ get; private set; }
 
 		public static void Load (ConfigNode config)
 		{
@@ -76,6 +78,15 @@ namespace KerbalStats.Progeny {
 			EggLife = 3 * 21600;
 			SpermLife = 3 * 3600;
 			InterestTC = 3600;
+
+			ReportPeriod = 21600;	// once a day
+			// used for high-warp to avoid message box spamming
+			// At 100000x warp, even an earth day is less than 1s, so drop
+			// reports off to one a fortnight (earth time), or about 12s
+			// real-time. Works out to be about one Minmus phase cycle, thus
+			// one kerbal cycle period.
+			ReportPeriod2 = 56 * 21600;	// same as 14 * 86400
+
 			var dbase = GameDatabase.Instance;
 			var settings = dbase.GetConfigNodes ("ProgenyGlobalSettings").LastOrDefault ();
 
@@ -121,6 +132,16 @@ namespace KerbalStats.Progeny {
 			if (settings.HasValue ("InterestTC")) {
 				if (double.TryParse (settings.GetValue ("InterestTC"), out val)) {
 					InterestTC = val;
+				}
+			}
+			if (settings.HasValue ("ReportPeriod")) {
+				if (double.TryParse (settings.GetValue ("ReportPeriod"), out val)) {
+					ReportPeriod = val;
+				}
+			}
+			if (settings.HasValue ("ReportPeriod2")) {
+				if (double.TryParse (settings.GetValue ("ReportPeriod2"), out val)) {
+					ReportPeriod2 = val;
 				}
 			}
 		}

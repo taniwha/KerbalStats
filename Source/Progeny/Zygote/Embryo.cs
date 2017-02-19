@@ -30,8 +30,8 @@ namespace KerbalStats.Progeny.Zygotes {
 	{
 		// As a simplification, this coverers all stages from conception to
 		// birth (zygote, proembryo, embryo, fetus).
-		double conceived;
-		double birth;
+		public double conceived { get; private set; }
+		public double birth { get; private set; }
 
 		public Embryo (Female mother, Male father) : base (mother, father)
 		{
@@ -43,7 +43,9 @@ namespace KerbalStats.Progeny.Zygotes {
 		public Embryo (ConfigNode node) : base (node)
 		{
 			if (node.HasValue ("conceived")) {
-				double.TryParse (node.GetValue ("conceived"), out conceived);
+				double c;
+				double.TryParse (node.GetValue ("conceived"), out c);
+				conceived = c;
 			}
 			birth = CalcBirth ();
 		}

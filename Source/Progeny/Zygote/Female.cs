@@ -83,6 +83,27 @@ namespace KerbalStats.Progeny.Zygotes {
 			return true;
 		}
 
+		public bool DiscoverPregnancy ()
+		{
+			double time = UT - embryo.conceived;
+			double period = bioClock.CyclePeriod;
+			// map 0.5 - 1.5 cyles (after concpetion) to 0.02 to 0.98 so most
+			// pregnacies will be discovered around the time of the first
+			// end-of-cycle, but there's always a possibility of early
+			// discovery or even no discovery until birth
+			double factor = 3 * (time - period) / period;
+			double p = (Math.Tanh (factor) + 1) / 2;
+
+			// FIXME factor in medical facilities: base should be low
+			// probability (assuming secrecy) until mid-pregnacy and then
+			// the above probability with medical facilities (regular checkups
+			// etc)
+			if (UnityEngine.Random.Range (0, 1f) > p) {
+				return false;
+			}
+			return true;
+		}
+
 		void initialize ()
 		{
 			lastUpdate = Planetarium.GetUniversalTime ();

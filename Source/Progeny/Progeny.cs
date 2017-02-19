@@ -20,6 +20,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+using KSP.UI.Screens;
+
 namespace KerbalStats.Progeny {
 	using Locations;
 	using Zygotes;
@@ -37,6 +39,11 @@ namespace KerbalStats.Progeny {
 		Dictionary<string, Juvenile> juveniles;
 		Dictionary<string, Male> males;
 		Dictionary<string, Female> females;
+
+		List<string> pending_reports;
+		int lastReportDay;
+		double lastReportUT;
+
 		uint zygote_id;
 
 		public LocationTracker locations { get; private set; }
@@ -129,6 +136,11 @@ namespace KerbalStats.Progeny {
 			}
 		}
 
+		public void ReportPregnancy (Female female)
+		{
+			pending_reports.Add (female.id);
+		}
+
 		public Embryo GetEmbryo (string id)
 		{
 			return embryos[id];
@@ -212,6 +224,26 @@ namespace KerbalStats.Progeny {
 			uint.TryParse (ids, out id);
 			zygote_id = rgrey (bit_reverse (id));
 
+			pending_reports.Clear();
+			if (config.HasNode ("pending_reports")) {
+				var node = config.GetNode ("pending_reports");
+				for (int i = 0; i < node.values.Count; i++) {
+					string value = node.values[i].value;
+					switch (node.values[i].name) {
+					case "id":
+						string rid = value;
+						pending_reports.Add (rid);
+						break;
+					case "lastReportDay":
+						int.TryParse (value, out lastReportDay);
+						break;
+					case "lastReportUT":
+						double.TryParse (value, out lastReportUT);
+						break;
+					}
+				}
+			}
+
 			LoadZygotes (config);
 			onProgenyScenarioLoaded.Fire (this);
 		}
@@ -221,6 +253,15 @@ namespace KerbalStats.Progeny {
 			ProgenySettings.Save (config);
 			var id = bit_reverse (grey (zygote_id));
 			config.AddValue ("zygote_id", id);
+
+			{
+				var node = config.AddNode ("pending_reports");
+				node.AddValue ("lastReportDay", lastReportDay);
+				node.AddValue ("lastReportUT", lastReportUT);
+				foreach (string rid in pending_reports) {
+					node.AddValue ("id", rid);
+				}
+			}
 
 			foreach (var embryo in embryos.Values) {
 				var node = config.AddNode ("embryo");
@@ -254,6 +295,8 @@ namespace KerbalStats.Progeny {
 			juveniles = new Dictionary<string, Juvenile> ();
 			males = new Dictionary<string, Male> ();
 			females = new Dictionary<string, Female> ();
+
+			pending_reports = new List<string> ();
 		}
 
 		void OnDestroy ()
@@ -297,6 +340,69 @@ namespace KerbalStats.Progeny {
 		void Start ()
 		{
 			StartCoroutine (ScanFemales ());
+		}
+
+		void GenerateReport (double UT, int day)
+		{
+			string date = KSPUtil.PrintDate (UT, false);
+			string title = "Poplation Status Report";
+			string body = "<b>" + date + "</b>\n\n";
+			var color = MessageSystemButton.MessageButtonColor.BLUE;
+			var icon = MessageSystemButton.ButtonIcons.MESSAGE;
+
+			foreach (string id in pending_reports) {
+				Zygote zyg = GetZygote (id);
+
+				if (zyg == null) {
+					continue;
+				}
+				if (zyg is Adult && (zyg as Adult).kerbal != null) {
+					name = (zyg as Adult).kerbal.name;
+				} else {
+					name = zyg.id;
+				}
+				body += "    " + name + "\n";
+			}
+			pending_reports.Clear ();
+
+			var message = new MessageSystem.Message (title, body, color, icon);
+			MessageSystem.Instance.AddMessage (message);
+		}
+
+		void CheckPendingReports ()
+		{
+			if (pending_reports.Count < 1 || MessageSystem.Instance == null) {
+				return;
+			}
+
+			double delay;
+
+			float rate = TimeWarp.CurrentRate;
+			if (rate >= 100000f) {
+				delay = ProgenySettings.ReportPeriod2;
+			} else if (rate > 1000) {
+				// Make reports a little slower to avoid message spam
+				delay = ProgenySettings.ReportPeriod * 2;
+			} else {
+				delay = ProgenySettings.ReportPeriod;
+			}
+
+			var dtFmt = KSPUtil.dateTimeFormatter;
+			double UT = Planetarium.GetUniversalTime ();
+			int day = (int) (UT / dtFmt.Day);
+
+			if (day != lastReportDay && UT - lastReportUT >= delay) {
+				GenerateReport (UT, day);
+				lastReportDay = day;
+				// pretend the report was on the dot to avoid it creaping
+				// forward through the day
+				lastReportUT = day * dtFmt.Day;
+			}
+		}
+
+		void Update ()
+		{
+			CheckPendingReports ();
 		}
 	}
 }
