@@ -39,7 +39,7 @@ namespace KerbalStats.Progeny {
 		void onGameStateCreated (Game game)
 		{
 			Debug.LogFormat("[ProgenyTracker] onGameStateCreated: {0}", game.Title);
-			reset_loading_kerbals = true;
+			Clear ();
 			if (ProgenyScenario.current == null) {
 				return;
 			}
@@ -174,6 +174,7 @@ namespace KerbalStats.Progeny {
 		public void Clear ()
 		{
 			kerbal_ids = new Dictionary<string, string> ();
+			reset_loading_kerbals = true;
 		}
 
 		public string Get (KerbalExt kerbal, string parms)
