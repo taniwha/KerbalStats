@@ -25,14 +25,10 @@ using KSP.IO;
 namespace KerbalStats.Progeny.Zygotes {
 	public class Female : Adult, IComparable<Female>
 	{
-		double lastUpdate;
-		double UT;
 		Embryo embryo;
 		Interest interest;
 		Gamete gamete;
 		Cycle cycle;
-
-		KerbalFSM fsm;
 
 		public bool isInterested ()
 		{
@@ -80,27 +76,6 @@ namespace KerbalStats.Progeny.Zygotes {
 			}
 			embryo = new Embryo (this, mate);
 			ProgenyScenario.current.AddEmbryo (embryo);
-			return true;
-		}
-
-		public bool DiscoverPregnancy ()
-		{
-			double time = UT - embryo.conceived;
-			double period = bioClock.CyclePeriod;
-			// map 0.5 - 1.5 cyles (after concpetion) to 0.02 to 0.98 so most
-			// pregnacies will be discovered around the time of the first
-			// end-of-cycle, but there's always a possibility of early
-			// discovery or even no discovery until birth
-			double factor = 3 * (time - period) / period;
-			double p = (Math.Tanh (factor) + 1) / 2;
-
-			// FIXME factor in medical facilities: base should be low
-			// probability (assuming secrecy) until mid-pregnacy and then
-			// the above probability with medical facilities (regular checkups
-			// etc)
-			if (UnityEngine.Random.Range (0, 1f) > p) {
-				return false;
-			}
 			return true;
 		}
 
@@ -154,6 +129,8 @@ namespace KerbalStats.Progeny.Zygotes {
 			}
 		}
 
+		double lastUpdate;
+		double UT;
 		public void Update ()
 		{
 			UT = Planetarium.GetUniversalTime ();
@@ -165,21 +142,11 @@ namespace KerbalStats.Progeny.Zygotes {
 			lastUpdate = UT;
 		}
 
-		public string State
-		{
-			get {
-				UT = Planetarium.GetUniversalTime ();
-				return fsm.currentStateName + " " + interest.isInterested (UT);
-			}
-		}
-
 		public int CompareTo (Female other)
 		{
 			return name.CompareTo (other.name);
 		}
 
-
-		// State machine
 
 		KFSMState state_fertile;
 		KFSMState state_pregnant;
@@ -191,6 +158,8 @@ namespace KerbalStats.Progeny.Zygotes {
 		KFSMEvent event_discover;
 		KFSMEvent event_birthe;
 		KFSMEvent event_rested;
+
+		KerbalFSM fsm;
 
 		bool check_conceive (KFSMState st)
 		{
@@ -206,7 +175,23 @@ namespace KerbalStats.Progeny.Zygotes {
 
 		bool check_discover (KFSMState st)
 		{
-			return DiscoverPregnancy ();
+			double time = UT - embryo.conceived;
+			double period = bioClock.CyclePeriod;
+			// map 0.5 - 1.5 cyles (after concpetion) to 0.02 to 0.98 so most
+			// pregnacies will be discovered around the time of the first
+			// end-of-cycle, but there's always a possibility of early
+			// discovery or even no discovery until birth
+			double factor = 3 * (time - period) / period;
+			double p = (Math.Tanh (factor) + 1) / 2;
+
+			// FIXME factor in medical facilities: base should be low
+			// probability (assuming secrecy) until mid-pregnacy and then
+			// the above probability with medical facilities (regular checkups
+			// etc)
+			if (UnityEngine.Random.Range (0, 1f) > p) {
+				return false;
+			}
+			return true;
 		}
 
 		void report_pregnancy (KFSMState prevState)
@@ -278,6 +263,14 @@ namespace KerbalStats.Progeny.Zygotes {
 			fsm = new KerbalFSM ();
 			CreateStates ();
 			CreateEvents ();
+		}
+
+		public string State
+		{
+			get {
+				UT = Planetarium.GetUniversalTime ();
+				return fsm.currentStateName + " " + interest.isInterested (UT);
+			}
 		}
 	}
 }
