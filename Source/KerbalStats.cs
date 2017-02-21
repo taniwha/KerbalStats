@@ -85,10 +85,10 @@ namespace KerbalStats {
 		IEnumerator WaitAndAddKerbal (ProtoCrewMember pcm)
 		{
 			yield return null;
-			Debug.LogFormat ("[KerbalStats] onKerbalAdded: {0} {1} {2}",
-							 pcm.name, pcm.rosterStatus, pcm.type);
+			//Debug.LogFormat ("[KerbalStats] onKerbalAdded: {0} {1} {2}",
+			//				 pcm.name, pcm.rosterStatus, pcm.type);
 			if (kerbals.ContainsKey (pcm.name)) {
-				Debug.LogFormat ("    {0} already added", pcm.name);
+				//Debug.LogFormat ("    {0} already added", pcm.name);
 				yield break;
 			}
 			addKerbal (pcm);
@@ -147,15 +147,15 @@ namespace KerbalStats {
 		void onProtoCrewMemberSave (GameEvents.FromToAction<ProtoCrewMember,ConfigNode> action)
 		{
 			ProtoCrewMember pcm = action.from;
-			Debug.LogFormat ("[KerbalStats] saving ext for {0}", pcm.name);
+			//Debug.LogFormat ("[KerbalStats] saving ext for {0}", pcm.name);
 			ConfigNode node = action.to;
 			ConfigNode kerbalExt = node.AddNode ("KerbalExt");
 			KerbalExt ext = this[pcm];
 			if (ext != null) {
-				Debug.Log ("    from kerbals or loading_kerbals");
+				//Debug.Log ("    from kerbals or loading_kerbals");
 				ext.Save (kerbalExt);
 			} else {
-				Debug.Log ("    from the ether");
+				//Debug.Log ("    from the ether");
 				ext = new KerbalExt ();
 				ext.NewKerbal (pcm);
 				ext.Save (kerbalExt);
