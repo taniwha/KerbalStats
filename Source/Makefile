@@ -77,7 +77,6 @@ KS_PROGENY := \
 	Progeny/Zygote/Cycle.cs					\
 	Progeny/Zygote/Embryo.cs				\
 	Progeny/Zygote/Female.cs				\
-	Progeny/Zygote/FemaleFSM.cs				\
 	Progeny/Zygote/Gamete.cs				\
 	Progeny/Zygote/Interest.cs				\
 	Progeny/Zygote/Juvenile.cs				\
