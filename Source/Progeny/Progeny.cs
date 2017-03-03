@@ -44,12 +44,9 @@ namespace KerbalStats.Progeny {
 		int lastReportDay;
 		double lastReportUT;
 
-		uint zygote_id;
-
-		public LocationTracker locations { get; private set; }
-
 		public static EventData<ProgenyScenario> onProgenyScenarioLoaded = new EventData<ProgenyScenario> ("onProgenyScenarioLoaded");
 
+#region Zygote list access
 		public List<Embryo> Embryos
 		{
 			get {
@@ -77,6 +74,10 @@ namespace KerbalStats.Progeny {
 				return females.Values.ToList ();
 			}
 		}
+#endregion
+
+#region Location support
+		public LocationTracker locations { get; private set; }
 
 		public Location GetLocation (string location, object parm = null)
 		{
@@ -87,8 +88,12 @@ namespace KerbalStats.Progeny {
 		{
 			return locations.Parse (locstring);
 		}
+#endregion
 
 		public static ProgenyScenario current { get; private set; }
+
+#region Zygote ID handling
+		uint zygote_id;
 
 		public static uint bit_reverse (uint x)
 		{
@@ -114,7 +119,9 @@ namespace KerbalStats.Progeny {
 			}
 			return x;
 		}
+#endregion
 
+#region Mature
 		public void Mature (Embryo embryo)
 		{
 			embryos.Remove (embryo.id);
@@ -135,6 +142,7 @@ namespace KerbalStats.Progeny {
 				males[male.id] = male;
 			}
 		}
+#endregion
 
 		public void ReportPregnancy (Female female)
 		{
@@ -190,6 +198,7 @@ namespace KerbalStats.Progeny {
 			return id.ToString("x");
 		}
 
+#region Load/Save
 		void LoadZygotes (ConfigNode config)
 		{
 			var zygote_list = config.nodes;
@@ -283,6 +292,7 @@ namespace KerbalStats.Progeny {
 				male.Save (node);
 			}
 		}
+#endregion
 
 		public override void OnAwake ()
 		{

@@ -42,6 +42,7 @@ namespace KerbalStats.Progeny.Zygotes {
 			return gamete.Life (p);
 		}
 
+#region Mating
 		public Male SelectMate (List<Male> males)
 		{
 			float [] male_readiness = new float[males.Count + 1];
@@ -78,7 +79,9 @@ namespace KerbalStats.Progeny.Zygotes {
 			ProgenyScenario.current.AddEmbryo (embryo);
 			return true;
 		}
+#endregion
 
+#region Initialization (create, save, load)
 		void initialize ()
 		{
 			lastUpdate = Planetarium.GetUniversalTime ();
@@ -128,6 +131,7 @@ namespace KerbalStats.Progeny.Zygotes {
 				node.AddValue ("embryo", embryo.id);
 			}
 		}
+#endregion
 
 		double lastUpdate;
 		double UT;
@@ -142,12 +146,14 @@ namespace KerbalStats.Progeny.Zygotes {
 			lastUpdate = UT;
 		}
 
+#region IComparable
 		public int CompareTo (Female other)
 		{
 			return name.CompareTo (other.name);
 		}
+#endregion
 
-
+#region State machine
 		KFSMState state_fertile;
 		KFSMState state_pregnant;
 		KFSMState state_discovered;
@@ -272,5 +278,6 @@ namespace KerbalStats.Progeny.Zygotes {
 				return fsm.currentStateName + " " + interest.isInterested (UT);
 			}
 		}
+#endregion
 	}
 }
