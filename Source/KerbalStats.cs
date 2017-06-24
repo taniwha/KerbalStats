@@ -52,10 +52,10 @@ namespace KerbalStats {
 		internal void SetExt (ProtoCrewMember pcm, KerbalExt ext)
 		{
 			if (loading_kerbals != null) {
-				Debug.Log("    loading_kerbals");
+				//Debug.Log("    loading_kerbals");
 				loading_kerbals.Add (new KerbalPair (pcm, ext));
 			} else if (kerbals != null) {
-				Debug.Log("    kerbals");
+				//Debug.Log("    kerbals");
 				kerbals[pcm.name] = ext;
 			}
 		}
@@ -70,10 +70,10 @@ namespace KerbalStats {
 		IEnumerator WaitAndAddKerbal (ProtoCrewMember pcm)
 		{
 			yield return null;
-			Debug.LogFormat ("[KerbalStats] onKerbalAdded: {0} {1} {2}",
-							 pcm.name, pcm.rosterStatus, pcm.type);
+			//Debug.LogFormat ("[KerbalStats] onKerbalAdded: {0} {1} {2}",
+			//				 pcm.name, pcm.rosterStatus, pcm.type);
 			if (kerbals.ContainsKey (pcm.name)) {
-				Debug.LogFormat ("    {0} already added", pcm.name);
+				//Debug.LogFormat ("    {0} already added", pcm.name);
 				yield break;
 			}
 			addKerbal (pcm);
@@ -105,7 +105,7 @@ namespace KerbalStats {
 			if (loading_kerbals == null) {
 				loading_kerbals = new List<KerbalPair>();
 			}
-			Debug.LogFormat ("[KerbalStats] onProtoCrewMemberLoad: {0}", action);
+			//Debug.LogFormat ("[KerbalStats] onProtoCrewMemberLoad: {0}", action);
 			ProtoCrewMember pcm = action.from;
 			ConfigNode node = action.to;
 			string name = pcm.name;
@@ -118,13 +118,13 @@ namespace KerbalStats {
 			// a config node, and kerbals created before installing KS won't
 			// have a KerbalExt
 			if (node != null && node.HasNode ("KerbalExt")) {
-				Debug.LogFormat ("[KerbalStats] loading ext for {0}", name);
+				//Debug.LogFormat ("[KerbalStats] loading ext for {0}", name);
 				var kerbal = node.GetNode ("KerbalExt");
 				var ext = new KerbalExt ();
 				ext.Load (pcm, kerbal);
 				SetExt (pcm, ext);
 			} else {
-				Debug.LogFormat ("[KerbalStats] creating ext for {0}", name);
+				//Debug.LogFormat ("[KerbalStats] creating ext for {0}", name);
 				addKerbal (pcm);
 			}
 		}
@@ -132,16 +132,16 @@ namespace KerbalStats {
 		void onProtoCrewMemberSave (GameEvents.FromToAction<ProtoCrewMember,ConfigNode> action)
 		{
 			ProtoCrewMember pcm = action.from;
-			Debug.LogFormat ("[KerbalStats] saving ext for {0}", pcm.name);
+			//Debug.LogFormat ("[KerbalStats] saving ext for {0}", pcm.name);
 			ConfigNode node = action.to;
 			ConfigNode kerbalExt = node.AddNode ("KerbalExt");
 			if (kerbals != null) {
-				Debug.Log ("    from kerbals");
+				//Debug.Log ("    from kerbals");
 				kerbals[pcm.name].Save (kerbalExt);
 			} else if (loading_kerbals != null) {
-				Debug.Log ("    from loading_kerbals");
+				//Debug.Log ("    from loading_kerbals");
 			} else {
-				Debug.Log ("    from the ether");
+				//Debug.Log ("    from the ether");
 				KerbalExt ext = new KerbalExt ();
 				ext.NewKerbal (pcm);
 				ext.Save (kerbalExt);
@@ -165,7 +165,7 @@ namespace KerbalStats {
 				IKerbalExt kext;
 				kext = (IKerbalExt) m.Invoke (parms);
 				kerbalext_modules[kext.name] = kext;
-				Debug.LogFormat ("[KS] module: {0}", kext.name);
+				//Debug.LogFormat ("[KS] module: {0}", kext.name);
 			}
 		}
 
