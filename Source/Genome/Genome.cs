@@ -43,8 +43,11 @@ namespace KerbalStats.Genome {
 			}
 
 			var dbase = GameDatabase.Instance;
-			var prefab_kerbals = dbase.GetConfigNodes ("ProgenyPrefab").LastOrDefault ();
 			prefabs = new Dictionary<string, Dictionary<string, GenePair>> ();
+			var prefab_kerbals = dbase.GetConfigNodes ("ProgenyPrefab").LastOrDefault ();
+			if (prefab_kerbals == null) {
+				return;
+			}
 			foreach (var kerbal in prefab_kerbals.GetNodes ("Kerbal")) {
 				if (!kerbal.HasValue ("name") || !kerbal.HasNode ("genome")) {
 					continue;
