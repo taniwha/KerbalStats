@@ -86,5 +86,10 @@ namespace KerbalStats.Progeny.Zygotes {
 		{
 			interestTime = UT + 600; //FIXME
 		}
+
+		public void NonMate (double UT)
+		{
+			interestTime = UT; //FIXME
+		}
 	}
 }

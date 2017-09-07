@@ -176,7 +176,11 @@ namespace KerbalStats.Progeny.Zygotes {
 				return false;
 			}
 			var mate = SelectMate (location.Males ());
-			return mate != null ? Mate (mate) : false;
+			if (mate == null) {
+				interest.NonMate (UT);
+				return false;
+			}
+			return Mate (mate);
 		}
 
 		bool check_discover (KFSMState st)
