@@ -37,7 +37,7 @@ namespace KerbalStats.Progeny.Zygotes {
 
 		public double GameteLife ()
 		{
-			var p = UnityEngine.Random.Range (0, 1f);
+			var p = genes.random.Range (0, 1f);
 			return gamete.Life (p);
 		}
 

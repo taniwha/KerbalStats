@@ -55,13 +55,13 @@ namespace KerbalStats.Progeny.Zygotes {
 			double k = 1;
 			PRange pRange = null;
 
-			for (int i = 0; i < genes.Length; i++) {
-				switch (genes[i].trait.name) {
+			for (int i = 0; i < genes.genes.Length; i++) {
+				switch (genes.genes[i].trait.name) {
 					case "GestationPeriodK":
-						k = (genes[i].trait as TimeK).K (genes[i]);
+						k = (genes.genes[i].trait as TimeK).K (genes.genes[i]);
 						break;
 					case "GestationPeriodP":
-						pRange = (genes[i].trait as TimeP).P (genes[i]);
+						pRange = (genes.genes[i].trait as TimeP).P (genes.genes[i]);
 						break;
 				}
 			}

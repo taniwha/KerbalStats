@@ -32,10 +32,10 @@ namespace KerbalStats.Progeny.Zygotes {
 		PRange gameteP;
 		double gameteL;
 
-		public Gamete (GenePair[] genes, bool isFemale, BioClock bioClock)
+		public Gamete (Genome.Data data, bool isFemale, BioClock bioClock)
 		{
-			for (int i = 0; i < genes.Length; i++) {
-				var g = genes[i];
+			for (int i = 0; i < data.genes.Length; i++) {
+				var g = data.genes[i];
 				switch (g.trait.name) {
 					case "GameteLifeK":
 						gameteK = (g.trait as TimeK).K (g);

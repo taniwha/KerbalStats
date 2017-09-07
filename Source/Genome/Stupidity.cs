@@ -15,7 +15,6 @@ You should have received a copy of the GNU Lesser General Public License
 along with KerbalStats.  If not, see <http://www.gnu.org/licenses/>.
 */
 using System;
-using System.Linq;
 
 namespace KerbalStats.Genome {
 
@@ -88,7 +87,7 @@ namespace KerbalStats.Genome {
 			return distributions[index];
 		}
 
-		public GenePair CreateGene (float stupidity)
+		public GenePair CreateGene (float stupidity, Random random)
 		{
 			float[] probabilities = new float[distributions.Length];
 			for (int i = 0; i < distributions.Length; i++) {
@@ -98,35 +97,35 @@ namespace KerbalStats.Genome {
 			//	Console.WriteLine(String.Format ("{0} {1}", i, probabilities[i]));
 			//}
 			var dist = new DiscreteDistribution (probabilities);
-			int index = dist.Value (UnityEngine.Random.Range (0, 1f));
-			var gene = genes[UnityEngine.Random.Range (0, 2)][index];
+			int index = dist.Value (random.Range (0, 1f));
+			var gene = genes[random.Range (0, 2)][index];
 			return new GenePair (this, gene[0], gene[1]);
 		}
 
-		public GenePair CreateGene (string stupidityS)
+		public GenePair CreateGene (string stupidityS, Random random)
 		{
 			float stupidity = 0;
 			float.TryParse (stupidityS, out stupidity);
-			return CreateGene (stupidity);
+			return CreateGene (stupidity, random);
 		}
 
-		public GenePair CreateGene (ProtoCrewMember pcm)
+		public GenePair CreateGene (ProtoCrewMember pcm, Random random)
 		{
 			if (pcm == null) {
-				var s = UnityEngine.Random.Range (0, 1f);
-				return CreateGene (s);
+				var s = random.Range (0, 1f);
+				return CreateGene (s, random);
 			}
 			var gene = Genome.Prefab (this, pcm);
 			if (gene == null) {
-				gene = CreateGene (pcm.stupidity);
+				gene = CreateGene (pcm.stupidity, random);
 			}
 			return gene;
 		}
 
-		public string CreateValue (GenePair gene)
+		public string CreateValue (GenePair gene, Random random)
 		{
 			ContinuousDistribution dist = ChooseDistribution (gene);
-			return dist.Value (UnityEngine.Random.Range (0, 1f)).ToString ("G9");
+			return dist.Value (random.Range (0, 1f)).ToString ("G9");
 		}
 	}
 }

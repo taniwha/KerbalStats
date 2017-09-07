@@ -24,11 +24,11 @@ namespace KerbalStats.Progeny.Traits {
 	{
 		public string name { get { return "GestationPeriodK"; } }
 
-		public GenePair CreateGene (ProtoCrewMember pcm)
+		public GenePair CreateGene (ProtoCrewMember pcm, Random random)
 		{
 			var gene = Genome.Prefab (this, pcm);
 			if (gene == null) {
-				gene = CreateGene ();
+				gene = CreateGene (random);
 			}
 			return gene;
 		}

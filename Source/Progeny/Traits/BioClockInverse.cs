@@ -25,28 +25,28 @@ namespace KerbalStats.Progeny.Traits {
 		public string name { get { return "BioClockInverse"; } }
 		public int GeneSize { get { return 1; } }
 
-		public GenePair CreateGene ()
+		public GenePair CreateGene (Random random)
 		{
-			uint a = (uint) UnityEngine.Random.Range (0, 2);
-			uint b = (uint) UnityEngine.Random.Range (0, 2);
+			uint a = (uint) random.Range (0, 2);
+			uint b = (uint) random.Range (0, 2);
 			return new GenePair (this, a, b);
 		}
 
-		public GenePair CreateGene (string bio)
+		public GenePair CreateGene (string bio, Random random)
 		{
-			return CreateGene ();
+			return CreateGene (random);
 		}
 
-		public GenePair CreateGene (ProtoCrewMember pcm)
+		public GenePair CreateGene (ProtoCrewMember pcm, Random random)
 		{
 			var gene = Genome.Prefab (this, pcm);
 			if (gene == null) {
-				gene = CreateGene ();
+				gene = CreateGene (random);
 			}
 			return gene;
 		}
 
-		public string CreateValue (GenePair gene)
+		public string CreateValue (GenePair gene, Random random)
 		{
 			var c = Inverse (gene);
 			return c.ToString ();

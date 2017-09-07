@@ -32,13 +32,13 @@ namespace KerbalStats.Progeny.Zygotes {
 
 		public bool isInterested ()
 		{
-			var p = UnityEngine.Random.Range (0, 1f);
+			var p = genes.random.Range (0, 1f);
 			return p < interest.isInterested (UT);
 		}
 
 		public double GameteLife ()
 		{
-			var p = UnityEngine.Random.Range (0, 1f);
+			var p = genes.random.Range (0, 1f);
 			return gamete.Life (p);
 		}
 
@@ -57,8 +57,8 @@ namespace KerbalStats.Progeny.Zygotes {
 				/// mate(s) etc).
 				male_readiness[i + 1] = males[i].isInterested (UT);
 			}
-			var dist = new Genome.DiscreteDistribution (male_readiness);
-			int ind = dist.Value (UnityEngine.Random.Range (0, 1f)) - 1;
+			var dist = new DiscreteDistribution (male_readiness);
+			int ind = dist.Value (genes.random.Range (0, 1f)) - 1;
 			if (ind < 0) {
 				return null;
 			}
@@ -91,7 +91,7 @@ namespace KerbalStats.Progeny.Zygotes {
 				fv = gamete.Viability (ot - UT);
 			}
 			float conceive_chance = fv * mv;
-			if (UnityEngine.Random.Range (0, 1f) > conceive_chance) {
+			if (genes.random.Range (0, 1f) > conceive_chance) {
 				return false;
 			}
 			/// If conception was successful, create a new embryo using
@@ -243,7 +243,7 @@ namespace KerbalStats.Progeny.Zygotes {
 			/// probability (assuming secrecy) until mid-pregnacy and then
 			/// the above probability with medical facilities (regular
 			/// checkups etc)
-			if (UnityEngine.Random.Range (0, 1f) > p) {
+			if (genes.random.Range (0, 1f) > p) {
 				return false;
 			}
 			return true;

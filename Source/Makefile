@@ -38,9 +38,10 @@ KS_GENOME := \
 	Genome/Gender.cs				\
 	Genome/GenePair.cs				\
 	Genome/Genome.cs				\
-	Genome/Probability.cs			\
 	Genome/Stupidity.cs				\
 	Genome/Trait.cs					\
+	Utils/Probability.cs			\
+	Utils/Random.cs					\
 	$e
 
 KS_PROGENY := \

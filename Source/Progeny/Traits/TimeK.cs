@@ -35,19 +35,19 @@ namespace KerbalStats.Progeny.Traits {
 			return (int) count;
 		}
 
-		public GenePair CreateGene ()
+		public GenePair CreateGene (Random random)
 		{
-			uint a = (uint) UnityEngine.Random.Range (0, 16);
-			uint b = (uint) UnityEngine.Random.Range (0, 16);
+			uint a = (uint) random.Range (0, 16);
+			uint b = (uint) random.Range (0, 16);
 			return new GenePair (this as Trait, a, b);
 		}
 
-		public GenePair CreateGene (string bio)
+		public GenePair CreateGene (string bio, Random random)
 		{
-			return CreateGene ();
+			return CreateGene (random);
 		}
 
-		public string CreateValue (GenePair gene)
+		public string CreateValue (GenePair gene, Random random)
 		{
 			var c = gene.a & gene.b;
 			return c.ToString ();

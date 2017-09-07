@@ -28,6 +28,7 @@ namespace KerbalStats.Progeny.Zygotes {
 
 	public class Cycle
 	{
+		Genome.Data data;
 		double cycleK;
 		PRange cycleP;
 		double cycleL;
@@ -40,10 +41,11 @@ namespace KerbalStats.Progeny.Zygotes {
 		double cycle_end;
 		double ovulation_time;
 
-		public Cycle (GenePair[] genes, BioClock bioClock)
+		public Cycle (Genome.Data data, BioClock bioClock)
 		{
-			for (int i = 0; i < genes.Length; i++) {
-				var g = genes[i];
+			this.data = data;
+			for (int i = 0; i < data.genes.Length; i++) {
+				var g = data.genes[i];
 				switch (g.trait.name) {
 					case "CyclePeriodK":
 						cycleK = (g.trait as TimeK).K (g);
@@ -83,11 +85,11 @@ namespace KerbalStats.Progeny.Zygotes {
 			while (cycle_end < UT) {
 				// hopefully not too many cycles have gone between the last
 				// update and now
-				p = UnityEngine.Random.Range (0, 1f);
+				p = data.random.Range (0, 1f);
 				cycle_start = cycle_end;
 				cycle_end = cycle_start + CalcCyclePeriod (p);
 			}
-			p = UnityEngine.Random.Range (0, 1f);
+			p = data.random.Range (0, 1f);
 			ovulation_time = cycle_start + CalcOvulationTime (p);
 		}
 

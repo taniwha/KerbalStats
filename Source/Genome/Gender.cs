@@ -15,7 +15,6 @@ You should have received a copy of the GNU Lesser General Public License
 along with KerbalStats.  If not, see <http://www.gnu.org/licenses/>.
 */
 using System;
-using System.Linq;
 
 namespace KerbalStats.Genome {
 
@@ -40,37 +39,37 @@ namespace KerbalStats.Genome {
 			}
 		}
 
-		public GenePair CreateGene (bool isFemale)
+		public GenePair CreateGene (bool isFemale, Random random)
 		{
 			if (isFemale) {
 				// female: XX
 				return new GenePair (this, 1, 1);
 			}
 			// male: either XY or YX
-			uint y = (uint) UnityEngine.Random.Range (0, 2);
+			uint y = (uint) random.Range (0, 2);
 			return new GenePair (this, y, 1 - y);
 		}
 
-		public GenePair CreateGene (string gender)
+		public GenePair CreateGene (string gender, Random random)
 		{
 			bool isFemale = gender[0] == 'f' || gender[0] == 'F';
-			return CreateGene (isFemale);
+			return CreateGene (isFemale, random);
 		}
 
-		public GenePair CreateGene (ProtoCrewMember pcm)
+		public GenePair CreateGene (ProtoCrewMember pcm, Random random)
 		{
 			if (pcm == null) {
-				var g = UnityEngine.Random.Range (0, 2);
-				return CreateGene (g > 0);
+				var g = random.Range (0, 2);
+				return CreateGene (g > 0, random);
 			}
 			var gene = Genome.Prefab (this, pcm);
 			if (gene == null) {
-				gene = CreateGene (pcm.gender == ProtoCrewMember.Gender.Female);
+				gene = CreateGene (pcm.gender == ProtoCrewMember.Gender.Female, random);
 			}
 			return gene;
 		}
 
-		public string CreateValue (GenePair gene)
+		public string CreateValue (GenePair gene, Random random)
 		{
 			uint index = (gene.a & 1) + (gene.b & 1);
 			return genders[index];

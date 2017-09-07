@@ -15,7 +15,6 @@ You should have received a copy of the GNU Lesser General Public License
 along with KerbalStats.  If not, see <http://www.gnu.org/licenses/>.
 */
 using System;
-using System.Linq;
 
 namespace KerbalStats.Genome {
 
@@ -86,43 +85,43 @@ namespace KerbalStats.Genome {
 			return distributions[index];
 		}
 
-		public GenePair CreateGene (bool isBad)
+		public GenePair CreateGene (bool isBad, Random random)
 		{
 			DiscreteDistribution dist = reverse[isBad ? 1 : 0];
-			int numBits = 2 + dist.Value (UnityEngine.Random.Range (0, 1f));
+			int numBits = 2 + dist.Value (random.Range (0, 1f));
 			int max = numBits > 3 ? 4 : numBits + 1;
 			int min = numBits > 3 ? 1 : 0;
-			int first = UnityEngine.Random.Range (min, max);
-			int a = UnityEngine.Random.Range (0, 3);
-			int b = UnityEngine.Random.Range (0, 3);
+			int first = random.Range (min, max);
+			int a = random.Range (0, 3);
+			int b = random.Range (0, 3);
 			//Console.WriteLine(String.Format ("{0} {1} {2} {3} {4} {5}", numBits, min, max, first, a, b));
 			return new GenePair (this, codes[first][a], codes[numBits - first][b]);
 		}
 
-		public GenePair CreateGene (string isBadS)
+		public GenePair CreateGene (string isBadS, Random random)
 		{
 			bool isBad = false;
 			bool.TryParse (isBadS, out isBad);
-			return CreateGene (isBad);
+			return CreateGene (isBad, random);
 		}
 
-		public GenePair CreateGene (ProtoCrewMember pcm)
+		public GenePair CreateGene (ProtoCrewMember pcm, Random random)
 		{
 			if (pcm == null) {
-				var b = UnityEngine.Random.Range (0, 2);
-				return CreateGene (b > 0);
+				var b = random.Range (0, 2);
+				return CreateGene (b > 0, random);
 			}
 			var gene = Genome.Prefab (this, pcm);
 			if (gene == null) {
-				gene = CreateGene (pcm.isBadass);
+				gene = CreateGene (pcm.isBadass, random);
 			}
 			return gene;
 		}
 
-		public string CreateValue (GenePair gene)
+		public string CreateValue (GenePair gene, Random random)
 		{
 			DiscreteDistribution dist = ChooseDistribution (gene);
-			return (dist.Value (UnityEngine.Random.Range (0, 1f)) > 0).ToString ();
+			return (dist.Value (random.Range (0, 1f)) > 0).ToString ();
 		}
 	}
 }

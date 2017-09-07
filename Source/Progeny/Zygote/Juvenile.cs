@@ -38,15 +38,15 @@ namespace KerbalStats.Progeny.Zygotes {
 		void init ()
 		{
 			GenePair gender = null;
-			for (int i = 0; i < genes.Length; i++) {
-				switch (genes[i].trait.name) {
+			for (int i = 0; i < genes.genes.Length; i++) {
+				switch (genes.genes[i].trait.name) {
 					case "Gender":
-						gender = genes[i];
+						gender = genes.genes[i];
 						break;
 				}
 			}
 
-			var g = gender.trait.CreateValue (gender);
+			var g = gender.trait.CreateValue (gender, genes.random);
 			isFemale = (g == "F");
 
 			maturation = bioClock.MaturationTime (subp);

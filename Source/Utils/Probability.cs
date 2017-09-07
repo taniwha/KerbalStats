@@ -17,7 +17,7 @@ along with KerbalStats.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Linq;
 
-namespace KerbalStats.Genome {
+namespace KerbalStats {
 	public class DiscreteDistribution
 	{
 		float[] ranges;

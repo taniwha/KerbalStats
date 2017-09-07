@@ -34,22 +34,22 @@ namespace KerbalStats.Progeny.Zygotes {
 		double interestTC;
 		double interestK;
 
-		public Interest (GenePair[] genes)
+		public Interest (Genome.Data data)
 		{
-			for (int i = 0; i < genes.Length; i++) {
-				switch (genes[i].trait.name) {
+			for (int i = 0; i < data.genes.Length; i++) {
+				switch (data.genes[i].trait.name) {
 					case "InterestK":
-						InterestK = genes[i];
+						InterestK = data.genes[i];
 						break;
 					case "InterestTC":
-						InterestTC = genes[i];
+						InterestTC = data.genes[i];
 						break;
 				}
 			}
 			interestTime = 0;
-			var iTC = InterestTC.trait.CreateValue (InterestTC);
+			var iTC = InterestTC.trait.CreateValue (InterestTC, data.random);
 			interestTC = double.Parse (iTC);
-			var iK = InterestK.trait.CreateValue (InterestK);
+			var iK = InterestK.trait.CreateValue (InterestK, data.random);
 			interestK = double.Parse (iK);
 		}
 

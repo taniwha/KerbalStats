@@ -15,14 +15,13 @@ You should have received a copy of the GNU Lesser General Public License
 along with KerbalStats.  If not, see <http://www.gnu.org/licenses/>.
 */
 using System;
-using System.Linq;
 
 namespace KerbalStats.Genome {
 
 	public interface Trait
 	{
-		GenePair CreateGene (ProtoCrewMember kerbal);
-		string CreateValue (GenePair gene);
+		GenePair CreateGene (ProtoCrewMember kerbal, Random random);
+		string CreateValue (GenePair gene, Random random);
 		string name { get; }
 
 		// The number of bits in a single gene of a gene pair.

@@ -17,7 +17,6 @@ along with KerbalStats.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Linq;
 using UnityEngine;
 
 using KSP.IO;
@@ -26,6 +25,40 @@ namespace KerbalStats.Genome {
 
 	public class Genome: IKerbalExt
 	{
+		public class Data
+		{
+			public Random random;
+			public GenePair[] genes;
+
+			public Data (Random.State state, GenePair[] genes)
+			{
+				random = new Random ();
+				if (state != null) {
+					random.Load (state);
+				}
+				this.genes = genes;
+			}
+
+			public Data ()
+			{
+				random = new Random ();///< \todo seed from kerbal
+				genes = new GenePair[traits.Length];
+			}
+
+			public static Data Load (ConfigNode node)
+			{
+				var s = Genome.ReadState (node);
+				var g = Genome.ReadGenes (node);
+				return new Data (s, g);
+			}
+
+			public void Save (ConfigNode node)
+			{
+				Genome.WriteState (random.Save (), node);
+				Genome.WriteGenes (genes, node);
+			}
+		}
+
 		static Dictionary<string, int> trait_map;
 		static Trait[] traits;
 		static Dictionary<string, Dictionary<string, GenePair>> prefabs;
@@ -44,23 +77,23 @@ namespace KerbalStats.Genome {
 
 			var dbase = GameDatabase.Instance;
 			prefabs = new Dictionary<string, Dictionary<string, GenePair>> ();
-			var prefab_kerbals = dbase.GetConfigNodes ("ProgenyPrefab").LastOrDefault ();
-			if (prefab_kerbals == null) {
-				return;
-			}
-			foreach (var kerbal in prefab_kerbals.GetNodes ("Kerbal")) {
-				if (!kerbal.HasValue ("name") || !kerbal.HasNode ("genome")) {
-					continue;
-				}
-				var name = kerbal.GetValue ("name");
-				Debug.Log(String.Format ("[KS Genome] prefab {0}", name));
-				var genome = ReadGenes (kerbal.GetNode ("genome"));
-				prefabs[name] = new Dictionary<string, GenePair> ();
-				foreach (var gene in genome) {
-					// gene will be null if it a trait is missing from the
-					// config
-					if (gene != null) {
-						prefabs[name][gene.trait.name] = gene;
+			var prefab_list = dbase.GetConfigNodes ("ProgenyPrefab");
+			foreach (var prefab_kerbals in prefab_list) {
+				foreach (var kerbal in prefab_kerbals.GetNodes ("Kerbal")) {
+					if (!kerbal.HasValue ("name")
+						|| !kerbal.HasNode ("genome")) {
+						continue;
+					}
+					var name = kerbal.GetValue ("name");
+					Debug.LogFormat ("[KS Genome] prefab {0}", name);
+					var genome = ReadGenes (kerbal.GetNode ("genome"));
+					prefabs[name] = new Dictionary<string, GenePair> ();
+					foreach (var gene in genome) {
+						// gene will be null if a trait is missing from the
+						// config
+						if (gene != null) {
+							prefabs[name][gene.trait.name] = gene;
+						}
 					}
 				}
 			}
@@ -70,8 +103,8 @@ namespace KerbalStats.Genome {
 		{
 			if (loading_kerbals != null) {
 				foreach (var kerbal in loading_kerbals) {
-					var genes = kerbal[ModuleName] as GenePair[];
-					RebuildGenes (kerbal.kerbal, genes);
+					var data = kerbal[ModuleName] as Data;
+					RebuildGenes (kerbal.kerbal, data);
 				}
 				loading_kerbals = null;
 			}
@@ -96,11 +129,11 @@ namespace KerbalStats.Genome {
 			}
 		}
 
-		public static void RebuildGenes (ProtoCrewMember kerbal, GenePair[] genes)
+		public static void RebuildGenes (ProtoCrewMember kerbal, Data data)
 		{
 			for (int i = 0; i < traits.Length; i++) {
-				if (genes[i] == null) {
-					genes[i] = traits[i].CreateGene (kerbal);
+				if (data.genes[i] == null) {
+					data.genes[i] = traits[i].CreateGene (kerbal, data.random);
 				}
 			}
 		}
@@ -113,10 +146,10 @@ namespace KerbalStats.Genome {
 								kerbal.kerbal.name);
 				return;
 			}
-			var genes = new GenePair[traits.Length];
-			kerbal[ModuleName] = genes;
+			var data = new Data();
+			kerbal[ModuleName] = data;
 			if (kerbal.kerbal.name != null) {
-				RebuildGenes (kerbal.kerbal, genes);
+				RebuildGenes (kerbal.kerbal, data);
 			} else {
 				if (loading_kerbals == null) {
 					loading_kerbals = new List<KerbalExt> ();
@@ -125,10 +158,10 @@ namespace KerbalStats.Genome {
 			}
 		}
 
-		public static GenePair[] GetGenes (ProtoCrewMember pcm)
+		public static Data GetGenes (ProtoCrewMember pcm)
 		{
 			KerbalExt kerbal = KerbalStats.current[pcm];
-			return kerbal[extname] as GenePair[];
+			return kerbal[extname] as Data;
 		}
 
 		public void RemoveKerbal (KerbalExt kerbal)
@@ -139,12 +172,34 @@ namespace KerbalStats.Genome {
 		{
 			if (node.HasNode (ModuleName)) {
 				node = node.GetNode (ModuleName);
+				var state = ReadState (node);
 				var genes = ReadGenes (node);
-				kerbal[ModuleName] = genes;
-				RebuildGenes (kerbal.kerbal, genes);
+				var data = new Data (state, genes);
+				kerbal[ModuleName] = data;
+				RebuildGenes (kerbal.kerbal, data);
 			} else {
 				AddKerbal (kerbal);
 			}
+		}
+
+		public static void WriteState (Random.State state, ConfigNode node)
+		{
+			string val = Convert.ToBase64String (state.state);
+			val = val.Replace ('/', '.');
+			val = val.Replace ('=', '%');
+			node.AddValue ("state", val);
+		}
+
+		public static Random.State ReadState (ConfigNode node)
+		{
+			if (!node.HasValue ("state")) {
+				return null;
+			}
+			string val = node.GetValue ("state");
+			val = val.Replace ('.', '/');
+			val = val.Replace ('%', '=');
+			var bytes = Convert.FromBase64String (val);
+			return new Random.State (bytes);
 		}
 
 		public static void WriteGenes (GenePair[] genes, ConfigNode node)
@@ -172,10 +227,11 @@ namespace KerbalStats.Genome {
 
 		public void Save (KerbalExt kerbal, ConfigNode node)
 		{
-			var genes = kerbal[ModuleName] as GenePair[];
+			var data = kerbal[ModuleName] as Data;
 			var gen = new ConfigNode (ModuleName);
 			node.AddNode (gen);
-			WriteGenes (genes, gen);
+			WriteState (data.random.Save (), gen);
+			WriteGenes (data.genes, gen);
 		}
 
 		public void Clear ()
@@ -191,13 +247,13 @@ namespace KerbalStats.Genome {
 			return "";
 		}
 
-		public static GenePair[] Combine (GenePair[] kerbal1, GenePair[] kerbal2)
+		public static Data Combine (Data kerbal1, Data kerbal2)
 		{
-			var genes = new GenePair[traits.Length];
-			for (int i = 0; i < genes.Length; i++) {
-				genes[i] = GenePair.Combine (kerbal1[i], kerbal2[i]);
+			var data = new Data ();
+			for (int i = 0; i < data.genes.Length; i++) {
+				data.genes[i] = GenePair.Combine (kerbal1.genes[i], kerbal2.genes[i], data.random);
 			}
-			return genes;
+			return data;
 		}
 
 		public static GenePair Prefab (Trait trait, ProtoCrewMember kerbal)

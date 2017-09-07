@@ -1,19 +1,19 @@
 TARGETS		:= test
 
 test_FILES := \
+	../Utils/Probability.cs	\
+	../Utils/Random.cs	\
 	BadAss.cs		\
 	Courage.cs		\
 	Gender.cs		\
 	GenePair.cs		\
-	Probability.cs	\
-	Random.cs		\
 	Stupidity.cs	\
 	Trait.cs		\
 	test.cs			\
 	$e
 
 RESGEN2		:= resgen2
-GMCS		:= gmcs
+GMCS		:= mcs
 GMCSFLAGS	:= -optimize -warnaserror
 GIT			:= git
 TAR			:= tar

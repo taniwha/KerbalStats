@@ -81,14 +81,14 @@ namespace KerbalStats.Progeny.Zygotes {
 		protected void CalcAdulthood ()
 		{
 			var UT = Planetarium.GetUniversalTime ();
-			double p = UnityEngine.Random.Range (0, 1f);
+			double p = genes.random.Range (0, 1f);
 			adulthoodUT = UT - aging * YoungerP (p);
 		}
 
 		// relies on adulthoodUT being known
 		protected void CalcBirth ()
 		{
-			var p = UnityEngine.Random.Range (0, 1f);
+			var p = genes.random.Range (0, 1f);
 			birthUT = adulthoodUT - bioClock.MaturationTime (p);
 		}
 

@@ -15,7 +15,6 @@ You should have received a copy of the GNU Lesser General Public License
 along with KerbalStats.  If not, see <http://www.gnu.org/licenses/>.
 */
 using System;
-using System.Linq;
 
 namespace KerbalStats.Genome {
 
@@ -52,24 +51,24 @@ namespace KerbalStats.Genome {
 			return a.ToString () + ", " + b.ToString ();
 		}
 
-		public static GenePair Combine (GenePair g1, GenePair g2)
+		public static GenePair Combine (GenePair g1, GenePair g2, Random random)
 		{
 			uint a, b;
 			Trait trait = g1.trait;
 
-			if (UnityEngine.Random.Range (0, 2) != 0) {
+			if (random.Range (0, 2) != 0) {
 				a = g1.a;
 			} else {
 				a = g1.b;
 			}
 
-			if (UnityEngine.Random.Range (0, 2) != 0) {
+			if (random.Range (0, 2) != 0) {
 				b = g2.a;
 			} else {
 				b = g2.b;
 			}
 
-			if (UnityEngine.Random.Range (0, 2) != 0) {
+			if (random.Range (0, 2) != 0) {
 				return new GenePair (trait, a, b);
 			} else {
 				return new GenePair (trait, b, a);
