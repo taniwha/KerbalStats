@@ -62,7 +62,15 @@ namespace KerbalStats.Experience {
 
 		IEnumerator WaitAndSeatKerbal (ProtoCrewMember kerbal)
 		{
-			yield return null;
+			int watchdog = 20;
+
+			while (--watchdog > 0 && kerbal.KerbalRef == null) {
+				yield return null;
+			}
+			if (watchdog == 0) {
+				Debug.Log ("[ExperienceTrackerEvents] WaitAndSeatKerbal timed out waiting for KerbalRef");
+				yield break;
+			}
 			Part part = kerbal.KerbalRef.InPart;
 			string pname = GetPartName (part);
 			string seat = GetSeat (kerbal);
