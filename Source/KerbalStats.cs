@@ -137,7 +137,13 @@ namespace KerbalStats {
 			ConfigNode kerbalExt = node.AddNode ("KerbalExt");
 			if (kerbals != null) {
 				//Debug.Log ("    from kerbals");
-				kerbals[pcm.name].Save (kerbalExt);
+				// The check shouldn't be necessary, but sometimes name changes
+				// slip through the cracks (FIXME there is an event as of KSP
+				// 1.3 which I need to add). The next load should take care of
+				// the missing ext data.
+				if (kerbals.ContainsKey (pcm.name)) {
+					kerbals[pcm.name].Save (kerbalExt);
+				}
 			} else if (loading_kerbals != null) {
 				//Debug.Log ("    from loading_kerbals");
 			} else {
