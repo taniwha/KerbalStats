@@ -142,6 +142,11 @@ namespace KerbalStats.Experience {
 		public void FinishAllTasks (ProtoCrewMember pcm, double UT)
 		{
 			KerbalExt kerbal = KerbalStats.current[pcm];
+			if (kerbal == null) {
+				// The kerbal has been removed by the game. Very likely a 
+				// tourist that has been recovered after completing the tour.
+				return;
+			}
 			var exp = kerbal[name] as Experience;
 			foreach (var task in exp.Current) {
 				exp.FinishTask (UT, task);
