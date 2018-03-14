@@ -100,6 +100,14 @@ namespace KerbalStats {
 			kerbals.Remove (pcm.name);
 		}
 
+		void onKerbalNameChange (ProtoCrewMember pcm, string oldName, string newName)
+		{
+			if (oldName != newName) {
+				kerbals[newName] = kerbals[oldName];
+				kerbals.Remove (oldName);
+			}
+		}
+
 		void onProtoCrewMemberLoad (GameEvents.FromToAction<ProtoCrewMember,ConfigNode> action)
 		{
 			if (loading_kerbals == null) {
@@ -188,6 +196,7 @@ namespace KerbalStats {
 			GameEvents.onProtoCrewMemberLoad.Add (onProtoCrewMemberLoad);
 			GameEvents.onProtoCrewMemberSave.Add (onProtoCrewMemberSave);
 			GameEvents.onGameStateCreated.Add (onGameStateCreated);
+			GameEvents.onKerbalNameChange.Add (onKerbalNameChange);
 		}
 
 		void OnDestroy ()
@@ -197,6 +206,7 @@ namespace KerbalStats {
 			GameEvents.onProtoCrewMemberLoad.Remove (onProtoCrewMemberLoad);
 			GameEvents.onProtoCrewMemberSave.Remove (onProtoCrewMemberSave);
 			GameEvents.onGameStateCreated.Remove (onGameStateCreated);
+			GameEvents.onKerbalNameChange.Remove (onKerbalNameChange);
 			var modules = kerbalext_modules.Values.ToList ();
 			foreach (var m in modules) {
 				m.Shutdown ();
