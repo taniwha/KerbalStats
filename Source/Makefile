@@ -71,6 +71,8 @@ KS_PROGENY := \
 	Progeny/Traits/OvulationTimeK.cs		\
 	Progeny/Traits/OvulationTimeP.cs		\
 	Progeny/Traits/PRange.cs				\
+	Progeny/Traits/RecuperationTimeK.cs		\
+	Progeny/Traits/RecuperationTimeP.cs		\
 	Progeny/Traits/TimeK.cs					\
 	Progeny/Traits/TimeP.cs					\
 	Progeny/Zygote/Adult.cs					\

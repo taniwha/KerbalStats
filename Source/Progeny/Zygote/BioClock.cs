@@ -71,6 +71,13 @@ namespace KerbalStats.Progeny.Zygotes {
 			}
 		}
 
+		public double RecuperationTime
+		{
+			get {
+				return bc_trait.RecuperationTime (bioClockTC, bioClockInverse);
+			}
+		}
+
 		public double CyclePeriod
 		{
 			get {

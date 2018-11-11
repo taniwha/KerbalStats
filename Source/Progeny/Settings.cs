@@ -33,6 +33,7 @@ namespace KerbalStats.Progeny {
 		public static double CyclePeriod		{ get; private set; }
 		public static double GestationPeriod	{ get; private set; }
 		public static double OvulationTime		{ get; private set; }
+		public static double RecuperationTime	{ get; private set; }
 		public static double EggLife			{ get; private set; }
 		public static double SpermLife			{ get; private set; }
 		public static double InterestTC			{ get; private set; }
@@ -75,6 +76,7 @@ namespace KerbalStats.Progeny {
 			CyclePeriod = 56 * 21600;	// about one Minmus phase cycle
 			GestationPeriod = 265 * 21600;	// close to a dog's
 			OvulationTime = 0.5 * CyclePeriod;	// mid cycle
+			RecuperationTime = 4 * CyclePeriod;	// seems reasonable?
 			EggLife = 3 * 21600;
 			SpermLife = 3 * 3600;
 			InterestTC = 3600;
@@ -117,6 +119,11 @@ namespace KerbalStats.Progeny {
 			if (settings.HasValue ("OvulationTime")) {
 				if (double.TryParse (settings.GetValue ("OvulationTime"), out val)) {
 					OvulationTime = val;
+				}
+			}
+			if (settings.HasValue ("RecuperationTime")) {
+				if (double.TryParse (settings.GetValue ("RecuperationTime"), out val)) {
+					RecuperationTime = val;
 				}
 			}
 			if (settings.HasValue ("EggLife")) {

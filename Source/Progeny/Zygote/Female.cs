@@ -265,7 +265,13 @@ namespace KerbalStats.Progeny.Zygotes {
 		 */
 		bool check_birthe (KFSMState st)
 		{
-			/// \todo not implemented
+			double gestation = UT - embryo.conceived;
+			if (gestation > embryo.Birth) {
+				ProgenyScenario.current.Mature (embryo);
+				cycle.Recuperate (UT);
+				embryo = null;
+				return true;
+			}
 			return false;
 		}
 
@@ -273,8 +279,9 @@ namespace KerbalStats.Progeny.Zygotes {
 		 */
 		bool check_rested (KFSMState st)
 		{
-			/// \todo not implemented
-			return false;
+			if (cycle.Recuperating (UT))
+				return false;
+			return true;
 		}
 
 		void CreateStates ()

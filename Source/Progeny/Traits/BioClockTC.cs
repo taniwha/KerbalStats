@@ -106,6 +106,12 @@ namespace KerbalStats.Progeny.Traits {
 			return time * factor (bc, bci, 1, time);
 		}
 
+		public double RecuperationTime (GenePair bc, GenePair bci)
+		{
+			var time = ProgenySettings.RecuperationTime;
+			return time * factor (bc, bci, 0, time);
+		}
+
 		public double MaturationTime (GenePair bc, GenePair bci)
 		{
 			var time = ProgenySettings.MaturationTime;

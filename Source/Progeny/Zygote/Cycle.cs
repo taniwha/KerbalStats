@@ -37,6 +37,10 @@ namespace KerbalStats.Progeny.Zygotes {
 		PRange ovulationP;
 		double ovulationL;
 
+		double recuperationK;
+		PRange recuperationP;
+		double recuperationL;
+
 		double cycle_start;
 		double cycle_end;
 		double ovulation_time;
@@ -59,11 +63,18 @@ namespace KerbalStats.Progeny.Zygotes {
 					case "OvulationTimeP":
 						ovulationP = (g.trait as TimeP).P (g);
 						break;
+					case "RecuperationTimeK":
+						recuperationK = (g.trait as TimeK).K (g);
+						break;
+					case "RecuperationTimeP":
+						recuperationP = (g.trait as TimeP).P (g);
+						break;
 				}
 			}
 
 			cycleL = bioClock.CyclePeriod;
 			ovulationL = bioClock.OvulationTime;
+			recuperationL = bioClock.RecuperationTime;
 		}
 
 		double CalcCyclePeriod (double p)
@@ -78,6 +89,12 @@ namespace KerbalStats.Progeny.Zygotes {
 			return MathUtil.WeibullQF (ovulationL, ovulationK, p);
 		}
 
+		double CalcRecuperationTime (double p)
+		{
+			p = recuperationP.P (p);
+			return MathUtil.WeibullQF (recuperationL, recuperationK, p);
+		}
+
 		public void Update (double UT)
 		{
 			float p;
@@ -89,8 +106,26 @@ namespace KerbalStats.Progeny.Zygotes {
 				cycle_start = cycle_end;
 				cycle_end = cycle_start + CalcCyclePeriod (p);
 			}
+			if (ovulation_time < cycle_start) {
+				p = data.random.Range (0, 1f);
+				ovulation_time = cycle_start + CalcOvulationTime (p);
+			}
+		}
+
+		public void Recuperate (double UT)
+		{
+			float p;
+			p = data.random.Range (0, 1f);
+			cycle_start = UT + CalcRecuperationTime (p);
+			p = data.random.Range (0, 1f);
+			cycle_end = cycle_start + CalcCyclePeriod (p);
 			p = data.random.Range (0, 1f);
 			ovulation_time = cycle_start + CalcOvulationTime (p);
+		}
+
+		public bool Recuperating (double UT)
+		{
+			return UT < cycle_start;
 		}
 
 		public double OvulationTime { get { return ovulation_time; } }
