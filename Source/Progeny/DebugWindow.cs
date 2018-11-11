@@ -124,6 +124,34 @@ namespace KerbalStats.Progeny {
 			}
 		}
 
+		void ZygoteName (Zygote zygote)
+		{
+			if (zygote is IKerbal && (zygote as IKerbal).kerbal != null) {
+				GUILayout.Label ((zygote as IKerbal).kerbal.name);
+			} else {
+				GUILayout.Label ("null kerbal");
+			}
+		}
+
+		void ShowEmbryos (IEnumerable<Embryo> embryos)
+		{
+			foreach (var e in embryos) {
+				GUILayout.BeginHorizontal ();
+
+				GUILayout.Label (e.id + ":");
+
+				GUILayout.FlexibleSpace ();
+				ZygoteName (ProgenyScenario.current.GetZygote(e.mother_id));
+				GUILayout.FlexibleSpace ();
+				ZygoteName (ProgenyScenario.current.GetZygote(e.father_id));
+				GUILayout.FlexibleSpace ();
+				double UT = Planetarium.GetUniversalTime ();
+				double bUT = e.conceived + e.Birth;
+				GUILayout.Label (((bUT - UT)/21600).ToString());
+				GUILayout.EndHorizontal ();
+			}
+		}
+
 		void ShowZygotes (IEnumerable<Zygote> zygotes)
 		{
 			foreach (var z in zygotes) {
@@ -238,7 +266,7 @@ namespace KerbalStats.Progeny {
 			InfoSelector ();
 			switch (infoType) {
 				case InfoType.Embryos:
-					ShowZygotes (ProgenyScenario.current.Embryos.Cast<Zygote>());
+					ShowEmbryos (ProgenyScenario.current.Embryos);
 					break;
 				case InfoType.Juveniles:
 					ShowZygotes (ProgenyScenario.current.Juveniles.Cast<Zygote>());
