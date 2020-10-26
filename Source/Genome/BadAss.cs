@@ -20,16 +20,19 @@ namespace KerbalStats.Genome {
 
 	public class BadAss : Trait
 	{
-		// Indexed by the number of 1 bits in the 6-bit genetic code (2 3-bit
-		// genes). The probability of getting badass for distributions 0 and 6
-		// is arbitrarily set to 0 and 1 respectively. For distributions 2, 3,
-		// and 4, the relative probabily works out to 0.1 (distributions 0, 1,
-		// 5, and 6 are not used for KSP generated kerbals). Distributions 1
-		// and 5 are set to make the resulting curve feel reasonable.
-		//
-		// The distribution of the distributions follows the 6th-order binomial
-		// distribution (1 6 15 20 15 6 1). This comes naturally from counting
-		// the 1 bits in numbers from the range 0..63.
+		/** Indexed by the number of 1 bits in the 6-bit genetic code (2
+		 * 3-bit genes). The probability of getting badass for
+		 * distributions 0 and 6 is arbitrarily set to 0 and 1
+		 * respectively. For distributions 2, 3, and 4, the relative
+		 * probability works out to 0.1 (distributions 0, 1, 5, and 6
+		 * are not used for KSP generated kerbals). Distributions 1 and
+		 * 5 are set to make the resulting curve feel reasonable.
+		 *
+		 * The distribution of the distributions follows the 6th-order
+		 * binomial distribution (1 6 15 20 15 6 1). This comes
+		 * naturally from counting the 1 bits in numbers from the range
+		 * 0..63.
+		 */
 		static DiscreteDistribution[] distributions = {
 			new DiscreteDistribution (new float[]{120f/120f,   0f/120f}),
 			new DiscreteDistribution (new float[]{119f/120f,   1f/120f}),
@@ -39,15 +42,29 @@ namespace KerbalStats.Genome {
 			new DiscreteDistribution (new float[]{ 57f/120f,  63f/120f}),
 			new DiscreteDistribution (new float[]{  0f/120f, 120f/120f}),
 		};
-		// Select from distributions 2, 3, 4 (0, 1, 5, 6 not available to stock
-		// kerbals). However, this is used to determine the number of 1 bits in
-		// the 2x3-bit genetic code.
+		/** Select from distributions 2, 3, 4 (0, 1, 5, 6 not available
+		 * to stock kerbals). This is used to determine the
+		 * number of 1 bits in the 2x3-bit genetic code.
+		 *
+		 * Multiplying things out in the distributions table leads to
+		 * the probability of a kerbal being badass as 1/100 for
+		 * distribution 2, 3/100 for distribution 3, and 6/100 for
+		 * distribution 3, or 29/100, 37/100 respectively for a kerbal
+		 * to not be badass.
+		 *
+		 * The probability a stock kerbal is badass is 0.1, thus 
+		 */
 		static DiscreteDistribution[] reverse = {
+			// not badass
 			new DiscreteDistribution (new float[]{29f/90f, 37f/90f, 24f/90f}),
-			new DiscreteDistribution (new float[]{ 9f/90f, 27f/90f, 54f/90f}),
+			// is badass
+			new DiscreteDistribution (new float[]{ 1f/10f,  3f/10f,  6f/10f}),
 		};
 
-		// Outer index is the number of desired bits, the inner is random
+		/** Value used for encoding the number of badass bits into the
+		 * genome. Outer index is the number of desired bits, the inner
+		 * is random.
+		 */
 		static uint[][] codes = {
 			new uint[]{0, 0, 0},
 			new uint[]{1, 2, 4},
@@ -69,6 +86,8 @@ namespace KerbalStats.Genome {
 			}
 		}
 
+		/** Count the number of one bits in x
+		 */
 		int CountBits (uint x)
 		{
 			uint count = 0;
@@ -79,18 +98,26 @@ namespace KerbalStats.Genome {
 			return (int) count;
 		}
 
+		/** Choose a distribution based on the gene pair.
+		 */
 		DiscreteDistribution ChooseDistribution (GenePair gene)
 		{
 			int index = CountBits (gene.a & 7) + CountBits (gene.b & 7);
 			return distributions[index];
 		}
 
+		/** Create a random gene pair that fits the kerbal.
+		 */
 		public GenePair CreateGene (bool isBad, Random random)
 		{
 			DiscreteDistribution dist = reverse[isBad ? 1 : 0];
+			// numBits will be 2, 3, or 4
 			int numBits = 2 + dist.Value (random.Range (0, 1f));
+			// max will be 3, 4 or 4,
 			int max = numBits > 3 ? 4 : numBits + 1;
+			// min will be 0, 0 or 1
 			int min = numBits > 3 ? 1 : 0;
+			// first will be 0, 1, 2, or 0, 1, 2, 3 or 1, 2, 3
 			int first = random.Range (min, max);
 			int a = random.Range (0, 3);
 			int b = random.Range (0, 3);
@@ -98,6 +125,8 @@ namespace KerbalStats.Genome {
 			return new GenePair (this, codes[first][a], codes[numBits - first][b]);
 		}
 
+		/** Create a random gene pair that fits the kerbal.
+		 */
 		public GenePair CreateGene (string isBadS, Random random)
 		{
 			bool isBad = false;
@@ -105,6 +134,8 @@ namespace KerbalStats.Genome {
 			return CreateGene (isBad, random);
 		}
 
+		/** Create a random gene pair that fits the kerbal.
+		 */
 		public GenePair CreateGene (ProtoCrewMember pcm, Random random)
 		{
 			if (pcm == null) {
@@ -118,6 +149,8 @@ namespace KerbalStats.Genome {
 			return gene;
 		}
 
+		/** Generate the badass value based on genes and randomness.
+		 */
 		public string CreateValue (GenePair gene, Random random)
 		{
 			DiscreteDistribution dist = ChooseDistribution (gene);
