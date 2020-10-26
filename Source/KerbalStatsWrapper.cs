@@ -18,6 +18,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Reflection;
 
+// XXX change ModName to the namespace of your mod
 namespace ModName.KerbalStats {
 	/**	Wrapper class for accessing KerbalStats via reflection.
 	 *

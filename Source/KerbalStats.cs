@@ -20,15 +20,39 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace KerbalStats {
+	/** Manage mapping between KSP kerbals and extended stats.
+	 *
+	 * This class takes care of all the work required to maintain
+	 * extended stats for kerbals.
+	 */
 	[KSPAddon (KSPAddon.Startup.Instantly, true)]
 	public class KerbalStats : MonoBehaviour
 	{
+		/** Reference to the singleton
+		 */
 		public static KerbalStats current { get; private set; }
+
+		/** Cache for all the extended stats modules, indexed by module
+		 * name
+		 */
 		internal Dictionary<string, IKerbalExt> kerbalext_modules;
 
+		/** Tie the kerbal with the kerbal's extended stats.
+		 *
+		 * Used for delaying creating the kerbal map, possibly due to
+		 * unfortunate order of operations during game loading (lost
+		 * info). Possibly to allow all scenarios to load before
+		 * processing the kerbals, and/or to deal with the mess around
+		 * ProtoCrewMember creation (event fired before class members
+		 * are filled in)
+		 */
 		struct KerbalPair {
-			public ProtoCrewMember pcm;
-			public KerbalExt ext;
+			/** Reference to the kerbal
+			 */
+			public ProtoCrewMember pcm { get; private set; }
+			/** The kerbal's extended stats
+			 */
+			public KerbalExt ext { get; private set; }
 			public KerbalPair (ProtoCrewMember pcm, KerbalExt ext)
 			{
 				this.pcm = pcm;
@@ -36,9 +60,17 @@ namespace KerbalStats {
 			}
 		};
 
+		/** Map between kerbal name and the kerbal's extended stats
+		 */
 		Dictionary<string, KerbalExt> kerbals;
+		/** Keep track of kerbals and their extended stats until the
+		 * game "stabilizes" after game load (reasons forgotten).
+		 * See KerbalPair.
+		 */
 		List<KerbalPair> loading_kerbals;
 
+		/** Fetch a kerbal's extended stats during game load
+		 */
 		KerbalExt find_loading_kerbal (ProtoCrewMember pcm)
 		{
 			int count = loading_kerbals.Count;
@@ -50,6 +82,8 @@ namespace KerbalStats {
 			return null;
 		}
 
+		/** Fetch a kerbal's extended stats at any time.
+		 */
 		public KerbalExt this[ProtoCrewMember pcm]
 		{
 			get {
@@ -64,6 +98,11 @@ namespace KerbalStats {
 			}
 		}
 
+		/** Create the mapping between kerbal and the kerbal's stats.
+		 *
+		 * Handles timing issues during game load. internal instead of
+		 * private for KerbalStatsScenario. Don't use.
+		 */
 		internal void SetExt (ProtoCrewMember pcm, KerbalExt ext)
 		{
 			if (loading_kerbals != null) {
@@ -75,6 +114,11 @@ namespace KerbalStats {
 			}
 		}
 
+		/** Add a kerbal to the system
+		 *
+		 * The kerbal is given extended stats and stored in the
+		 * database.
+		 */
 		void addKerbal (ProtoCrewMember pcm)
 		{
 			KerbalExt ext = new KerbalExt ();
@@ -82,6 +126,13 @@ namespace KerbalStats {
 			ext.NewKerbal (pcm);
 		}
 
+		/** Wait a frame before adding the kerbal
+		 *
+		 * This deals with Contract Configurator changing the kerbal's
+		 * name after creating the kerbal. The change is made in the
+		 * same frame, but after the creation event has been fired, thus
+		 * the need to wait.
+		 */
 		IEnumerator WaitAndAddKerbal (ProtoCrewMember pcm)
 		{
 			yield return null;
@@ -94,6 +145,8 @@ namespace KerbalStats {
 			addKerbal (pcm);
 		}
 
+		/** Tidy up when the game has stabilized after game load
+		 */
 		void ProcessLoadingKerbals ()
 		{
 			foreach (var pair in loading_kerbals) {
@@ -102,19 +155,30 @@ namespace KerbalStats {
 			loading_kerbals = null;
 		}
 
+		/** Event handler for when a new kerbal is added
+		 */
 		void onKerbalAdded (ProtoCrewMember pcm)
 		{
+			/** Ensure processing of loaded kerbals is done
+			 */
 			if (loading_kerbals != null) {
 				ProcessLoadingKerbals ();
 			}
 			StartCoroutine (WaitAndAddKerbal (pcm));
 		}
 
+		/** Event handler for when a kerbal is removed
+		 */
 		void onKerbalRemoved (ProtoCrewMember pcm)
 		{
 			kerbals.Remove (pcm.name);
 		}
 
+		/** Load a kerbal's extended stats from the kerbal's roster node
+		 *
+		 * Kerbal creation is a messy process in KSP, so this is called
+		 * at all sorts of times.
+		 */
 		void onProtoCrewMemberLoad (GameEvents.FromToAction<ProtoCrewMember,ConfigNode> action)
 		{
 			if (loading_kerbals == null) {
@@ -144,6 +208,8 @@ namespace KerbalStats {
 			}
 		}
 
+		/** Save a kerbal's extended stats to the kerbal's roster node.
+		 */
 		void onProtoCrewMemberSave (GameEvents.FromToAction<ProtoCrewMember,ConfigNode> action)
 		{
 			ProtoCrewMember pcm = action.from;
@@ -162,6 +228,8 @@ namespace KerbalStats {
 			}
 		}
 
+		/** Tidy up after the game has loaded or been created.
+		 */
 		void onGameStateCreated (Game game)
 		{
 			kerbals = new Dictionary<string, KerbalExt>();
@@ -170,6 +238,15 @@ namespace KerbalStats {
 			}
 		}
 
+		/** Find all usable classes that implement IKerbalExt.
+		 *
+		 * For a class to be usable, it must have a constructor that
+		 * takes a single KerbalStats parameter. These are the modules
+		 * that implement the various extended stats.
+		 *
+		 * An single instance of the module is created (using the
+		 * provided contructor). All modules are treated as singletons.
+		 */
 		void LoadModules ()
 		{
 			kerbalext_modules = new Dictionary<string, IKerbalExt> ();

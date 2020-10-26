@@ -21,6 +21,12 @@ using UnityEngine;
 using Master = KerbalStats.KerbalStats;
 
 namespace KerbalStats.Scenario {
+	/** Converts from pre-KSP-1.2 save files to post KSP-1.2
+	 *
+	 * This scenario is never written for new saves. It is used for
+	 * converting from old saves when KSP did not have nay support for
+	 * extending the data saved or loaded for kerbals.
+	 */
 	[KSPScenario(ScenarioCreationOptions.None,
 				 GameScenes.SPACECENTER,
 				 GameScenes.EDITOR,
