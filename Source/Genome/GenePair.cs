@@ -18,12 +18,18 @@ using System;
 
 namespace KerbalStats.Genome {
 
+	/** Holds the actual genetic data representing a trait
+	 */
 	public class GenePair
 	{
+		/** The trait represented by this gene pair
+		 */
 		public Trait trait;
-		public uint a;
-		public uint b;
+		public uint a;		///< one of the genes in the pair
+		public uint b;		///< one of the genes in the pair
 
+		/** Create a gene pair from a trait and two gene encodings
+		 */
 		public GenePair (Trait trait, uint a, uint b)
 		{
 			this.trait = trait;
@@ -31,6 +37,8 @@ namespace KerbalStats.Genome {
 			this.b = b;
 		}
 
+		/** Copy constructor
+		 */
 		public GenePair (GenePair gene)
 		{
 			trait = gene.trait;
@@ -38,6 +46,10 @@ namespace KerbalStats.Genome {
 			b = gene.b;
 		}
 
+		/** Construct a gne pair from a trait and pair string
+		 *
+		 * Used for loading.
+		 */
 		public GenePair (Trait trait, string pair)
 		{
 			this.trait = trait;
@@ -46,11 +58,19 @@ namespace KerbalStats.Genome {
 			uint.TryParse (genes[1], out b);
 		}
 
+		/** Represent the genetic data as a string
+		 *
+		 * Used for saving.
+		 */
 		public override string ToString ()
 		{
 			return a.ToString () + ", " + b.ToString ();
 		}
 
+		/** Produce a new gene pair from genetic recombintation of two pairs
+		 *
+		 * \todo implement crossover for genes longer than 1 bit
+		 */
 		public static GenePair Combine (GenePair g1, GenePair g2, Random random)
 		{
 			uint a, b;

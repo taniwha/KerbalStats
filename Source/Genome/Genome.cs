@@ -23,13 +23,29 @@ using KSP.IO;
 
 namespace KerbalStats.Genome {
 
+	/** The genome KerbalStats module
+	 *
+	 * Each kerbal gets a genome: a set of gene pairs representing the
+	 * kerbal's traits. The core of Genome provides traits for Courage,
+	 * Stupidity and BadAss, but additional traits can be added simply
+	 * by implementing the Trait interface.
+	 */
 	public class Genome: IKerbalExt
 	{
+		/** The actual genome data for a kerbal.
+		 */
 		public class Data
 		{
+			/** Each kerbal gets its own random number generator
+			 */
 			public Random random;
+			/** The kerbal's genes, one pair for each trait known to the
+			 * system.
+			 */
 			public GenePair[] genes;
 
+			/** Initialize from saved random state and gene pairs.
+			 */
 			public Data (Random.State state, GenePair[] genes)
 			{
 				random = new Random ();
@@ -39,12 +55,18 @@ namespace KerbalStats.Genome {
 				this.genes = genes;
 			}
 
+			/** Initialize from scratch
+			 *
+			 * The gene pairs array is empty but of the correct length.
+			 */
 			public Data ()
 			{
 				random = new Random ();///< \todo seed from kerbal
 				genes = new GenePair[traits.Length];
 			}
 
+			/** Load the genome from a config node.
+			 */
 			public static Data Load (ConfigNode node)
 			{
 				var s = Genome.ReadState (node);
@@ -52,6 +74,8 @@ namespace KerbalStats.Genome {
 				return new Data (s, g);
 			}
 
+			/** Save the genome to a config node.
+			 */
 			public void Save (ConfigNode node)
 			{
 				Genome.WriteState (random.Save (), node);
@@ -59,13 +83,38 @@ namespace KerbalStats.Genome {
 			}
 		}
 
+		/** Map from trait name to array index
+		 */
 		static Dictionary<string, int> trait_map;
+		/** Array of traits (same order as in genome)
+		 */
 		static Trait[] traits;
+		/** Predefined genomes for kerbals
+		 *
+		 * Outer index is kerbal name, inner is trait name. Any missing
+		 * data is left to chance.
+		 */
 		static Dictionary<string, Dictionary<string, GenePair>> prefabs;
+		/** List of kerbals being loaded.
+		 *
+		 * Allows delayed processing to avoid issues with partial
+		 * initialization.
+		 */
 		static List<KerbalExt> loading_kerbals;
 
+		/** Static constructor.
+		 *
+		 * Initializes the genome system.
+		 */
 		static Genome ()
 		{
+			/** Find all the defined traits by searching for classes
+			 * that implement the Trait interface and have a constructor
+			 * that takes no arguments.
+			 *
+			 * A map from trait name to index in the trait and gene pair
+			 * arrays is created.
+			 */
 			var trait_modules = ModuleLoader.LoadModules<Trait> (new Type []{});
 			traits = new Trait[trait_modules.Count];
 			trait_map = new Dictionary<string, int> ();
@@ -75,6 +124,8 @@ namespace KerbalStats.Genome {
 				trait_map[traits[i].name] = i;
 			}
 
+			/** Load the genome prefabs
+			 */
 			var dbase = GameDatabase.Instance;
 			prefabs = new Dictionary<string, Dictionary<string, GenePair>> ();
 			var prefab_list = dbase.GetConfigNodes ("ProgenyPrefab");
@@ -99,6 +150,8 @@ namespace KerbalStats.Genome {
 			}
 		}
 
+		/** Process loaded kerbals after the game state has stabilized.
+		 */
 		void onGameStateCreated (Game game)
 		{
 			if (loading_kerbals != null) {
@@ -129,6 +182,12 @@ namespace KerbalStats.Genome {
 			}
 		}
 
+		/** Create any missing genes for the kerbal.
+		 *
+		 * Genes may be missing due to there not being a prefab for the
+		 * kerbal, no prefab trait, or an update has added genes that
+		 * are not in the persistent data.
+		 */
 		public static void RebuildGenes (ProtoCrewMember kerbal, Data data)
 		{
 			for (int i = 0; i < traits.Length; i++) {
@@ -138,6 +197,11 @@ namespace KerbalStats.Genome {
 			}
 		}
 
+		/** Add a genome to the new kerbal.
+		 *
+		 * The adding will be delayed if the kerbal's name is null as
+		 * this indicates partial initialization in KSP.
+		 */
 		public void AddKerbal (KerbalExt kerbal)
 		{
 			if (kerbal[ModuleName] != null) {
@@ -158,6 +222,8 @@ namespace KerbalStats.Genome {
 			}
 		}
 
+		/** Fetch the genome of the specified kerbal.
+		 */
 		public static Data GetGenes (ProtoCrewMember pcm)
 		{
 			KerbalExt kerbal = KerbalStats.current[pcm];
@@ -168,6 +234,11 @@ namespace KerbalStats.Genome {
 		{
 		}
 
+		/** Load a kerbal's genome data from persistence.
+		 *
+		 * Includes both random generator state and the genetic data
+		 * itself.
+		 */
 		public void Load (KerbalExt kerbal, ConfigNode node)
 		{
 			if (node.HasNode (ModuleName)) {
@@ -182,6 +253,11 @@ namespace KerbalStats.Genome {
 			}
 		}
 
+		/** Write the random state using modified base-64.
+		 *
+		 * / and = cannot be used in config node values, so they are
+		 * switched to . and %.
+		 */
 		public static void WriteState (Random.State state, ConfigNode node)
 		{
 			string val = Convert.ToBase64String (state.state);
@@ -190,6 +266,11 @@ namespace KerbalStats.Genome {
 			node.AddValue ("state", val);
 		}
 
+		/** Read the random state using modified base-64.
+		 *
+		 * / and = cannot be used in config node values, so they are
+		 * switched to . and %.
+		 */
 		public static Random.State ReadState (ConfigNode node)
 		{
 			if (!node.HasValue ("state")) {
@@ -202,6 +283,8 @@ namespace KerbalStats.Genome {
 			return new Random.State (bytes);
 		}
 
+		/** Write out all the gene pairs to the config node.
+		 */
 		public static void WriteGenes (GenePair[] genes, ConfigNode node)
 		{
 			for (int i = 0; i < genes.Length; i++) {
@@ -209,6 +292,12 @@ namespace KerbalStats.Genome {
 			}
 		}
 
+		/** Read the genetic data from the config node
+		 *
+		 * The order of the traits in the node is irrelevant, undefined
+		 * traits are dropped and missing traits will be filled in
+		 * afterwards.
+		 */
 		public static GenePair[] ReadGenes (ConfigNode node)
 		{
 			var pairs = node.values;
@@ -225,6 +314,11 @@ namespace KerbalStats.Genome {
 			return genes;
 		}
 
+		/** Save a kerbal's genome data to persistence.
+		 *
+		 * Includes both random generator state and the genetic data
+		 * itself.
+		 */
 		public void Save (KerbalExt kerbal, ConfigNode node)
 		{
 			var data = kerbal[ModuleName] as Data;
@@ -247,6 +341,11 @@ namespace KerbalStats.Genome {
 			return "";
 		}
 
+		/** Produce a new genome from two parent genomes.
+		 *
+		 * Each gene pair is produced for the corresponding parent gene
+		 * pairs using recombination. See GenePair.Combine().
+		 */
 		public static Data Combine (Data kerbal1, Data kerbal2)
 		{
 			var data = new Data ();
@@ -256,6 +355,8 @@ namespace KerbalStats.Genome {
 			return data;
 		}
 
+		/** Return the prefab gene pair for a kerbal if it exists.
+		 */
 		public static GenePair Prefab (Trait trait, ProtoCrewMember kerbal)
 		{
 			if (prefabs.ContainsKey (kerbal.name)
