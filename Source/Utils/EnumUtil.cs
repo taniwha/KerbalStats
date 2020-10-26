@@ -21,6 +21,11 @@ using UnityEngine;
 
 namespace KerbalStats {
 	public static class EnumUtil {
+		/** Simple wrapper to get an array of the values in the enum
+		 *
+		 * \param T     The enum type for which the values are to be
+		 *              fetched.
+		 */
 		public static T[] GetValues<T>() {
 			return (T[])Enum.GetValues(typeof(T));
 		}

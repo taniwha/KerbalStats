@@ -20,6 +20,10 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace KerbalStats {
 
+	/** Wrapper for System.Random that allows saving and restoring the state.
+	 *
+	 * And having multiple independent generators.
+	 */
 	public class Random
 	{
 		System.Random random;
