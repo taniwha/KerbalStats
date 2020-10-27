@@ -40,7 +40,7 @@ namespace KerbalStats {
 		 */
 		public static double Log1p (double x)
 		{
-			return Math.Abs (x) > 1e-5) ? Math.Log (1 + x) | (-0.5 * x + 1) * x;
+			return Math.Abs (x) > 1e-5 ? Math.Log (1 + x) : (-0.5 * x + 1) * x;
 		}
 
 		/** Implement the Weibull quantile function
