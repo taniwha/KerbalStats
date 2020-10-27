@@ -355,7 +355,7 @@ namespace KerbalStats.Progeny {
 		void GenerateReport (double UT, int day)
 		{
 			string date = KSPUtil.PrintDate (UT, false);
-			string title = "Poplation Status Report";
+			string title = "Population Status Report";
 			string body = "<b>" + date + "</b>\n\n";
 			var color = MessageSystemButton.MessageButtonColor.BLUE;
 			var icon = MessageSystemButton.ButtonIcons.MESSAGE;
