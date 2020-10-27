@@ -67,7 +67,12 @@ namespace KerbalStats.Progeny.Zygotes {
 
 		double YoungerP (double p)
 		{
-			p *= 0.999;	// avoid 1.0: bad juju (ln(0))
+			// avoid 1.0: bad juju (ln(0))
+			// and anything over 1 gets into negative roots
+			// however, as p aproaches 1, the answer approaches 1
+			if (p >= 1) {
+				return 1;
+			}
 			// map 0..1 onto 0..inf via artanh, then feed that into
 			// 1 - (x + 1) e^-x
 			//
