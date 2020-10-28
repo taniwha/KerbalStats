@@ -133,9 +133,9 @@ namespace KerbalStats.Progeny.Zygotes {
 		public float NonmatingFactor (double UT)
 		{
 			// the lower this is, the more likely the female is to mate
-			// put the peak of interest (or trough of rejection) a little
-			// before ovulation
-			var x = 1.75 * (UT - cycle_start) / (ovulation_time - cycle_start);
+			// put the peak of interest (or trough of rejection) at
+			// ovulation
+			var x = 2 * (UT - cycle_start) / (ovulation_time - cycle_start);
 			return (float) (1 - x * x * Math.Exp (-x));
 		}
 
