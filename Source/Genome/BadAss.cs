@@ -86,23 +86,12 @@ namespace KerbalStats.Genome {
 			}
 		}
 
-		/** Count the number of one bits in x
-		 */
-		int CountBits (uint x)
-		{
-			uint count = 0;
-			while (x > 0) {
-				count += x & 1;
-				x >>= 1;
-			}
-			return (int) count;
-		}
 
 		/** Choose a distribution based on the gene pair.
 		 */
 		DiscreteDistribution ChooseDistribution (GenePair gene)
 		{
-			int index = CountBits (gene.a & 7) + CountBits (gene.b & 7);
+			int index = MathUtil.CountBits (gene.a & 7) + MathUtil.CountBits (gene.b & 7);
 			return distributions[index];
 		}
 

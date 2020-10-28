@@ -25,16 +25,6 @@ namespace KerbalStats.Progeny.Traits {
 		public string name { get { return "BioClockTC"; } }
 		public int GeneSize { get { return 4; } }
 
-		int CountBits (uint x)
-		{
-			uint count = 0;
-			while (x > 0) {
-				count += x & 1;
-				x >>= 1;
-			}
-			return (int) count;
-		}
-
 		public GenePair CreateGene (Random random)
 		{
 			uint a = (uint) random.Range (0, 16);
@@ -65,7 +55,7 @@ namespace KerbalStats.Progeny.Traits {
 		double factor (GenePair bc, GenePair bci, int ind, double time)
 		{
 			uint c = bc.a & bc.b;
-			var k = CountBits (c & (uint)(0xf >> (3 - ind)));
+			var k = MathUtil.CountBits (c & (uint)(0xf >> (3 - ind)));
 			var n = (bci.trait as BioClockInverse).Inverse (bci);
 			var o = k > 0 ? 1 : 0;
 			var x0 = Math.Log (ProgenySettings.EggLife);

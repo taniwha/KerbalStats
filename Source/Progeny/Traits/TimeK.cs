@@ -25,16 +25,6 @@ namespace KerbalStats.Progeny.Traits {
 	{
 		public int GeneSize { get { return 4; } }
 
-		int CountBits (uint x)
-		{
-			uint count = 0;
-			while (x > 0) {
-				count += x & 1;
-				x >>= 1;
-			}
-			return (int) count;
-		}
-
 		public GenePair CreateGene (Random random)
 		{
 			uint a = (uint) random.Range (0, 16);
@@ -57,7 +47,7 @@ namespace KerbalStats.Progeny.Traits {
 
 		public virtual double K (GenePair gene)
 		{
-			var c = CountBits (gene.a & gene.b);
+			var c = MathUtil.CountBits (gene.a & gene.b);
 			return k[c];
 		}
 	}

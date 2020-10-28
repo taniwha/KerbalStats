@@ -95,5 +95,16 @@ namespace KerbalStats {
 			return dist;
 		}
 
+		/** Count the number of 1-bits in a value.
+		 */
+		public static int CountBits (uint x)
+		{
+			uint count = 0;
+			while (x > 0) {
+				count += x & 1;
+				x >>= 1;
+			}
+			return (int) count;
+		}
 	}
 }
