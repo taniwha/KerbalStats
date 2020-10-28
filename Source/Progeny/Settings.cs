@@ -28,16 +28,28 @@ namespace KerbalStats.Progeny {
 	{
 		static bool settings_loaded;
 
+		/// Average age in seconds when aging effect begin
 		public static double AgingTime			{ get; private set; }
+		/// Average age in seconds when the kerbal becomes an aldult
 		public static double MaturationTime		{ get; private set; }
+		/// Average length in seconds of the female cycle
 		public static double CyclePeriod		{ get; private set; }
+		/// Average length in seconds of a pregnacy
 		public static double GestationPeriod	{ get; private set; }
+		/// Average timing in seconds since cycle start of ovulation
 		public static double OvulationTime		{ get; private set; }
+		/// Average time in seconds for post-partum recovery
 		public static double RecuperationTime	{ get; private set; }
+		/// Average lifetime in seconds of an ovum
 		public static double EggLife			{ get; private set; }
+		/// Average lifetime in seconds of a sperm
 		public static double SpermLife			{ get; private set; }
+		/// Average time in seconds for interest to recover after copulation
 		public static double InterestTC			{ get; private set; }
+		/// Minimum time period in seconds between population status reports
 		public static double ReportPeriod		{ get; private set; }
+		/// Minimum time period in seconds between population status reports
+		/// This is for high warp
 		public static double ReportPeriod2		{ get; private set; }
 
 		public static void Load (ConfigNode config)

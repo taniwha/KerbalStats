@@ -27,28 +27,38 @@ namespace KerbalStats.Progeny.Zygotes {
 
 	public class Adult : Zygote, IKerbal
 	{
-		public ProtoCrewMember kerbal
-		{
-			get;
-			set;
-		}
+		/** The game kerbal represented by this zygote.
+		 *
+		 * Valid only if the kerbal has been recruited (or is an
+		 * applicant).
+		 */
+		public ProtoCrewMember kerbal { get; set; }
 
+		/** Universal Time of the kerbal's birth */
 		double birthUT;
+		/** Universal Time when the kerbal became an adult */
 		double adulthoodUT;
+		/** Timespan in seconds of the kerbal's "healthy" adult life */
 		double aging;
 
-		public string name
-		{
-			get {
-				return kerbal.name;
-			}
-		}
+		/** The kerbal's name
+		 *
+		 * \note not valid (will NRE) if the kerbal has yet to be
+		 * recruited. FIXME
+		 */
+		public string name { get { return kerbal.name; } }
 
+		/** Common initialization
+		 */
 		void initialize ()
 		{
 			aging = bioClock.AgingTime (subp);
 		}
 
+		/** Initialize from a juvenile kerbal.
+		 *
+		 * The juvenile has grown up and can now contribute.
+		 */
 		public Adult (Juvenile juvenile) : base (juvenile)
 		{
 			birthUT = juvenile.Birth ();
@@ -57,6 +67,8 @@ namespace KerbalStats.Progeny.Zygotes {
 			initialize ();
 		}
 
+		/** Initialize from a game generated kerbal.
+		 */
 		public Adult (ProtoCrewMember kerbal) : base (kerbal)
 		{
 			this.kerbal = kerbal;
@@ -65,24 +77,34 @@ namespace KerbalStats.Progeny.Zygotes {
 			CalcBirth ();
 		}
 
+		/** Maps 0..1 to 0..1, but favoring smaller values.
+		 *
+		 * This remaps p to favor younger kerbals, but still allow older
+		 * ones.
+		 */
 		double YoungerP (double p)
 		{
 			// avoid 1.0: bad juju (ln(0))
 			// and anything over 1 gets into negative roots
-			// however, as p aproaches 1, the answer approaches 1
+			// however, as p aproaches 1, the result approaches 1
 			if (p >= 1) {
 				return 1;
 			}
 			// map 0..1 onto 0..inf via artanh, then feed that into
 			// 1 - (x + 1) e^-x
 			//
-			// This remaps p to favor younger kerbals, but still allow older
-			// ones.
 			p = Math.Sqrt ((1 - p) / (1 + p));
 			p = 1 - p * (1 - Math.Log (p));
 			return p;
 		}
 
+		/** Back-calculate how long the kerbal has been an adult.
+		 *
+		 * Younger kerbals are favored over older ones, but even kerbals
+		 * just before their "aging" time might be applicants. The
+		 * wording feels a little backwards because the kerbal's age is
+		 * being set rather than the kerbal being filtered by age.
+		 */
 		protected void CalcAdulthood ()
 		{
 			var UT = Planetarium.GetUniversalTime ();
@@ -90,13 +112,22 @@ namespace KerbalStats.Progeny.Zygotes {
 			adulthoodUT = UT - aging * YoungerP (p);
 		}
 
-		// relies on adulthoodUT being known
+		/** Back-calculate the kerbal's birth time.
+		 *
+		 * This requires the time the kerbal became an adult to be known
+		 * (eg, adulthoodUT must be known (call CalcAdulthood() first)).
+		 */
 		protected void CalcBirth ()
 		{
 			var p = genes.random.Range (0, 1f);
 			birthUT = adulthoodUT - bioClock.MaturationTime (p);
 		}
 
+		/** Initialize the adult kerbal from persistence.
+		 *
+		 * If the adulthood or birth times are unknown, they'll be
+		 * reconstructed.
+		 */
 		public Adult (ConfigNode node) : base (node)
 		{
 			this.kerbal = null;
@@ -113,6 +144,8 @@ namespace KerbalStats.Progeny.Zygotes {
 			}
 		}
 
+		/** Save the adult kerbal to persistence.
+		 */
 		public override void Save (ConfigNode node)
 		{
 			base.Save (node);
@@ -121,16 +154,26 @@ namespace KerbalStats.Progeny.Zygotes {
 
 		}
 
+		/** Fetch the kerbal's time of birth
+		 */
 		public double Birth ()
 		{
 			return birthUT;
 		}
 
+		/** Fetch the kerbal's time of adulthood
+		 */
 		public double Adulthood ()
 		{
 			return adulthoodUT;
 		}
 
+		/** Fetch the kerbal's "healthy" adulthood timespan
+		 *
+		 * The idea is that once the timespan has elapsed, aging effects
+		 * will occur (retirement, health degradation, decreased
+		 * fertility, whatever).
+		 */
 		public double Aging ()
 		{
 			return aging;

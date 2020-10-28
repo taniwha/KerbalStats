@@ -49,10 +49,8 @@ namespace KerbalStats.Genome {
 		 * Multiplying things out in the distributions table leads to
 		 * the probability of a kerbal being badass as 1/100 for
 		 * distribution 2, 3/100 for distribution 3, and 6/100 for
-		 * distribution 3, or 29/100, 37/100 respectively for a kerbal
-		 * to not be badass.
-		 *
-		 * The probability a stock kerbal is badass is 0.1, thus 
+		 * distribution 3, or 29/100, 37/100, 24/100 respectively for a
+		 * kerbal to not be badass.
 		 */
 		static DiscreteDistribution[] reverse = {
 			// not badass
@@ -72,20 +70,9 @@ namespace KerbalStats.Genome {
 			new uint[]{7, 7, 7},
 		};
 
-		public string name
-		{
-			get {
-				return "BadAss";
-			}
-		}
+		public string name { get { return "BadAss"; } }
 
-		public int GeneSize
-		{
-			get {
-				return 3;
-			}
-		}
-
+		public int GeneSize { get { return 3; } }
 
 		/** Choose a distribution based on the gene pair.
 		 */
