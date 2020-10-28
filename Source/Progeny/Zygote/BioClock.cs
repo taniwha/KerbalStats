@@ -26,16 +26,53 @@ namespace KerbalStats.Progeny.Zygotes {
 	using Genome;
 	using Traits;
 
+	/** The kerbal's central "clock".
+	 *
+	 * The idea is the relative speed of the bio-clock sets the speeds
+	 * of all the processes. Individual tuning comes from shape (K)
+	 * and range (P) adjusters.
+	 *
+	 * All times are in seconds.
+	 */
 	public class BioClock
 	{
+		/** Cached reference to the bioClockTC trait
+		 */
 		BioClockTC bc_trait;
+		/** Gene-pair that controls Bio-clock time constant.
+		 *
+		 * Depending on bioClockInverse, either slows down or speeds up
+		 * the bio-clock.
+		 */
 		GenePair bioClockTC;
+		/** Gene-pair that controls the bio-clock speed direction.
+		 */
 		GenePair bioClockInverse;
+		/** Cached maturation curve shape
+		 *
+		 * \see Traits.TimeK
+		 */
 		double maturationK;
+		/** Cached maturation P-range
+		 *
+		 * \see Traits.TimeP
+		 */
 		PRange maturationP;
+		/** Cached aging curve shape
+		 *
+		 * \see Traits.TimeK
+		 */
 		double agingK;
+		/** Cached aging P-range
+		 *
+		 * \see Traits.TimeP
+		 */
 		PRange agingP;
 
+		/** Initialize from a set of gene pairs.
+		 *
+		 * Caches all the required values.
+		 */
 		public BioClock (GenePair[] genes)
 		{
 			for (int i = 0; i < genes.Length; i++) {
@@ -64,6 +101,10 @@ namespace KerbalStats.Progeny.Zygotes {
 			bc_trait = bioClockTC.trait as BioClockTC;
 		}
 
+		/** Determine the ovulation time lambda
+		 *
+		 * Average time within a cycle at which ovulation occurs.
+		 */
 		public double OvulationTime
 		{
 			get {
@@ -71,6 +112,11 @@ namespace KerbalStats.Progeny.Zygotes {
 			}
 		}
 
+		/** Determine the recuperation time lambda
+		 *
+		 * Average length of time it takes for the female to become
+		 * fertile again after giving birth.
+		 */
 		public double RecuperationTime
 		{
 			get {
@@ -78,6 +124,10 @@ namespace KerbalStats.Progeny.Zygotes {
 			}
 		}
 
+		/** Determine the cycle period lambda
+		 *
+		 * Average length of the female's cycle.
+		 */
 		public double CyclePeriod
 		{
 			get {
@@ -85,6 +135,10 @@ namespace KerbalStats.Progeny.Zygotes {
 			}
 		}
 
+		/** Determine the egg lifespan lambda
+		 *
+		 * Average length of time the egg remains viable after ovulation.
+		 */
 		public double EggLife
 		{
 			get {
@@ -92,6 +146,8 @@ namespace KerbalStats.Progeny.Zygotes {
 			}
 		}
 
+		/** Determine the sperm lifespan lambda
+		 */
 		public double SpermLife
 		{
 			get {
@@ -99,6 +155,8 @@ namespace KerbalStats.Progeny.Zygotes {
 			}
 		}
 
+		/** Determine the gestation period lambda
+		 */
 		public double GestationPeriod
 		{
 			get {
@@ -106,6 +164,15 @@ namespace KerbalStats.Progeny.Zygotes {
 			}
 		}
 
+		/** Determine the aging time
+		 *
+		 * The aging time is the length of "healthy" adulthood.
+		 *
+		 * \param p     Selection parameter, 0..1. Combined with the
+		 *              range adjuster determines the overall selection
+		 *              parameter.
+		 * \return      The length of time from maturation to aging.
+		 */
 		public double AgingTime (double p)
 		{
 			double lambda = bc_trait.AgingTime (bioClockTC, bioClockInverse);
@@ -113,6 +180,16 @@ namespace KerbalStats.Progeny.Zygotes {
 			return MathUtil.WeibullQF (lambda, agingK, p);
 		}
 
+		/** Determine the maturation time
+		 *
+		 * This is how long from birth until the kerbal becomes an
+		 * adult.
+		 *
+		 * \param p     Selection parameter, 0..1. Combined with the
+		 *              range adjuster determines the overall selection
+		 *              parameter.
+		 * \return      The length of time from birth to maturation.
+		 */
 		public double MaturationTime (double p)
 		{
 			double lambda = bc_trait.MaturationTime (bioClockTC, bioClockInverse);
