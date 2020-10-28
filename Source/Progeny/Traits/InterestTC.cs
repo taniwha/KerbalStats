@@ -48,11 +48,15 @@ namespace KerbalStats.Progeny.Traits {
 
 		static double[] f = { 0.5, 1.0, 1.5, 2.0, 3.0 };
 
-		public string CreateValue (GenePair gene, Random random)
+		public double TC (GenePair gene)
 		{
 			var c = MathUtil.CountBits (gene.a & gene.b);
-			double tc = ProgenySettings.InterestTC * f[c];
-			return tc.ToString ();
+			return ProgenySettings.InterestTC * f[c];
+		}
+
+		public string CreateValue (GenePair gene, Random random)
+		{
+			return TC (gene).ToString ();
 		}
 	}
 }

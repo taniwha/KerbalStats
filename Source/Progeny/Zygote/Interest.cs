@@ -24,6 +24,7 @@ using KSP.IO;
 
 namespace KerbalStats.Progeny.Zygotes {
 	using Genome;
+	using Traits;
 
 	public class Interest
 	{
@@ -47,10 +48,8 @@ namespace KerbalStats.Progeny.Zygotes {
 				}
 			}
 			interestTime = 0;
-			var iTC = InterestTC.trait.CreateValue (InterestTC, data.random);
-			interestTC = double.Parse (iTC);
-			var iK = InterestK.trait.CreateValue (InterestK, data.random);
-			interestK = double.Parse (iK);
+			interestTC = (InterestTC.trait as InterestTC).TC (InterestTC);
+			interestK = (InterestK.trait as InterestK).K (InterestK);
 		}
 
 		public void Load (ConfigNode node)
